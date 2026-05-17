@@ -116,7 +116,7 @@ export const PROJECTS: Project[] = [
   },
   {
     slug: 'Lotus',
-    title: 'Lotus promotion',
+    title: 'Lotus pro',
     category: 'Application Web',
     shortDescription: 'Plateforme multi-tenant de gestion complète de gestion complete de magasins et boutiques.',
     fullDescription: 'Plateforme multi-tenant complète de gestion de promotion maganisiniere avec pipeline de données, API RESTful et visualisations interactives.',

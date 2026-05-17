@@ -54,11 +54,11 @@ export default function DescriptionRain({ description }: DescriptionRainProps) {
     <div className="relative h-full w-full overflow-hidden select-none">
       {/* ── Masque dégradé supérieur (fade out) ── */}
       <div className="absolute top-0 left-0 right-0 h-24 z-10
-        bg-gradient-to-b from-black to-transparent pointer-events-none" />
+        bg-gradient-to-b from-base-100 dark:from-[#070510] to-transparent pointer-events-none" />
 
       {/* ── Masque dégradé inférieur (fade out) ── */}
       <div className="absolute bottom-0 left-0 right-0 h-24 z-10
-        bg-gradient-to-t from-black to-transparent pointer-events-none" />
+        bg-gradient-to-t from-base-100 dark:from-[#070510] to-transparent pointer-events-none" />
 
       {/* ── Conteneur de défilement infini (haut → bas) ── */}
       <motion.div
@@ -71,20 +71,35 @@ export default function DescriptionRain({ description }: DescriptionRainProps) {
             key={`desc-${i}`}
             className="py-6 px-4 flex flex-col items-center"
           >
-            <p className="font-display text-lg sm:text-xl lg:text-2xl leading-relaxed
-              text-white/80 dark:text-white/80 text-center
+            {/* <p className="font-display text-lg sm:text-xl lg:text-2xl leading-relaxed
+              text-base-content/80 dark:text-white/80 text-center
               tracking-wide italic drop-shadow-md">
               {chunk}
+            </p> */}
+
+            <p className="text-lg sm:text-xl lg:text-2xl leading-relaxed
+              text-base-content/80 dark:text-white/80 text-center font-bold
+              tracking-wide drop-shadow-md">
+              {chunk}
             </p>
+
             {/* Séparateur décoratif subtil entre les blocs */}
             {i < repeatedChunks.length - 1 && (
+
               <div className="flex justify-center mt-4">
-                <div className="w-8 h-px bg-white/10" />
+                <div className="w-8 h-px bg-base-content/10 dark:bg-white/10" />
               </div>
+
             )}
+
           </div>
+
         ))}
+
       </motion.div>
+
     </div>
+
   );
+
 }

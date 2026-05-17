@@ -24,6 +24,12 @@ export default function StardustCursor() {
   const auraX = useSpring(mouseX, { stiffness: 100, damping: 20, mass: 0.5 });
   const auraY = useSpring(mouseY, { stiffness: 100, damping: 20, mass: 0.5 });
 
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       mouseX.set(e.clientX);
@@ -42,7 +48,7 @@ export default function StardustCursor() {
     };
   }, [mouseX, mouseY, isVisible]);
 
-  if (typeof window === 'undefined') return null;
+  if (!mounted) return null;
 
   return (
     <>

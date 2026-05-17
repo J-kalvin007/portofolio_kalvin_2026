@@ -44,17 +44,21 @@ export async function POST(request: NextRequest) {
 
     // 1. Validation de sécurité Zod (Lèvera une erreur si les données sont incorrectes)
     const validatedData = contactSchema.parse(body);
-    
+
     // 2. Nettoyage strict (Sanitization)
     // Sécurisation de l'en-tête de l'e-mail (From / Subject)
     const safeName = stripHeaderInjection(validatedData.name).replace(/"/g, "'").slice(0, 200);
     const safeSubject = stripHeaderInjection(validatedData.subject).slice(0, 500);
-    
+
     // Échappement HTML pour prévenir les injections XSS si le client de messagerie affiche du HTML non filtré
     const htmlName = escapeHtml(validatedData.name);
     const htmlEmail = escapeHtml(validatedData.email);
     const htmlSubject = escapeHtml(validatedData.subject);
     const htmlMessage = escapeHtml(validatedData.message);
+
+    // Récupération de l'origine pour générer une URL absolue pour l'image
+    const origin = request.headers.get('origin') || 'https://portofolio-kalvin-2.vercel.app';
+    const logoUrl = `${origin}/logo/kal_04_nobg.jpeg`;
 
     /**
      * 3. Création du transporteur SMTP (Nodemailer)
@@ -99,8 +103,8 @@ export async function POST(request: NextRequest) {
             
             <!-- En-tête (Header) avec Logo et Titre Sensationnel -->
             <div style="padding: 48px 40px 32px 40px; text-align: center; border-bottom: 1px solid #f4f4f5; background: linear-gradient(to bottom, #ffffff, #fafafa);">
-              <!-- Utilisation du Content-ID (cid) pour intégrer l'image m4.jpg attachée au mail -->
-              <img src="cid:logo_kalvin" alt="Kalvin Logo" style="width: 88px; height: 88px; border-radius: 50%; object-fit: cover; margin-bottom: 24px; box-shadow: 0 8px 24px rgba(200, 144, 10, 0.25); border: 2px solid #fff;" />
+              <!-- URL absolue de l'image pour un affichage correct sur tous les clients mails -->
+              <img src="${logoUrl}" alt="Kalvin Logo" style="width: 88px; height: 88px; border-radius: 50%; object-fit: cover; margin-bottom: 24px; box-shadow: 0 8px 24px rgba(200, 144, 10, 0.25); border: 2px solid #fff;" />
               <h1 style="margin: 0; font-size: 26px; font-weight: 300; letter-spacing: 2px; color: #111827; text-transform: uppercase;">
                 Nouvelle <span style="font-weight: 800; color: #C8900A;">Connexion</span>
               </h1>
@@ -170,14 +174,6 @@ export async function POST(request: NextRequest) {
         </html>
       `,
       replyTo: validatedData.email, // Indispensable pour que le bouton "Répondre" de Gmail fonctionne.
-      attachments: [
-        {
-          filename: 'm4.jpg',
-          // Utilisation du chemin absolu sur le serveur Node.js / Next.js
-          path: path.join(process.cwd(), 'public', 'images', 'm4.jpg'),
-          cid: 'logo_kalvin' // Identifiant utilisé dans <img src="cid:logo_kalvin">
-        }
-      ]
     });
 
     // Retourne une réponse JSON HTTP 200 (OK) au client.

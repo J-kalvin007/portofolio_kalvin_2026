@@ -54,13 +54,13 @@ const jetbrains = JetBrains_Mono({
  */
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
-  
+
   const isFr = locale === 'fr';
-  
+
   // Textes SEO traduits dynamiquement
   const title = isFr ? 'Kalvin Takoudjou — Ingénieur Logiciel & Architecte Web' : 'Kalvin Takoudjou — Software Engineer & Web Architect';
-  const description = isFr 
-    ? "Portfolio officiel de Kalvin Takoudjou, Ingénieur Logiciel spécialisé dans la création d'applications web ultra-premium, fintech et architectures full-stack performantes." 
+  const description = isFr
+    ? "Portfolio officiel de Kalvin Takoudjou, Ingénieur Logiciel spécialisé dans la création d'applications web ultra-premium, fintech et architectures full-stack performantes."
     : "Official portfolio of Kalvin Takoudjou, Software Engineer specialized in creating ultra-premium web applications, fintech solutions, and high-performance full-stack architectures.";
   const keywords = [
     'Kalvin Takoudjou', 'Software Engineer', 'Ingénieur Logiciel', 'Développeur Web', 'Full-Stack',
@@ -80,9 +80,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     publisher: 'Kalvin Takoudjou',
     formatDetection: { email: false, address: false, telephone: false }, // Empêche iOS de transformer les textes en liens moches
     icons: {
-      icon: '/images/m9.jpg',
-      shortcut: '/images/m9.jpg',
-      apple: '/images/m9.jpg',
+      icon: '/logo/kal_logo_01.png',
+      shortcut: '/logo/kal_logo_01.png',
+      apple: '/logo/kal_logo_01.png',
     },
     // Configuration OpenGraph (Pour l'aperçu sur LinkedIn, WhatsApp, Facebook, etc.)
     openGraph: {
@@ -93,7 +93,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
       description,
       siteName: 'Kalvin Portfolio',
       images: [{
-        url: '/images/m9.jpg',
+        url: '/logo/kal_logo_01.png',
         width: 1200,
         height: 630,
         alt: 'Kalvin Takoudjou - Software Engineer',
@@ -104,7 +104,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
       card: 'summary_large_image',
       title,
       description,
-      images: ['/images/m9.jpg'],
+      images: ['/logo/kal_logo_01.png'],
     },
     // Instructions pour les robots d'indexation (GoogleBot)
     robots: {

@@ -52,10 +52,10 @@
    */
   :root {
     /* ── Fonds ── */
-    --base-100: #FFFFFF; /* Blanc pur et moderne (Background général) */
-    --base-200: #F7F7F8; /* Gris ultra-clair (Cartes/Surfaces) */
-    --base-300: #EFEFEF; /* Gris doux (Bordures/Hovers) */
-    --base-border: #E0E0E0;
+    --base-100: #FAF7F0; /* Ivoire très clair (Background général) */
+    --base-200: #F2EBD6; /* Ivoire assombri (Cartes/Surfaces) */
+    --base-300: #E8DEC4; /* Ivoire profond (Bordures/Hovers) */
+    --base-border: #DAC49A;
 
     /* ── Accents Or ── */
     --primary: #C8900A; /* Or Impérial (Couleur principale) */
@@ -66,9 +66,9 @@
     --app-signature: #7A1A6A;
 
     /* ── Textes ── */
-    --base-content: #111111; /* Texte principal (Noir profond, ultra-lisible) */
-    --text-secondary: #444444;
-    --text-tertiary: #777777;
+    --base-content: #1A1410; /* Texte principal (Presque noir, légèrement brun) */
+    --text-secondary: #4A3B26;
+    --text-tertiary: #7A6B50;
     --text-links: #5D1A5A;
 
     /* ── Sémantiques globales ── */
@@ -77,10 +77,10 @@
     --foreground: var(--base-content);
 
     /* ── Glow / Effets de lumière ── */
-    --glow-color: rgba(200, 144, 10, 0.10);
-    --glow-color-strong: rgba(200, 144, 10, 0.20);
-    --glass-bg: rgba(255, 255, 255, 0.75);
-    --glass-border: rgba(0, 0, 0, 0.06);
+    --glow-color: rgba(200, 144, 10, 0.12);
+    --glow-color-strong: rgba(200, 144, 10, 0.25);
+    --glass-bg: rgba(250, 247, 240, 0.7);
+    --glass-border: rgba(218, 196, 154, 0.4);
   }
 
   /* 

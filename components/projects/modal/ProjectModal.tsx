@@ -93,7 +93,7 @@ export default function ProjectModal({ project, isOpen, onClose }: ProjectModalP
                     text-[10px] font-bold uppercase tracking-[0.2em] mb-2">
                     {tData(`${key}.category`)} · {project.year}
                   </span>
-                  <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
+                  <h2 className="text-2xl sm:text-3xl font-bold text-base-content dark:text-white tracking-tight">
                     {project.title}
                   </h2>
                 </div>
@@ -102,8 +102,8 @@ export default function ProjectModal({ project, isOpen, onClose }: ProjectModalP
                   type="button"
                   onClick={onClose}
                   aria-label={t('closeModal')}
-                  className="md:hidden cursor-pointer p-2.5 rounded-full bg-white/10 hover:bg-white/20
-                    text-white/70 hover:text-white transition-all shrink-0"
+                  className="md:hidden cursor-pointer p-2.5 rounded-full bg-base-content/5 hover:bg-base-content/10 dark:bg-white/10 dark:hover:bg-white/20
+                    text-base-content/70 dark:text-white/70 hover:text-base-content dark:hover:text-white transition-all shrink-0"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -130,8 +130,8 @@ export default function ProjectModal({ project, isOpen, onClose }: ProjectModalP
                     href={project.githubUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="cursor-pointer px-4 py-2 rounded-full border border-white/20
-                      text-white/70 text-xs font-bold flex items-center gap-2
+                    className="cursor-pointer px-4 py-2 rounded-full border border-base-content/20 dark:border-white/20
+                      text-base-content/70 dark:text-white/70 text-xs font-bold flex items-center gap-2
                       hover:border-[var(--primary)]/50 hover:text-[var(--primary)] transition-all"
                     onClick={(e) => e.stopPropagation()}
                   >
@@ -143,8 +143,8 @@ export default function ProjectModal({ project, isOpen, onClose }: ProjectModalP
                   type="button"
                   onClick={onClose}
                   aria-label={t('closeModal')}
-                  className="hidden md:flex cursor-pointer p-2.5 rounded-full bg-white/10 hover:bg-white/20
-                    text-white/70 hover:text-white transition-all ml-2 shrink-0"
+                  className="hidden md:flex cursor-pointer p-2.5 rounded-full bg-base-content/5 hover:bg-base-content/10 dark:bg-white/10 dark:hover:bg-white/20
+                    text-base-content/70 dark:text-white/70 hover:text-base-content dark:hover:text-white transition-all ml-2 shrink-0"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -194,7 +194,7 @@ export default function ProjectModal({ project, isOpen, onClose }: ProjectModalP
                 <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-[var(--primary)] mb-3">
                   Description
                 </h3>
-                <p className="text-sm text-white/80 leading-relaxed font-display italic">
+                <p className="text-sm text-base-content/80 dark:text-white/80 leading-relaxed font-display italic">
                   {fullDescription}
                 </p>
               </div>
@@ -204,7 +204,7 @@ export default function ProjectModal({ project, isOpen, onClose }: ProjectModalP
                 </h3>
                 <div className="flex flex-wrap gap-2">
                   {project.techStack.map((tech) => (
-                    <span key={tech} className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/5 text-white/80
+                    <span key={tech} className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-base-content/5 dark:bg-white/10 border border-base-content/10 dark:border-white/5 text-base-content/80 dark:text-white/80
                       text-xs font-mono font-bold uppercase tracking-wider shadow-sm">
                       {TECH_SVG_MAP_CARD[tech] && (
                         <img src={TECH_SVG_MAP_CARD[tech]} alt={tech} className="w-3.5 h-3.5" />

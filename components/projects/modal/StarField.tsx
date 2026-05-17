@@ -24,7 +24,7 @@ const StarField = React.memo(function StarField() {
   const stars = useStarField();
 
   return (
-    <div className="fixed inset-0 z-0 overflow-hidden bg-black" aria-hidden="true">
+    <div className="fixed inset-0 z-0 overflow-hidden bg-base-100 dark:bg-[#070510]" aria-hidden="true">
       {/* ── Nébuleuses pulsantes (CSS radial gradients) ── */}
       <div className="absolute inset-0">
         {/* Nébuleuse cyan — coin supérieur droit */}
@@ -75,7 +75,7 @@ const StarField = React.memo(function StarField() {
               .map((star) => (
                 <motion.div
                   key={star.id}
-                  className="absolute rounded-full bg-white"
+                  className="absolute rounded-full bg-[#F0A500]/60 dark:bg-white"
                   style={{
                     left: `${star.x}%`,
                     top: `${star.y}%`,

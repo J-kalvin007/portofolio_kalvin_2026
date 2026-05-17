@@ -20,6 +20,7 @@ import { z } from 'zod';
 import { useTranslations } from 'next-intl';
 import FadeIn from '@/components/animations/FadeIn';
 import { StarField } from '@/components/projects';
+import StardustCursor from '@/components/animations/StardustCursor';
 
 /* ═══════════════════════════════════════════════
    TYPES & SCHEMAS DE VALIDATION
@@ -102,9 +103,9 @@ export default function ContactPage() {
    * Pourquoi : Permet de basculer la bordure en rouge instantanément si react-hook-form détecte une erreur.
    */
   const inputClasses = (hasError: boolean) =>
-    `w-full bg-base-100/50 dark:bg-[#070510]/50 backdrop-blur-md border rounded-2xl px-5 py-4 focus:ring-4 outline-none transition-all duration-500 placeholder:text-base-content/20 text-base-content shadow-sm dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] ${hasError
+    `w-full bg-base-100/80 dark:bg-[#070510]/50 backdrop-blur-md border rounded-2xl px-5 py-4 focus:ring-4 outline-none transition-all duration-500 placeholder:text-base-content/30 text-base-content shadow-sm dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] ${hasError
       ? 'border-red-500/50 focus:border-red-500 focus:ring-red-500/20'
-      : 'border-base-content/10 dark:border-white/10 hover:border-[#F0A500]/30 focus:border-[#F0A500] focus:ring-[#F0A500]/20'
+      : 'border-base-content/20 dark:border-white/10 hover:border-[#F0A500]/40 focus:border-[#F0A500] focus:ring-[#F0A500]/20'
     }`;
 
   // Données de configuration des réseaux sociaux affichés dans la colonne gauche
@@ -116,6 +117,7 @@ export default function ContactPage() {
 
   return (
     <div className="min-h-screen bg-base-100 text-base-content overflow-hidden relative">
+      <StardustCursor />
       {/* 
         Décorations de fond lumineuses (Orbs) 
         Créent la profondeur et l'atmosphère ultra-premium de la charte "Void & Or"
@@ -173,7 +175,7 @@ export default function ContactPage() {
 
             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight leading-tight">
               {t('title1')}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#F0A500] to-[#FFD166] drop-shadow-[0_0_15px_rgba(240,165,0,0.5)]">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#F0A500] to-[#FFD166] drop-shadow-[0_4px_10px_rgba(240,165,0,0.2)] dark:drop-shadow-[0_0_15px_rgba(240,165,0,0.5)]">
                 {t('title2')}
               </span>
               {t('title3')}
@@ -213,7 +215,7 @@ export default function ContactPage() {
               ].map((item) => (
                 <div key={item.label} className="flex items-center sm:items-start gap-4 sm:gap-5 group">
 
-                  <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-xl sm:rounded-[1.25rem] bg-base-200 dark:bg-white/5 border border-base-content/5 dark:border-white/10 flex items-center justify-center shrink-0 shadow-sm dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] group-hover:border-[#F0A500]/40 group-hover:bg-[#F0A500]/10 transition-all duration-500 overflow-hidden relative">
+                  <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-xl sm:rounded-[1.25rem] bg-white dark:bg-white/5 border border-base-content/10 dark:border-white/10 flex items-center justify-center shrink-0 shadow-md dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] group-hover:border-[#F0A500]/40 group-hover:bg-[#F0A500]/10 transition-all duration-500 overflow-hidden relative">
                     <div className="absolute inset-0 bg-gradient-to-tr from-[#F0A500]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                     <item.icon className="w-5 h-5 sm:w-6 sm:h-6 text-base-content/60 group-hover:text-[#F0A500] group-hover:scale-110 transition-all duration-500 relative z-10" />
                   </div>
@@ -237,7 +239,7 @@ export default function ContactPage() {
               <div className="flex flex-wrap gap-3 sm:gap-4">
                 {SOCIALS.map((s) => (
                   <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer" aria-label={s.label}
-                    className="cursor-pointer relative group w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-base-200 dark:bg-white/5 border border-base-content/5 dark:border-white/10 flex items-center justify-center text-base-content/60 hover:text-[#F0A500] transition-all duration-500 shrink-0 shadow-sm dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] overflow-hidden">
+                    className="cursor-pointer relative group w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-white dark:bg-white/5 border border-base-content/10 dark:border-white/10 flex items-center justify-center text-base-content/60 hover:text-[#F0A500] transition-all duration-500 shrink-0 shadow-md dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] overflow-hidden">
                     <div className="absolute inset-0 bg-gradient-to-tr from-[#F0A500]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                     <s.icon className="w-5 h-5 sm:w-6 sm:h-6 relative z-10 transition-transform duration-500 group-hover:scale-110 group-hover:drop-shadow-[0_0_8px_rgba(240,165,0,0.8)]" />
                   </a>
@@ -251,7 +253,7 @@ export default function ContactPage() {
           <FadeIn direction="right" delay={0.2}>
             <div className="relative">
               <div className="absolute inset-0 bg-gradient-to-br from-[#F0A500]/20 to-transparent rounded-[2.5rem] blur-[80px] opacity-30 pointer-events-none" />
-              <div className="relative bg-base-100/50 dark:bg-white/5 backdrop-blur-3xl rounded-[2.5rem] p-8 sm:p-10 md:p-12 shadow-2xl shadow-black/10 border border-base-content/5 dark:border-white/10 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]">
+              <div className="relative bg-white/70 dark:bg-white/5 backdrop-blur-3xl rounded-[2.5rem] p-8 sm:p-10 md:p-12 shadow-2xl shadow-black/10 dark:shadow-black/40 border border-base-content/10 dark:border-white/10 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]">
 
                 {/* handleSubmit intercepte l'évènement, bloque le rafraîchissement natif, valide, puis appelle onSubmit */}
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">

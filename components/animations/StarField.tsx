@@ -17,13 +17,14 @@
  */
 
 import React from 'react';
+import { motion } from 'framer-motion';
 import { useStarField } from '@/hooks/useStarField';
 
 const StarField = React.memo(function StarField() {
-  const stars = useStarField({ count: 800 });
+  const stars = useStarField();
 
   return (
-    <div className="fixed inset-0 z-0 overflow-hidden bg-black" aria-hidden="true">
+    <div className="fixed inset-0 z-0 overflow-hidden bg-base-100 dark:bg-[#070510]" aria-hidden="true">
       {/* ── Nébuleuses pulsantes (CSS radial gradients) ── */}
       <div className="absolute inset-0">
         {/* Nébuleuse cyan — coin supérieur droit */}
@@ -57,33 +58,47 @@ const StarField = React.memo(function StarField() {
       </div>
 
       {/* ── Étoiles par couche ── */}
-      {[1, 2, 3].map((layer) => (
-        <div
-          key={layer}
-          className="absolute inset-0"
-          style={{
-            animation: `star-drift-${layer} ${80 - layer * 15}s linear infinite`,
-          }}
-        >
-          {stars
-            .filter((s) => s.layer === layer)
-            .map((star) => (
-              <div
-                key={star.id}
-                className="absolute rounded-full bg-white"
-                style={{
-                  left: `${star.x}%`,
-                  top: `${star.y}%`,
-                  width: `${star.size}px`,
-                  height: `${star.size}px`,
-                  opacity: star.opacity,
-                  animation: `star-twinkle ${star.duration}s ease-in-out ${star.delay}s infinite`,
-                  willChange: 'opacity',
-                }}
-              />
-            ))}
-        </div>
-      ))}
+      {[1, 2, 3].map((layer) => {
+        // Parallax drift directionnel selon la couche
+        const xDrift = layer === 1 ? ['0%', '-3%', '2%', '0%'] : layer === 2 ? ['0%', '3%', '-2%', '0%'] : ['0%', '-5%', '3%', '0%'];
+        const yDrift = layer === 1 ? ['0%', '2%', '-3%', '0%'] : layer === 2 ? ['0%', '-2%', '4%', '0%'] : ['0%', '4%', '-2%', '0%'];
+
+        return (
+          <motion.div
+            key={layer}
+            className="absolute inset-0"
+            animate={{ x: xDrift, y: yDrift }}
+            transition={{ duration: 120 - layer * 20, ease: 'linear', repeat: Infinity }}
+          >
+            {stars
+              .filter((s) => s.layer === layer)
+              .map((star) => (
+                <motion.div
+                  key={star.id}
+                  className="absolute rounded-full bg-[#F0A500]/60 dark:bg-white"
+                  style={{
+                    left: `${star.x}%`,
+                    top: `${star.y}%`,
+                    width: `${star.size}px`,
+                    height: `${star.size}px`,
+                    willChange: 'transform, opacity',
+                  }}
+                  animate={{
+                    x: star.moveX,
+                    y: star.moveY,
+                    opacity: [star.opacity * 0.1, star.opacity, star.opacity * 0.1],
+                  }}
+                  transition={{
+                    duration: star.duration,
+                    ease: 'easeInOut',
+                    repeat: Infinity,
+                    delay: star.delay,
+                  }}
+                />
+              ))}
+          </motion.div>
+        );
+      })}
     </div>
   );
 });

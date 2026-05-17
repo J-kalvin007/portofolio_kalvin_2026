@@ -38,11 +38,11 @@ export default function TechStackRain({ techStack }: TechStackRainProps) {
     <div className="relative h-full w-full overflow-hidden select-none">
       {/* ── Masque dégradé supérieur ── */}
       <div className="absolute top-0 left-0 right-0 h-24 z-10
-        bg-gradient-to-b from-black to-transparent pointer-events-none" />
+        bg-gradient-to-b from-base-100 dark:from-[#070510] to-transparent pointer-events-none" />
 
       {/* ── Masque dégradé inférieur ── */}
       <div className="absolute bottom-0 left-0 right-0 h-24 z-10
-        bg-gradient-to-t from-black to-transparent pointer-events-none" />
+        bg-gradient-to-t from-base-100 dark:from-[#070510] to-transparent pointer-events-none" />
 
       {/* ── Conteneur de défilement infini (bas → haut) ── */}
       <motion.div
@@ -70,16 +70,16 @@ export default function TechStackRain({ techStack }: TechStackRainProps) {
                     src={svgPath}
                     alt={tech}
                     fill
-                    className="object-contain brightness-0 invert opacity-90
+                    className="object-contain brightness-0 dark:invert opacity-90
                       group-hover/tech:opacity-100 transition-opacity duration-300"
                   />
                 </div>
               ) : (
                 /* Fallback : cercle coloré avec initiale */
                 <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl
-                  bg-white/10 border border-white/10
+                  bg-base-content/5 dark:bg-white/10 border border-base-content/10 dark:border-white/10
                   flex items-center justify-center
-                  text-white/50 text-sm font-bold font-mono
+                  text-base-content/50 dark:text-white/50 text-sm font-bold font-mono
                   group-hover/tech:border-[var(--primary)]/30 transition-colors">
                   {tech.charAt(0)}
                 </div>
@@ -87,7 +87,7 @@ export default function TechStackRain({ techStack }: TechStackRainProps) {
 
               {/* ── Nom de la technologie ── */}
               <span className="mt-3 text-sm sm:text-base font-mono font-bold uppercase tracking-widest
-                text-white/70 group-hover/tech:text-[var(--primary)] transition-colors duration-300 drop-shadow-md">
+                text-base-content/70 dark:text-white/70 group-hover/tech:text-[var(--primary)] transition-colors duration-300 drop-shadow-md">
                 {tech}
               </span>
             </div>

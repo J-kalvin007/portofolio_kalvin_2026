@@ -113,7 +113,7 @@ export default function AboutPage() {
   ];
 
   return (
-    <div ref={containerRef} onMouseMove={handleMouseMove} className="min-h-screen bg-[#070510] text-base-content overflow-x-hidden relative">
+    <div ref={containerRef} onMouseMove={handleMouseMove} className="min-h-screen bg-base-100 text-base-content overflow-x-hidden relative">
       <StardustCursor />
 
       {/* Modification de l'index Z pour s'assurer que le fond spatial reste derrière */}
@@ -130,22 +130,22 @@ export default function AboutPage() {
 
           <div className="max-w-5xl mx-auto px-4 sm:px-6 text-center relative z-10">
 
-            <FadeIn>
+            {/* <FadeIn>
               <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass text-xs font-bold tracking-[0.2em] uppercase text-base-content/60 mb-8">
                 <span className="w-2 h-2 rounded-full bg-primary shadow-[0_0_10px_rgba(0,217,255,0.5)]" />
                 {t('badge')}
               </span>
-            </FadeIn>
+            </FadeIn> */}
 
             <FadeIn delay={0.1}>
-              <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-base-content leading-[0.95] tracking-tight mb-6 sm:mb-8">
+              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-base-content leading-[0.95] tracking-tight mb-6 sm:mb-8">
                 {t('titleLine1')}
-                <br />
-                <span className="font-display italic font-normal text-transparent bg-clip-text bg-gradient-to-r from-[#F0A500] to-[#FFD166] drop-shadow-[0_0_15px_rgba(240,165,0,0.5)]">
-                  {t('titleLine2')}
+                {/* <br /> */}
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#F0A500] to-[#FFD166] drop-shadow-[0_0_15px_rgba(240,165,0,0.5)]">
+                  {t('titleLine2')}  {t('titleLine3')}
                 </span>
                 <br />
-                {t('titleLine3')}
+
               </h1>
             </FadeIn>
 
@@ -173,13 +173,13 @@ export default function AboutPage() {
                 className="relative max-w-4xl mx-auto aspect-[21/9] rounded-[2rem] overflow-hidden shadow-[0_30px_60px_-15px_rgba(240,165,0,0.15)] hover:shadow-[0_30px_80px_-15px_rgba(240,165,0,0.3)] group"
               >
                 <motion.div style={{ x: imageX, y: imageY }} className="absolute inset-[-40px] w-[calc(100%+80px)] h-[calc(100%+80px)]">
-                  <Image src="/images/b2.JPG" alt="Kalvin — Portrait" fill sizes="(max-width: 896px) 100vw, 896px" className="object-cover object-[50%_20%] transition-transform duration-[3s] group-hover:scale-105" priority />
+                  <Image src="/images/m9.JPG" alt="Kalvin — Portrait" fill sizes="(max-width: 896px) 100vw, 896px" className="object-cover transition-transform duration-[3s] group-hover:scale-105" priority />
                 </motion.div>
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
                 <div className="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 mix-blend-overlay transition-opacity duration-700 pointer-events-none" />
 
                 <div className="absolute bottom-8 left-8 text-left z-10 transition-transform duration-700 group-hover:-translate-y-2">
-                  <p className="font-display italic text-3xl text-white/90 drop-shadow-[0_0_15px_rgba(240,165,0,0.8)]">Kalvin</p>
+                  <p className="text-3xl text-white/90 drop-shadow-[0_0_15px_rgba(240,165,0,0.8)]">Kalvin</p>
                   <p className="text-xs font-bold tracking-[0.2em] uppercase text-[#F0A500] mt-1 drop-shadow-sm">{t('subtitle')}</p>
                 </div>
               </motion.div>
@@ -248,7 +248,7 @@ export default function AboutPage() {
             <StaggerChildren staggerDelay={0.1} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 group/values">
               {VALUES.map((v, i) => (
                 <StaggerItem key={i}>
-                  <div className="group p-6 sm:p-8 rounded-[2rem] bg-base-100 dark:bg-white/[0.02] border border-base-content/[0.04] hover:border-[#F0A500]/50 transition-all duration-500 hover:shadow-[0_0_40px_-10px_rgba(240,165,0,0.3)] h-full hover:!opacity-100 group-hover/values:opacity-40 flex flex-col justify-center">
+                  <div className="group p-6 sm:p-8 rounded-[2rem] bg-white dark:bg-white/[0.02] border border-base-content/[0.06] dark:border-base-content/[0.04] hover:border-[#F0A500]/50 transition-all duration-500 shadow-md dark:shadow-none hover:shadow-xl dark:hover:shadow-[0_0_40px_-10px_rgba(240,165,0,0.3)] h-full hover:!opacity-100 group-hover/values:opacity-40 flex flex-col justify-center">
                     <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-base-200 dark:bg-white/5 flex items-center justify-center mb-4 sm:mb-6 text-base-content/60 group-hover:scale-110 group-hover:bg-gradient-to-br group-hover:from-[#F0A500] group-hover:to-[#FFD166] group-hover:text-black group-hover:shadow-[0_0_20px_rgba(240,165,0,0.4)] transition-all duration-500">
                       <v.icon className="w-6 h-6 sm:w-7 sm:h-7" strokeWidth={1.5} />
                     </div>
@@ -294,18 +294,18 @@ export default function AboutPage() {
         </section>
 
         {/* ═══════ TÉMOIGNAGES ═══════ */}
-        <section className="py-28 bg-[#070510] text-white relative overflow-hidden">
+        <section className="py-28 bg-base-200/50 dark:bg-[#070510] text-base-content dark:text-white relative overflow-hidden">
           {/* Motif de fond : Grille subtile en pointillés */}
-          <div className="absolute inset-0 opacity-5" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '32px 32px' }} />
+          <div className="absolute inset-0 opacity-5" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, currentColor 1px, transparent 0)', backgroundSize: '32px 32px' }} />
           <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/15 rounded-full blur-[120px]" />
 
           <div className="max-w-5xl mx-auto px-6 relative z-10">
-            <FadeIn><h2 className="text-4xl md:text-6xl font-display italic text-center text-white/90 mb-16">{t('testimonials.title')}</h2></FadeIn>
+            <FadeIn><h2 className="text-4xl md:text-6xl text-center font-bold text-base-content/90 dark:text-white/90 mb-16">{t('testimonials.title')}</h2></FadeIn>
 
             <StaggerChildren staggerDelay={0.15} className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
               {TESTIMONIALS.map((testimonial, i) => (
                 <StaggerItem key={i}>
-                  <motion.div whileHover={{ y: -10, scale: 1.02 }} className="group/test relative p-6 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] bg-white/[0.02] border border-white/10 backdrop-blur-xl h-full flex flex-col shadow-[0_8px_30px_rgb(0,0,0,0.2)] hover:shadow-[0_0_40px_-10px_rgba(240,165,0,0.2)] hover:border-white/20 transition-all duration-700 overflow-hidden">
+                  <motion.div whileHover={{ y: -10, scale: 1.02 }} className="group/test relative p-6 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] bg-white dark:bg-white/[0.02] border border-base-content/5 dark:border-white/10 backdrop-blur-xl h-full flex flex-col shadow-lg dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] hover:shadow-xl dark:hover:shadow-[0_0_40px_-10px_rgba(240,165,0,0.2)] hover:border-base-content/10 dark:hover:border-white/20 transition-all duration-700 overflow-hidden">
 
                     {/* Holographic Shimmer Background */}
                     <div className="absolute inset-0 bg-gradient-to-br from-[#F0A500]/10 via-transparent to-transparent opacity-0 group-hover/test:opacity-100 transition-opacity duration-700 pointer-events-none" />
@@ -313,7 +313,7 @@ export default function AboutPage() {
 
                     <div className="relative z-10 flex-1 flex flex-col">
                       <Quote className="w-8 h-8 sm:w-10 sm:h-10 text-[#F0A500] mb-4 sm:mb-6 opacity-40 group-hover/test:opacity-80 group-hover/test:scale-110 transition-all duration-500 drop-shadow-[0_0_10px_rgba(240,165,0,0.5)]" />
-                      <p className="text-base sm:text-lg leading-relaxed text-white/80 font-light flex-1 mb-6 sm:mb-8 italic">{testimonial.quote}</p>
+                      <p className="text-base sm:text-lg leading-relaxed text-base-content/80 dark:text-white/80 font-light flex-1 mb-6 sm:mb-8 italic">{testimonial.quote}</p>
 
                       <div className="flex items-center gap-4">
                         {/* Avatar généré avec l'initiale de l'auteur */}
@@ -321,7 +321,7 @@ export default function AboutPage() {
                           {testimonial.author.charAt(0)}
                         </div>
                         <div>
-                          <div className="font-bold text-white text-base">{testimonial.author}</div>
+                          <div className="font-bold text-base-content dark:text-white text-base">{testimonial.author}</div>
                           <div className="text-xs text-[#F0A500]/80 font-medium tracking-wide uppercase mt-0.5">{testimonial.role}, {testimonial.company}</div>
                         </div>
                       </div>
@@ -340,7 +340,7 @@ export default function AboutPage() {
             <FadeIn>
               <h2 className="text-3xl sm:text-5xl md:text-6xl font-bold text-base-content leading-tight tracking-tight">
                 {t('cta.title1')}<br />
-                <span className="font-display italic text-primary font-normal">{t('cta.title2')}</span>
+                <span className="text-primary font-bold">{t('cta.title2')}</span>
               </h2>
               <p className="mt-6 text-base sm:text-lg text-base-content/50 font-light max-w-xl mx-auto">
                 {t('cta.description')}

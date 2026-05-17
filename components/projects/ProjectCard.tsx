@@ -128,7 +128,7 @@ const ProjectCard = React.memo(function ProjectCard({ project, onSelect, index, 
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       style={{ rotateX, rotateY, transformPerspective: 1200 }}
-      className={`group relative cursor-pointer project-card-spotlight transition-all duration-700 ease-out ${
+      className={`group relative cursor-pointer project-card-spotlight transition-all duration-700 ease-out outline-none focus:outline-none focus-visible:outline-none focus:ring-0 focus-visible:ring-0 ${
         isDimmed ? 'opacity-40 scale-[0.96] grayscale-[50%] blur-[2px]' : 'opacity-100 scale-100 grayscale-0 blur-0'
       }`}
       role="button"

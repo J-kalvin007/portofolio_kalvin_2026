@@ -36,7 +36,7 @@ function TimelineCard({ item, index }: { item: TimelineItem; index: number }) {
                 <div className="flex-1 pb-12">
                     <div
                         onMouseMove={handleMouseMove}
-                        className="relative group p-6 rounded-[2rem] bg-base-200/30 dark:bg-white/[0.02] border border-base-content/[0.04] transition-all duration-700 hover:border-primary/30 hover:shadow-2xl hover:shadow-primary/10 overflow-hidden"
+                        className="relative group p-6 rounded-[2rem] bg-white dark:bg-white/[0.02] border border-base-content/[0.06] dark:border-base-content/[0.04] transition-all duration-700 hover:border-primary/30 shadow-md dark:shadow-none hover:shadow-2xl hover:shadow-primary/10 overflow-hidden"
                     >
                         {/* Glow spotlight suivant la souris */}
                         <div

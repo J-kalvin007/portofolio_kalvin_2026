@@ -72,9 +72,10 @@ export default function ProjetsPage() {
 
           <FadeIn delay={0.1}>
 
-            <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold text-base-content leading-[0.95] tracking-tight">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-base-content leading-[0.95] tracking-tight">
               {t('title1')}
-              <span className="text-primary font-display italic font-normal">{t('title2')}</span>
+              {/* <span className="text-primary font-display italic font-normal">{t('title2')}</span> */}
+              <span className="text-primary font-bold">{t('title2')}</span>
             </h1>
 
           </FadeIn>
@@ -149,7 +150,7 @@ export default function ProjetsPage() {
 /* ── COMPOSANT MAGNÉTIQUE POUR LES FILTRES ── */
 function MagneticButton({ children, active, onClick }: { children: React.ReactNode, active: boolean, onClick: () => void }) {
   const ref = useRef<HTMLButtonElement>(null);
-  
+
   // Position locale de la souris
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -180,9 +181,8 @@ function MagneticButton({ children, active, onClick }: { children: React.ReactNo
       onMouseLeave={reset}
       animate={{ x: 0, y: 0 }}
       style={{ x: magneticX, y: magneticY }}
-      className={`relative cursor-pointer px-4 sm:px-6 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-bold transition-colors duration-300 z-10 ${
-        active ? 'text-[#070510]' : 'text-base-content/60 hover:text-[#F0A500]'
-      }`}
+      className={`relative cursor-pointer px-4 sm:px-6 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-bold transition-colors duration-300 z-10 ${active ? 'text-[#070510]' : 'text-base-content/60 hover:text-[#F0A500]'
+        }`}
     >
       {active && (
         <motion.div

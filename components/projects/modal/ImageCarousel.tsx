@@ -81,8 +81,8 @@ export default function ImageCarousel({ images, title }: ImageCarouselProps) {
       <button
         onClick={(e) => { e.stopPropagation(); goPrev(); }}
         className="cursor-pointer hidden md:flex absolute left-0 lg:left-8 z-20 items-center justify-center w-14 h-14 rounded-full
-          bg-white/10 dark:bg-black/20 backdrop-blur-xl border border-white/20 text-white/70 hover:text-white
-          hover:bg-white/20 hover:scale-110 transition-all duration-300 shadow-[0_0_30px_rgba(0,0,0,0.5)]"
+          bg-base-content/5 dark:bg-black/20 backdrop-blur-xl border border-base-content/20 dark:border-white/20 text-base-content/70 dark:text-white/70 hover:text-base-content dark:hover:text-white
+          hover:bg-base-content/10 dark:hover:bg-white/20 hover:scale-110 transition-all duration-300 shadow-[0_0_30px_rgba(0,0,0,0.1)] dark:shadow-[0_0_30px_rgba(0,0,0,0.5)]"
         aria-label="Image précédente"
       >
         <ChevronLeft className="w-8 h-8" />
@@ -146,7 +146,7 @@ export default function ImageCarousel({ images, title }: ImageCarouselProps) {
           </AnimatePresence>
 
           {/* Bordure intérieure luminescente */}
-          <div className="absolute inset-0 rounded-[inherit] border-2 border-white/20 pointer-events-none" />
+          <div className="absolute inset-0 rounded-[inherit] border-2 border-base-content/10 dark:border-white/20 pointer-events-none" />
         </div>
       </motion.div>
 
@@ -154,8 +154,8 @@ export default function ImageCarousel({ images, title }: ImageCarouselProps) {
       <button
         onClick={(e) => { e.stopPropagation(); goNext(); }}
         className="cursor-pointer hidden md:flex absolute right-0 lg:right-8 z-20 items-center justify-center w-14 h-14 rounded-full
-          bg-white/10 dark:bg-black/20 backdrop-blur-xl border border-white/20 text-white/70 hover:text-white
-          hover:bg-white/20 hover:scale-110 transition-all duration-300 shadow-[0_0_30px_rgba(0,0,0,0.5)]"
+          bg-base-content/5 dark:bg-black/20 backdrop-blur-xl border border-base-content/20 dark:border-white/20 text-base-content/70 dark:text-white/70 hover:text-base-content dark:hover:text-white
+          hover:bg-base-content/10 dark:hover:bg-white/20 hover:scale-110 transition-all duration-300 shadow-[0_0_30px_rgba(0,0,0,0.1)] dark:shadow-[0_0_30px_rgba(0,0,0,0.5)]"
         aria-label="Image suivante"
       >
         <ChevronRight className="w-8 h-8" />
@@ -169,7 +169,7 @@ export default function ImageCarousel({ images, title }: ImageCarouselProps) {
             onClick={() => { setDirection(i > currentIndex ? 1 : -1); setCurrentIndex(i); }}
             className={`cursor-pointer rounded-full transition-all duration-300 ${i === currentIndex
               ? 'w-6 h-2 bg-[var(--primary)]'
-              : 'w-2 h-2 bg-white/30 hover:bg-white/50'
+              : 'w-2 h-2 bg-base-content/20 hover:bg-base-content/40 dark:bg-white/30 dark:hover:bg-white/50'
               }`}
             role="tab"
             aria-selected={i === currentIndex}

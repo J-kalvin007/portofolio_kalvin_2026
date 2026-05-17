@@ -32,6 +32,7 @@ import AnimatedCounter from '@/components/ui/AnimatedCounter';
 import { FEATURED_PROJECTS } from '@/lib/data/projects';
 import { SKILLS } from '@/lib/data/skills';
 import { StarField } from '@/components/projects';
+import StardustCursor from '@/components/animations/StardustCursor';
 import TypewriterText from './components/TypewriterText';
 import MarqueeRow from './components/MarqueeRow';
 import FeaturedProjectCard from './components/FeaturedProjectCard ';
@@ -97,16 +98,18 @@ export default function HomePage() {
 
   return (
 
-    <div className="min-h-screen bg-base-100 text-base-content overflow-x-hidden">
-
+    <div className="min-h-screen bg-base-100 text-base-content overflow-x-hidden relative">
+      <StardustCursor />
 
       {/* ── Fond Spatial Étoilé ── */}
       {/* <StarField /> */}
 
       {/* ═══════════════════ SECTION : HERO ═══════════════════ */}
       <section ref={heroRef} className="relative min-h-screen flex items-center justify-center">
+
         {/* Arrière-plan complexe avec des Orbes Lumineuses Floues */}
         <div className="absolute inset-0">
+
           <div className="absolute inset-0 bg-base-100" />
 
           <div className="absolute top-1/4 -left-1/4 w-[600px] h-[600px] rounded-full opacity-[0.06] dark:opacity-[0.08]"
@@ -126,27 +129,42 @@ export default function HomePage() {
 
           {/* Colonne Gauche : Titre et Description */}
           <div className="text-left space-y-8 max-w-2xl">
+
             <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.3 }}>
+
               <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-base-content leading-[1.05] tracking-tight">
+
                 {t('greeting')} <span className="text-gradient">Kalvin</span><br />
+
                 <span className="whitespace-nowrap inline-flex items-center gap-2 sm:gap-3 lg:gap-4 mt-1 sm:mt-2">
+
                   {locale === 'fr' ? (
+
                     <>
-                      <span className="font-display italic font-normal text-gradient">
+
+                      {/* <span className="font-display italic font-normal text-gradient"> */}
+                      <span className="text-gradient">
                         <TypewriterText words={typewriterWords} />
                       </span>
                       <span>{t('titleLine1')}</span>
+
                     </>
+
                   ) : (
+
                     <>
                       <span>{t('titleLine1')}</span>
-                      <span className="font-display italic font-normal text-gradient">
+                      <span className="text-gradient">
                         <TypewriterText words={typewriterWords} />
                       </span>
                     </>
+
                   )}
+
                 </span>
+
               </h1>
+
             </motion.div>
 
             <motion.p
@@ -164,18 +182,22 @@ export default function HomePage() {
               initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.8 }}
               className="flex flex-col sm:flex-row items-center justify-center sm:justify-start gap-3 sm:gap-4 pt-4"
             >
+
               <Link href="/projets"
                 className="cursor-pointer group flex justify-center items-center gap-2 px-8 py-3.5 sm:px-8 sm:py-4 rounded-full bg-base-content text-base-100 dark:bg-primary dark:text-primary-content font-bold shadow-xl shadow-base-content/10 dark:shadow-primary/20 hover:shadow-base-content/20 dark:hover:shadow-primary/40 hover:-translate-y-0.5 transition-all duration-300 w-[240px] sm:w-auto"
               >
                 {t('ctaPrimary')}
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
+
               <Link href="/contact"
                 className="cursor-pointer flex justify-center items-center px-8 py-3.5 sm:px-8 sm:py-4 rounded-full border border-base-content/10 hover:border-base-content/30 hover:bg-base-200/30 text-base-content/80 font-bold transition-all duration-300 w-[240px] sm:w-auto"
               >
                 {t('ctaSecondary')}
               </Link>
+
             </motion.div>
+
           </div>
 
           {/* Colonne Droite : Visuels (Portrait et Orbites) */}
@@ -208,51 +230,76 @@ export default function HomePage() {
             <motion.div animate={{ y: [-8, 8, -8] }} transition={{ repeat: Infinity, duration: 6, ease: "easeInOut", delay: 2 }} className="absolute top-[40%] -left-[5%] sm:-left-[10%] z-20 bg-base-100/80 backdrop-blur-xl border border-base-content/10 px-3 py-3 rounded-full shadow-2xl flex items-center justify-center">
               <Shield className="w-4 h-4 text-base-content/60" />
             </motion.div>
+
           </div>
 
           {/* Indicateur de Défilement Visuel (Petite souris animée en bas) */}
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2 }} className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 pointer-events-none">
+          <motion.div 
+            initial={{ opacity: 0 }} 
+            animate={{ opacity: 1 }} 
+            transition={{ delay: 2 }} 
+            className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 pointer-events-auto cursor-pointer"
+            onClick={() => window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })}
+          >
             <motion.div animate={{ y: [0, 8, 0] }} transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }} className="w-6 h-10 border-2 border-base-content/20 rounded-full flex justify-center p-1">
               <div className="w-1 h-2 bg-base-content/40 rounded-full" />
             </motion.div>
           </motion.div>
 
         </motion.div>
+
       </section>
 
       {/* ═══════════════════ SECTION : TEASER (À PROPOS) ═══════════════════ */}
       <section className="pt-48 pb-2 sm:pt-64 sm:pb-2 px-4 sm:px-6 relative z-10">
+
         <div className="max-w-6xl mx-auto">
+
           <div className="grid md:grid-cols-2 gap-16 items-center">
 
             <FadeIn direction="left">
+
               <SectionHeader eyebrow={tTeaser('eyebrow')} title={tTeaser('title')} />
+
               <div className="space-y-5 text-lg text-base-content/60 font-light leading-relaxed">
+
                 <p>
                   {tTeaser.rich('p1', { bold: (chunks) => <strong className="text-base-content/90 font-medium">{chunks}</strong> })}
                 </p>
+
                 <p>
                   {tTeaser.rich('p2', { bold: (chunks) => <strong className="text-base-content/90 font-medium">{chunks}</strong> })}
                 </p>
+
               </div>
+
               <Link href="/propos" className="cursor-pointer inline-flex items-center gap-2 mt-8 text-primary font-bold hover:gap-3 transition-all duration-300">
                 {tTeaser('cta')} <ArrowRight className="w-4 h-4" />
               </Link>
+
             </FadeIn>
 
             <FadeIn direction="right" delay={0.2} className="w-full">
+
               {/* Utilisation de StaggerChildren pour faire apparaître les blocs 1 par 1 */}
               <StaggerChildren staggerDelay={0.12} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
                 {VALUES.map((val, i) => (
+
                   <StaggerItem key={i}>
+
                     <div className="group p-5 sm:p-6 rounded-2xl bg-base-200/30 dark:bg-white/[0.03] border border-base-content/[0.04] hover:border-primary/20 transition-all duration-500 hover-glow h-full flex flex-col justify-center">
                       <val.icon className="w-5 h-5 sm:w-6 sm:h-6 text-primary mb-3 sm:mb-4 group-hover:scale-110 transition-transform" />
                       <h3 className="font-bold text-sm sm:text-base text-base-content mb-1">{val.title}</h3>
                       <p className="text-[11px] sm:text-xs text-base-content/50 leading-relaxed">{val.desc}</p>
                     </div>
+
                   </StaggerItem>
+
                 ))}
+
               </StaggerChildren>
+
             </FadeIn>
 
           </div>
@@ -261,6 +308,7 @@ export default function HomePage() {
 
       {/* ═══════════════════ SECTION : COMPÉTENCES (CARROUSELS) ═══════════════════ */}
       <section className="py-24 sm:py-40 relative overflow-hidden bg-base-100">
+
         {/* Glow de fond */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full pointer-events-none overflow-hidden">
           <div className="absolute top-1/4 -left-1/4 w-[800px] h-[800px] rounded-full bg-primary/[0.03] blur-[150px]" />
@@ -278,20 +326,25 @@ export default function HomePage() {
           {frontendSkills.length > 0 && <MarqueeRow skills={frontendSkills} tSkills={tSkills} speed={45} />}
           {backendSkills.length > 0 && <MarqueeRow skills={backendSkills} reverse={true} tSkills={tSkills} speed={55} />}
         </div>
+
       </section>
 
       {/* ═══════════════════ SECTION : PROJETS PHARES ═══════════════════ */}
       <section className="py-24 sm:py-32 px-4 sm:px-6">
+
         <div className="max-w-6xl mx-auto">
+
           <FadeIn>
             <SectionHeader eyebrow={tFeatured('eyebrow')} title={tFeatured('title')} description={tFeatured('description')} />
           </FadeIn>
 
           {/* Liste des projets générée dynamiquement */}
           <div className="flex flex-col gap-24 sm:gap-32 mt-16">
+
             {FEATURED_PROJECTS.map((project, index) => (
               <FeaturedProjectCard key={project.slug} project={project} index={index} tProjects={tProjects} />
             ))}
+
           </div>
 
           <FadeIn delay={0.4} className="text-center mt-12">
@@ -324,23 +377,31 @@ export default function HomePage() {
 
       {/* ═══════════════════ SECTION : APPEL À L'ACTION (CTA FINAL) ═══════════════════ */}
       <section className="py-24 sm:py-32 px-4 sm:px-6 relative overflow-hidden">
+
         <div className="relative z-10 max-w-4xl mx-auto text-center">
+
           <FadeIn>
+
             <h2 className="text-3xl sm:text-5xl md:text-6xl font-bold text-base-content leading-tight tracking-tight">
               {tCta('title1')}
               <br />
-              <span className="font-display italic text-primary font-normal">{tCta('title2')}</span>
+              {/* <span className="font-display italic text-primary font-normal">{tCta('title2')}</span> */}
+              <span className="text-primary">{tCta('title2')}</span>
             </h2>
+
             <p className="mt-6 text-base sm:text-lg text-base-content/50 font-light max-w-xl mx-auto">
               {tCta('description')}
             </p>
+
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mt-8 sm:mt-10">
+
               <Link href="/contact"
                 className="cursor-pointer group flex items-center justify-center gap-2 sm:gap-3 px-8 py-4 sm:px-10 sm:py-5 rounded-full bg-primary/80 text-primary-content font-bold text-base sm:text-lg shadow-xl shadow-primary/20 hover:shadow-primary/40 hover:-translate-y-1 transition-all duration-300 w-[260px] sm:w-auto"
               >
                 {tCta('ctaPrimary')}
                 <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
+
               {/* Le CV est lié à un fichier PDF stocké dans le dossier `public/cv/` */}
               <a href="/cv/cv_kalvin.pdf" download
                 className="cursor-pointer flex items-center justify-center gap-2 px-8 py-4 sm:px-8 sm:py-4 rounded-full border-2 border-base-content/10 hover:border-primary/30 text-base-content/60 hover:text-primary font-bold text-base sm:text-lg transition-all duration-300 w-[260px] sm:w-auto"
@@ -348,9 +409,13 @@ export default function HomePage() {
                 <Download className="w-4 h-4" />
                 {tCta('ctaSecondary')}
               </a>
+
             </div>
+
           </FadeIn>
+
         </div>
+
       </section>
 
     </div>
