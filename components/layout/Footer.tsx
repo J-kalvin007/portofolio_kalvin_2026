@@ -77,8 +77,8 @@ export default function Footer() {
               {t('description')}
             </p>
 
-            {/* Liste des coordonnées (Adresse, Email, Téléphone) avec animations de survol (group-hover) */}
-            <div className="space-y-4 pt-4 w-full flex flex-col items-center md:items-start">
+            {/* Liste des coordonnées (Adresse, Email, Téléphone) alignée à gauche mais centrée globalement sur mobile */}
+            <div className="space-y-4 pt-4 w-fit mx-auto md:mx-0 flex flex-col items-start">
 
               <div className="flex items-center gap-4 text-base-content/60 text-sm group">
                 <div className="w-10 h-10 rounded-[14px] bg-base-200 dark:bg-white/5 border border-base-content/5 dark:border-white/10 flex items-center justify-center shrink-0 shadow-sm dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] transition-colors duration-500">
@@ -112,10 +112,10 @@ export default function Footer() {
             transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }} // Délai en cascade pour un effet naturel
             className="lg:col-span-3 flex flex-col items-center md:items-start text-center md:text-left"
           >
-            <h3 className="text-transparent bg-clip-text bg-gradient-to-r from-base-content to-base-content/50 font-bold text-sm mb-8 uppercase tracking-[0.25em]">
+            <h3 className="text-transparent bg-clip-text bg-gradient-to-r from-base-content to-base-content/50 font-bold text-sm mb-8 uppercase tracking-[0.25em] w-full text-center md:text-left">
               {t('navigation')}
             </h3>
-            <nav className="space-y-4 flex flex-col items-center md:items-start">
+            <nav className="space-y-4 w-fit mx-auto md:mx-0 flex flex-col items-start">
               {NAV_LINKS.map((link) => (
                 <Link
                   key={link.href}
@@ -143,7 +143,7 @@ export default function Footer() {
             className="lg:col-span-4 flex flex-col items-center md:items-start text-center md:text-left space-y-12"
           >
             <div className="w-full flex flex-col items-center md:items-start">
-              <h3 className="text-transparent bg-clip-text bg-gradient-to-r from-base-content to-base-content/50 font-bold text-sm mb-8 uppercase tracking-[0.25em]">
+              <h3 className="text-transparent bg-clip-text bg-gradient-to-r from-base-content to-base-content/50 font-bold text-sm mb-8 uppercase tracking-[0.25em] w-full text-center md:text-left">
                 {t('followMe')}
               </h3>
               <div className="flex flex-wrap justify-center md:justify-start gap-4">
@@ -164,7 +164,7 @@ export default function Footer() {
             </div>
 
             <div className="w-full flex flex-col items-center md:items-start">
-              <h3 className="text-transparent bg-clip-text bg-gradient-to-r from-base-content to-base-content/50 font-bold text-sm mb-6 uppercase tracking-[0.25em]">
+              <h3 className="text-transparent bg-clip-text bg-gradient-to-r from-base-content to-base-content/50 font-bold text-sm mb-6 uppercase tracking-[0.25em] w-full text-center md:text-left mt-8 md:mt-0">
                 {t('legal')}
               </h3>
               <div className="space-y-3 text-sm text-base-content/50 flex flex-col items-center md:items-start">

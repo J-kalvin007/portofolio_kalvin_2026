@@ -111,7 +111,7 @@ export default function Navbar() {
 
           {/* Section Centrale : Navigation Desktop */}
           <nav className={`
-            hidden md:flex items-center gap-2 px-3 py-2 rounded-full border transition-all duration-500
+            hidden md:flex relative items-center gap-2 px-3 py-2 rounded-full border transition-all duration-500
             ${isScrolled
               ? 'bg-white/50 dark:bg-white/5 border-slate-200/50 dark:border-white/10 shadow-sm'
               : 'bg-transparent border-transparent'

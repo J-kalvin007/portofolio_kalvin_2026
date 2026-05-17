@@ -162,16 +162,16 @@ export default function HomePage() {
             {/* Boutons d'Appel à l'Action (CTAs) */}
             <motion.div
               initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.8 }}
-              className="flex flex-wrap items-center gap-4 pt-4"
+              className="flex flex-col sm:flex-row items-center justify-center sm:justify-start gap-3 sm:gap-4 pt-4"
             >
               <Link href="/projets"
-                className="cursor-pointer group px-8 py-4 rounded-full bg-base-content text-base-100 dark:bg-primary dark:text-primary-content font-bold shadow-xl shadow-base-content/10 dark:shadow-primary/20 hover:shadow-base-content/20 dark:hover:shadow-primary/40 hover:-translate-y-0.5 transition-all duration-300 flex items-center gap-2"
+                className="cursor-pointer group flex justify-center items-center gap-2 px-8 py-3.5 sm:px-8 sm:py-4 rounded-full bg-base-content text-base-100 dark:bg-primary dark:text-primary-content font-bold shadow-xl shadow-base-content/10 dark:shadow-primary/20 hover:shadow-base-content/20 dark:hover:shadow-primary/40 hover:-translate-y-0.5 transition-all duration-300 w-[240px] sm:w-auto"
               >
                 {t('ctaPrimary')}
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
               <Link href="/contact"
-                className="cursor-pointer px-8 py-4 rounded-full border border-base-content/10 hover:border-base-content/30 hover:bg-base-200/30 text-base-content/80 font-bold transition-all duration-300"
+                className="cursor-pointer flex justify-center items-center px-8 py-3.5 sm:px-8 sm:py-4 rounded-full border border-base-content/10 hover:border-base-content/30 hover:bg-base-200/30 text-base-content/80 font-bold transition-all duration-300 w-[240px] sm:w-auto"
               >
                 {t('ctaSecondary')}
               </Link>
@@ -240,15 +240,15 @@ export default function HomePage() {
               </Link>
             </FadeIn>
 
-            <FadeIn direction="right" delay={0.2}>
+            <FadeIn direction="right" delay={0.2} className="w-full">
               {/* Utilisation de StaggerChildren pour faire apparaître les blocs 1 par 1 */}
-              <StaggerChildren staggerDelay={0.12} className="grid grid-cols-2 gap-4">
+              <StaggerChildren staggerDelay={0.12} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {VALUES.map((val, i) => (
                   <StaggerItem key={i}>
-                    <div className="group p-6 rounded-2xl bg-base-200/30 dark:bg-white/[0.03] border border-base-content/[0.04] hover:border-primary/20 transition-all duration-500 hover-glow">
-                      <val.icon className="w-6 h-6 text-primary mb-4 group-hover:scale-110 transition-transform" />
-                      <h3 className="font-bold text-sm text-base-content mb-1">{val.title}</h3>
-                      <p className="text-xs text-base-content/50 leading-relaxed">{val.desc}</p>
+                    <div className="group p-5 sm:p-6 rounded-2xl bg-base-200/30 dark:bg-white/[0.03] border border-base-content/[0.04] hover:border-primary/20 transition-all duration-500 hover-glow h-full flex flex-col justify-center">
+                      <val.icon className="w-5 h-5 sm:w-6 sm:h-6 text-primary mb-3 sm:mb-4 group-hover:scale-110 transition-transform" />
+                      <h3 className="font-bold text-sm sm:text-base text-base-content mb-1">{val.title}</h3>
+                      <p className="text-[11px] sm:text-xs text-base-content/50 leading-relaxed">{val.desc}</p>
                     </div>
                   </StaggerItem>
                 ))}
@@ -323,27 +323,27 @@ export default function HomePage() {
       </section>
 
       {/* ═══════════════════ SECTION : APPEL À L'ACTION (CTA FINAL) ═══════════════════ */}
-      <section className="py-32 px-4 sm:px-6 relative overflow-hidden">
+      <section className="py-24 sm:py-32 px-4 sm:px-6 relative overflow-hidden">
         <div className="relative z-10 max-w-4xl mx-auto text-center">
           <FadeIn>
-            <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-base-content leading-tight tracking-tight">
+            <h2 className="text-3xl sm:text-5xl md:text-6xl font-bold text-base-content leading-tight tracking-tight">
               {tCta('title1')}
               <br />
               <span className="font-display italic text-primary font-normal">{tCta('title2')}</span>
             </h2>
-            <p className="mt-6 text-lg text-base-content/50 font-light max-w-xl mx-auto">
+            <p className="mt-6 text-base sm:text-lg text-base-content/50 font-light max-w-xl mx-auto">
               {tCta('description')}
             </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-10">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mt-8 sm:mt-10">
               <Link href="/contact"
-                className="cursor-pointer group px-10 py-5 rounded-full bg-primary/80 text-primary-content font-bold text-lg shadow-xl shadow-primary/20 hover:shadow-primary/40 hover:-translate-y-1 transition-all duration-300 flex items-center gap-3"
+                className="cursor-pointer group flex items-center justify-center gap-2 sm:gap-3 px-8 py-4 sm:px-10 sm:py-5 rounded-full bg-primary/80 text-primary-content font-bold text-base sm:text-lg shadow-xl shadow-primary/20 hover:shadow-primary/40 hover:-translate-y-1 transition-all duration-300 w-[260px] sm:w-auto"
               >
                 {tCta('ctaPrimary')}
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
               {/* Le CV est lié à un fichier PDF stocké dans le dossier `public/cv/` */}
               <a href="/cv/cv_kalvin.pdf" download
-                className="cursor-pointer px-8 py-4 rounded-full border-2 border-base-content/10 hover:border-primary/30 text-base-content/60 hover:text-primary font-bold transition-all duration-300 flex items-center gap-2"
+                className="cursor-pointer flex items-center justify-center gap-2 px-8 py-4 sm:px-8 sm:py-4 rounded-full border-2 border-base-content/10 hover:border-primary/30 text-base-content/60 hover:text-primary font-bold text-base sm:text-lg transition-all duration-300 w-[260px] sm:w-auto"
               >
                 <Download className="w-4 h-4" />
                 {tCta('ctaSecondary')}

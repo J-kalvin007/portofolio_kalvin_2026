@@ -85,12 +85,12 @@ export default function ProjetsPage() {
       <section className="px-4 sm:px-6 pb-8">
         <div className="max-w-6xl mx-auto flex justify-center">
           <FadeIn delay={0.3}>
-            <div className="flex flex-wrap gap-2 p-1.5 rounded-full glass">
+            <div className="flex flex-wrap justify-center gap-2 p-2 sm:p-2.5 rounded-[1.5rem] sm:rounded-full glass mx-auto w-fit max-w-full">
               {filters.map(({ key, label }) => (
                 <button
                   key={key}
                   onClick={() => setActiveFilter(key)}
-                  className={`cursor-pointer px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 ${activeFilter === key
+                  className={`cursor-pointer px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-300 ${activeFilter === key
                     ? 'bg-primary text-primary-content shadow-lg shadow-primary/20'
                     : 'text-base-content/50 hover:text-base-content hover:bg-base-200/50'
                     }`}

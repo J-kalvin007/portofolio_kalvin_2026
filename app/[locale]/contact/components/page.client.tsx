@@ -196,72 +196,53 @@ export default function ContactPage() {
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-18 items-start">
 
           {/* Colonne Gauche : Les Coordonnées fixes */}
-          <FadeIn direction="left" className="space-y-10 lg:sticky lg:top-22">
+          <FadeIn direction="left" className="space-y-8 sm:space-y-10 lg:sticky lg:top-22">
 
-            <div className="space-y-6">
-
+            <div className="space-y-4 sm:space-y-6">
               <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">{t('stayInTouch')}</h2>
-              <p className="text-lg text-base-content/60 leading-relaxed font-light">
+              <p className="text-base sm:text-lg text-base-content/60 leading-relaxed font-light">
                 {t('basedIn')}
               </p>
-
             </div>
 
-            <div className="space-y-8">
-
+            <div className="space-y-6 sm:space-y-8">
               {[
-
                 { icon: Mail, label: t('labels.email'), value: 'takoudjoumoisecalvin@gmail.com', href: 'mailto:takoudjoumoisecalvin@gmail.com' },
                 { icon: Phone, label: t('labels.phone'), value: '+228 92 51 56 85', href: 'tel:+22892515685' },
                 { icon: MapPin, label: t('labels.location'), value: 'Lomé, Togo', href: undefined },
-
               ].map((item) => (
+                <div key={item.label} className="flex items-center sm:items-start gap-4 sm:gap-5 group">
 
-                <div key={item.label} className="flex items-start gap-5 group">
-
-                  <div className="w-16 h-16 rounded-[1.25rem] bg-base-200 dark:bg-white/5 border border-base-content/5 dark:border-white/10 flex items-center justify-center shrink-0 shadow-sm dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] group-hover:border-[#F0A500]/40 group-hover:bg-[#F0A500]/10 transition-all duration-500 overflow-hidden relative">
+                  <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-xl sm:rounded-[1.25rem] bg-base-200 dark:bg-white/5 border border-base-content/5 dark:border-white/10 flex items-center justify-center shrink-0 shadow-sm dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] group-hover:border-[#F0A500]/40 group-hover:bg-[#F0A500]/10 transition-all duration-500 overflow-hidden relative">
                     <div className="absolute inset-0 bg-gradient-to-tr from-[#F0A500]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                    <item.icon className="w-6 h-6 text-base-content/60 group-hover:text-[#F0A500] group-hover:scale-110 transition-all duration-500 relative z-10" />
+                    <item.icon className="w-5 h-5 sm:w-6 sm:h-6 text-base-content/60 group-hover:text-[#F0A500] group-hover:scale-110 transition-all duration-500 relative z-10" />
                   </div>
 
-                  <div className="flex flex-col justify-center py-1">
-
-                    <p className="text-xs font-bold uppercase tracking-[0.2em] text-base-content/40 mb-1.5">{item.label}</p>
+                  {/* L'astuce "flex-1 min-w-0" empêche le texte de casser le conteneur flex parent sur mobile */}
+                  <div className="flex flex-col justify-center flex-1 min-w-0">
+                    <p className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] text-base-content/40 mb-1 sm:mb-1.5">{item.label}</p>
                     {item.href ? (
-
-                      <a href={item.href} className="cursor-pointer text-base-content font-bold text-lg hover:text-[#F0A500] transition-colors duration-300 group-hover:drop-shadow-[0_0_8px_rgba(240,165,0,0.3)]">{item.value}</a>
-
+                      <a href={item.href} className="cursor-pointer text-base-content font-bold text-sm sm:text-lg hover:text-[#F0A500] transition-colors duration-300 group-hover:drop-shadow-[0_0_8px_rgba(240,165,0,0.3)] break-all sm:break-normal">{item.value}</a>
                     ) : (
-
-                      <p className="text-base-content font-bold text-lg transition-all duration-300 group-hover:drop-shadow-[0_0_8px_rgba(240,165,0,0.3)]">{item.value}</p>
-
+                      <p className="text-base-content font-bold text-sm sm:text-lg transition-all duration-300 group-hover:drop-shadow-[0_0_8px_rgba(240,165,0,0.3)] truncate">{item.value}</p>
                     )}
-
                   </div>
 
                 </div>
-
               ))}
-
             </div>
 
-            <div className="pt-10 border-t border-base-content/10 dark:border-white/10">
-
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-base-content/40 mb-6">{t('social')}</p>
-              <div className="flex gap-4">
-
+            <div className="pt-8 sm:pt-10 border-t border-base-content/10 dark:border-white/10">
+              <p className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] text-base-content/40 mb-4 sm:mb-6">{t('social')}</p>
+              <div className="flex flex-wrap gap-3 sm:gap-4">
                 {SOCIALS.map((s) => (
-
                   <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer" aria-label={s.label}
-                    className="cursor-pointer relative group w-14 h-14 rounded-2xl bg-base-200 dark:bg-white/5 border border-base-content/5 dark:border-white/10 flex items-center justify-center text-base-content/60 hover:text-[#F0A500] transition-all duration-500 shrink-0 shadow-sm dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] overflow-hidden">
+                    className="cursor-pointer relative group w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-base-200 dark:bg-white/5 border border-base-content/5 dark:border-white/10 flex items-center justify-center text-base-content/60 hover:text-[#F0A500] transition-all duration-500 shrink-0 shadow-sm dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] overflow-hidden">
                     <div className="absolute inset-0 bg-gradient-to-tr from-[#F0A500]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                    <s.icon className="w-5 h-5 relative z-10 transition-transform duration-500 group-hover:scale-110 group-hover:drop-shadow-[0_0_8px_rgba(240,165,0,0.8)]" />
+                    <s.icon className="w-5 h-5 sm:w-6 sm:h-6 relative z-10 transition-transform duration-500 group-hover:scale-110 group-hover:drop-shadow-[0_0_8px_rgba(240,165,0,0.8)]" />
                   </a>
-
                 ))}
-
               </div>
-
             </div>
 
           </FadeIn>

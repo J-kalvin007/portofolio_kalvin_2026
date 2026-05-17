@@ -30,7 +30,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, ExternalLink, Github } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import type { Project } from '@/lib/data/projects';
-import { SLUG_MAP } from '@/types/project.types';
+import { SLUG_MAP, TECH_SVG_MAP_CARD } from '@/types/project.types';
 import StarField from './StarField';
 import ImageCarousel from './ImageCarousel';
 import DescriptionRain from './DescriptionRain';
@@ -73,7 +73,7 @@ export default function ProjectModal({ project, isOpen, onClose }: ProjectModalP
 
           {/* ── Couche de contenu (empêche la propagation du clic) ── */}
           <div
-            className="relative z-10 flex flex-col w-full h-full"
+            className="relative z-10 flex flex-col w-full h-full overflow-y-auto md:overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
             {/* ═══════════════════════════════════════
@@ -83,22 +83,34 @@ export default function ProjectModal({ project, isOpen, onClose }: ProjectModalP
               initial={{ y: -30, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.3, duration: 0.5 }}
-              className="flex items-center justify-between px-6 sm:px-10 py-6 shrink-0"
+              className="flex flex-col md:flex-row items-start md:items-center justify-between px-6 sm:px-10 pt-6 pb-2 md:py-6 shrink-0 gap-4 md:gap-0"
             >
               {/* Titre et catégorie */}
-              <div>
-                <span className="inline-block px-3 py-1 rounded-full
-                  bg-[var(--primary)]/20 text-[var(--primary)]
-                  text-[10px] font-bold uppercase tracking-[0.2em] mb-2">
-                  {tData(`${key}.category`)} · {project.year}
-                </span>
-                <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
-                  {project.title}
-                </h2>
+              <div className="w-full flex justify-between items-start md:w-auto md:block">
+                <div>
+                  <span className="inline-block px-3 py-1 rounded-full
+                    bg-[var(--primary)]/20 text-[var(--primary)]
+                    text-[10px] font-bold uppercase tracking-[0.2em] mb-2">
+                    {tData(`${key}.category`)} · {project.year}
+                  </span>
+                  <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
+                    {project.title}
+                  </h2>
+                </div>
+                {/* Bouton de fermeture sur mobile (en haut à droite) */}
+                <button
+                  type="button"
+                  onClick={onClose}
+                  aria-label={t('closeModal')}
+                  className="md:hidden cursor-pointer p-2.5 rounded-full bg-white/10 hover:bg-white/20
+                    text-white/70 hover:text-white transition-all shrink-0"
+                >
+                  <X className="w-5 h-5" />
+                </button>
               </div>
 
-              {/* Actions : liens + fermeture */}
-              <div className="flex items-center gap-3">
+              {/* Actions : liens + fermeture (sur desktop) */}
+              <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
                 {project.liveUrl && (
                   <a
                     href={project.liveUrl}
@@ -109,8 +121,8 @@ export default function ProjectModal({ project, isOpen, onClose }: ProjectModalP
                       hover:shadow-[0_0_20px_var(--primary)] transition-shadow"
                     onClick={(e) => e.stopPropagation()}
                   >
-                    <ExternalLink className="w-3.5 h-3.5" />
-                    {t('viewSite')}
+                    <ExternalLink className="w-3.5 h-3.5 shrink-0" />
+                    <span>{t('viewSite')}</span>
                   </a>
                 )}
                 {project.githubUrl && (
@@ -123,16 +135,16 @@ export default function ProjectModal({ project, isOpen, onClose }: ProjectModalP
                       hover:border-[var(--primary)]/50 hover:text-[var(--primary)] transition-all"
                     onClick={(e) => e.stopPropagation()}
                   >
-                    <Github className="w-3.5 h-3.5" />
-                    {t('sourceCode')}
+                    <Github className="w-3.5 h-3.5 shrink-0" />
+                    <span>{t('sourceCode')}</span>
                   </a>
                 )}
                 <button
                   type="button"
                   onClick={onClose}
                   aria-label={t('closeModal')}
-                  className="cursor-pointer p-2.5 rounded-full bg-white/10 hover:bg-white/20
-                    text-white/70 hover:text-white transition-all ml-2"
+                  className="hidden md:flex cursor-pointer p-2.5 rounded-full bg-white/10 hover:bg-white/20
+                    text-white/70 hover:text-white transition-all ml-2 shrink-0"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -143,7 +155,7 @@ export default function ProjectModal({ project, isOpen, onClose }: ProjectModalP
                BODY — Layout 3 colonnes
                [ Description Rain | Image Carousel | Tech Stack Rain ]
                ═══════════════════════════════════════ */}
-            <div className="flex-1 flex flex-col md:flex-row items-stretch overflow-visible px-4 sm:px-6 pb-6 gap-4">
+            <div className="shrink-0 md:flex-1 flex flex-col md:flex-row items-stretch overflow-visible px-4 sm:px-6 pb-6 gap-4">
               
               {/* ── GAUCHE : Pluie de description (défilement ↓) ── */}
               <motion.div
@@ -160,7 +172,7 @@ export default function ProjectModal({ project, isOpen, onClose }: ProjectModalP
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ delay: 0.4, duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
-                className="flex-1 flex items-center justify-center min-h-[50vh] md:min-h-0"
+                className="w-full md:flex-1 flex items-center justify-center min-h-[40vh] md:min-h-0 py-4 md:py-0"
               >
                 <ImageCarousel images={project.images} title={project.title} />
               </motion.div>
@@ -177,12 +189,12 @@ export default function ProjectModal({ project, isOpen, onClose }: ProjectModalP
             </div>
 
             {/* ── MOBILE : Description + Tech sous l'image ── */}
-            <div className="md:hidden px-6 pb-8 space-y-6 overflow-y-auto max-h-[40vh]">
+            <div className="md:hidden px-6 pb-12 space-y-8 shrink-0">
               <div>
                 <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-[var(--primary)] mb-3">
                   Description
                 </h3>
-                <p className="text-sm text-white/60 leading-relaxed font-display italic">
+                <p className="text-sm text-white/80 leading-relaxed font-display italic">
                   {fullDescription}
                 </p>
               </div>
@@ -192,9 +204,12 @@ export default function ProjectModal({ project, isOpen, onClose }: ProjectModalP
                 </h3>
                 <div className="flex flex-wrap gap-2">
                   {project.techStack.map((tech) => (
-                    <span key={tech} className="px-3 py-1.5 rounded-full bg-white/10 text-white/60
-                      text-xs font-mono font-bold uppercase tracking-wider">
-                      {tech}
+                    <span key={tech} className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/5 text-white/80
+                      text-xs font-mono font-bold uppercase tracking-wider shadow-sm">
+                      {TECH_SVG_MAP_CARD[tech] && (
+                        <img src={TECH_SVG_MAP_CARD[tech]} alt={tech} className="w-3.5 h-3.5" />
+                      )}
+                      <span>{tech}</span>
                     </span>
                   ))}
                 </div>

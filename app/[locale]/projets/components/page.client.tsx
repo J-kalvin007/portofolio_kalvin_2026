@@ -98,7 +98,7 @@ export default function ProjetsPage() {
 
           <FadeIn delay={0.3}>
 
-            <div className="flex flex-wrap gap-2 p-1.5 rounded-full glass">
+            <div className="flex flex-wrap justify-center gap-2 p-2 sm:p-2.5 rounded-[1.5rem] sm:rounded-full glass mx-auto w-fit max-w-full">
 
               {filters.map(({ key, label }) => (
                 <MagneticButton key={key} active={activeFilter === key} onClick={() => setActiveFilter(key)}>
@@ -180,7 +180,7 @@ function MagneticButton({ children, active, onClick }: { children: React.ReactNo
       onMouseLeave={reset}
       animate={{ x: 0, y: 0 }}
       style={{ x: magneticX, y: magneticY }}
-      className={`relative cursor-pointer px-6 py-2.5 rounded-full text-sm font-bold transition-colors duration-300 z-10 ${
+      className={`relative cursor-pointer px-4 sm:px-6 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-bold transition-colors duration-300 z-10 ${
         active ? 'text-[#070510]' : 'text-base-content/60 hover:text-[#F0A500]'
       }`}
     >
