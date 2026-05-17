@@ -1,0 +1,292 @@
+{
+  "seo": {
+    "home": {
+      "title": "Home",
+      "description": "Portfolio of Kalvin Takoudjou, Software Engineer & Web Architect specialized in premium digital experiences."
+    },
+    "projects": {
+      "title": "My Projects",
+      "description": "Discover my creations: web applications, SaaS, and high-impact e-commerce platforms."
+    },
+    "about": {
+      "title": "About Me",
+      "description": "Discover my journey, my degrees, and the core values that guide my work as an engineer."
+    },
+    "contact": {
+      "title": "Contact",
+      "description": "Ready to launch your next project? Contact me to discuss your web development needs."
+    }
+  },
+  "nav": {
+    "home": "Home",
+    "projects": "Projects",
+    "about": "About",
+    "contact": "Contact",
+    "contactBtn": "Contact me"
+  },
+  "hero": {
+    "badge": "Available for remote missions",
+    "greeting": "Hello, I'm",
+    "floatingBadge1": "Senior Developer",
+    "floatingBadge2": "Full-Stack Architect",
+    "words": {
+      "engineer": "Engineer",
+      "architect": "Architect",
+      "artisan": "Artisan"
+    },
+    "titleLine1": "Software",
+    "description": "I design <bold1>high-performance</bold1> and <bold2>elegant</bold2> digital solutions that turn ideas into exceptional products.",
+    "ctaPrimary": "View my projects",
+    "ctaSecondary": "Contact me",
+    "scrollHint": "Discover"
+  },
+  "about_teaser": {
+    "eyebrow": "Philosophy",
+    "title": "Beyond code, a vision",
+    "p1": "In a world saturated with digital noise, <bold>quality</bold> is the only differentiator.",
+    "p2": "Every pixel, every interaction, every transition is designed to <bold>elevate your message</bold> and turn your visitors into ambassadors.",
+    "cta": "Learn more"
+  },
+  "values": {
+    "solid": "Solid Architecture",
+    "solid_desc": "Structured, maintainable code ready for scale.",
+    "perf": "Performance",
+    "perf_desc": "Optimized for speed and user experience.",
+    "design": "Premium Design",
+    "design_desc": "Elegant interfaces that leave a lasting impression.",
+    "reliability": "Reliability",
+    "reliability_desc": "Robust, secure solutions built for the long run."
+  },
+  "skills": {
+    "eyebrow": "Expertise",
+    "title": "Technical Mastery",
+    "description": "A cutting-edge technology stack to transform complex concepts into fluid, scalable digital solutions.",
+    "expert": "Expert",
+    "advanced": "Advanced",
+    "intermediate": "Intermediate",
+    "categories": {
+      "frontend": "Frontend",
+      "backend": "Backend",
+      "database": "Database",
+      "devops": "DevOps & Tools"
+    }
+  },
+  "featured": {
+    "eyebrow": "Achievements",
+    "title": "Featured Projects",
+    "description": "Digital solutions crafted with rigor to solve real-world problems.",
+    "viewAll": "All my projects"
+  },
+  "stats": {
+    "years": "Years of experience",
+    "projects": "Projects delivered",
+    "technologies": "Technologies",
+    "engagement": "Commitment"
+  },
+  "cta": {
+    "title1": "Ready to elevate your",
+    "title2": "digital standard?",
+    "description": "Let's discuss your project. No hard sell, just a strategic conversation.",
+    "ctaPrimary": "Start a conversation",
+    "ctaSecondary": "Download my CV"
+  },
+  "projects_page": {
+    "badge": "Technical Portfolio",
+    "title1": "Projects that ",
+    "title2": "transform",
+    "description": "Digital solutions crafted with rigor to solve real-world problems and generate measurable impact.",
+    "filterAll": "All",
+    "viewSite": "View site",
+    "sourceCode": "Source code",
+    "closeModal": "Close window",
+    "viewProject": "View project",
+    "projectDetails": "Project details",
+    "technologies": "Technologies"
+  },
+  "about_page": {
+    "badge": "About me",
+    "titleLine1": "Architect",
+    "titleLine2": "of Digital",
+    "titleLine3": "Experience",
+    "description": "I design digital ecosystems where <bold1>technical precision</bold1> meets <bold2>aesthetic emotion</bold2>.",
+    "subtitle": "Full Stack Developer",
+    "stats": {
+      "years": "Years of Experience",
+      "projects": "Projects Delivered",
+      "engagement": "Client Commitment",
+      "passion": "Passion"
+    },
+    "vision": {
+      "eyebrow": "Philosophy",
+      "title": "Beyond code, a vision",
+      "sidebarMantra": "Mantra",
+      "sidebarApproach": "Approach",
+      "sidebarStandard": "Standard",
+      "p1": "In a world saturated with digital noise, <bold>quality</bold> is the only differentiator.",
+      "p2": "Every pixel, every interaction, every transition is designed to <bold>elevate your message</bold> and turn your visitors into ambassadors.",
+      "quote": "\"Simplicity is the ultimate sophistication.\"",
+      "p3": "I work with demanding clients who understand that their digital presence is their most valuable asset."
+    },
+    "values_section": {
+      "eyebrow": "Values",
+      "title": "What guides me"
+    },
+    "values": {
+      "excellence": "Technical Excellence",
+      "excellence_desc": "Clean, maintainable, high-performance code is the norm, not the exception.",
+      "vision": "Strategic Vision",
+      "vision_desc": "Every line of code serves a clear, measurable business objective.",
+      "innovation": "Continuous Innovation",
+      "innovation_desc": "Constant technology watch to anticipate tomorrow's standards.",
+      "reliability": "Absolute Reliability",
+      "reliability_desc": "Robust architectures designed for scalability and security."
+    },
+    "timeline": {
+      "eyebrow": "Journey",
+      "title": "Professional Experience",
+      "experience": "Experience",
+      "education": "Education"
+    },
+    "testimonials": {
+      "title": "\"They trusted me.\""
+    },
+    "cta": {
+      "title1": "Ready to elevate your",
+      "title2": "Standard?",
+      "description": "Let's discuss your project. No hard sell, just a strategic conversation.",
+      "ctaPrimary": "Start a conversation",
+      "ctaSecondary": "My CV"
+    }
+  },
+  "contact_page": {
+    "badge": "Available for new projects",
+    "title1": "Let's start a ",
+    "title2": "project",
+    "title3": " together",
+    "description": "Have an ambitious digital project? I'm available for consulting, architecture, or development missions.",
+    "stayInTouch": "Let's stay in touch",
+    "basedIn": "Based in Lomé, Togo, I work with clients worldwide.",
+    "labels": {
+      "email": "Email",
+      "phone": "Phone",
+      "location": "Location"
+    },
+    "social": "Social media",
+    "form": {
+      "name": "Full Name",
+      "namePlaceholder": "Your name",
+      "email": "Email",
+      "emailPlaceholder": "your@email.com",
+      "subject": "Subject",
+      "subjectPlaceholder": "What is this about?",
+      "message": "Message",
+      "messagePlaceholder": "Describe your project...",
+      "submit": "Send my request",
+      "submitting": "Sending..."
+    },
+    "validation": {
+      "nameMin": "Name must be at least 2 characters",
+      "emailInvalid": "Invalid email",
+      "subjectMin": "Subject must be at least 3 characters",
+      "messageMin": "Message must be at least 10 characters",
+      "messageMax": "Message too long"
+    },
+    "notification": {
+      "success": "Sent!",
+      "error": "Error",
+      "successMessage": "Message sent successfully!",
+      "errorMessage": "Error sending message.",
+      "networkError": "Network error. Please try again."
+    }
+  },
+  "notfound": {
+    "code": "404",
+    "title": "Page not found",
+    "description": "This address does not match any page in the portfolio.",
+    "cta": "Back to home"
+  },
+  "footer": {
+    "description": "Software Engineer & Full-Stack Architect specialized in designing high-performance, scalable, business-oriented digital solutions.",
+    "navigation": "Navigation",
+    "followMe": "Follow me",
+    "legal": "Legal",
+    "privacy": "Privacy",
+    "terms": "Terms of use",
+    "copyright": "All rights reserved.",
+    "bottomTerms": "Terms of use | Privacy."
+  },
+  "experience": {
+    "job1_title": "Consultant - Full Stack Developer",
+    "job1_subtitle": "Myriade Groupe",
+    "job1_period": "2024 — Present",
+    "job1_description": "Leading complex architectural overhauls. Technical leadership on Next.js/Node.js stacks. Design and deployment of SaaS solutions.",
+    "job1_location": "Paris, France",
+    "job2_title": "Freelance Full-Stack Developer",
+    "job2_subtitle": "Independent Projects",
+    "job2_period": "2022 — 2024",
+    "job2_description": "Development of custom solutions for startups and SMBs. Focus on premium UX/UI and performance optimization.",
+    "job2_location": "Remote",
+    "edu1_title": "MBA Big Data & Artificial Intelligence",
+    "edu1_subtitle": "STUDI France",
+    "edu1_period": "2026 — Ongoing",
+    "edu1_description": "Specialization in massive data architectures, machine learning, and AI integration into business processes.",
+    "edu1_location": "Online",
+    "edu2_title": "Bachelor's Degree in Computer Systems & Software",
+    "edu2_subtitle": "Lucas University College",
+    "edu2_period": "2020 — 2024",
+    "edu2_description": "Solid training in software engineering, algorithms, databases, network architectures, and cybersecurity.",
+    "edu2_location": "Accra, Ghana"
+  },
+  "testimonials": {
+    "t1_quote": "Kalvin transformed our vague vision into an exceptional digital platform. His technical expertise is matched only by his product sensitivity.",
+    "t1_author": "Thomas D.",
+    "t1_role": "CEO",
+    "t1_company": "TechStart",
+    "t2_quote": "Rarely seen a developer with such attention to detail. The result exceeds our most optimistic expectations, in both performance and design.",
+    "t2_author": "Sophie M.",
+    "t2_role": "Art Director",
+    "t2_company": "Creative Studio",
+    "t3_quote": "A rigorous and creative professional. Kalvin proposed innovative architectural solutions that significantly improved our product.",
+    "t3_author": "Marc L.",
+    "t3_role": "CTO",
+    "t3_company": "DataFlow"
+  },
+  "projects_data": {
+    "challenger": {
+      "category": "Windows Software",
+      "short": "Windows software for calculating employee working hours.",
+      "full": "Windows timekeeping and employee working hours calculation software."
+    },
+    "sheem": {
+      "category": "Mobile App",
+      "short": "Event management mobile app with ticket sales, mobile payment, QR code generation and admin dashboard.",
+      "full": "Event management mobile app with ticket sales, mobile payment, QR code generation and admin dashboard."
+    },
+    "mboashop": {
+      "category": "Web",
+      "short": "Full e-commerce platform with dynamic cart, integrated payment and admin dashboard.",
+      "full": "Full-stack e-commerce platform with rich catalog, dynamic cart, multi-channel payment and analytics dashboard."
+    },
+    "myriade": {
+      "category": "Web",
+      "short": "Premium corporate showcase site for a multi-sector B2B & B2C services group.",
+      "full": "Modern institutional platform with SSG architecture, cinematic animations, and SEO optimization."
+    },
+    "stock": {
+      "category": "SaaS",
+      "short": "Real-time stock management with automatic alerts and advanced reporting.",
+      "full": "Inventory management SaaS with real-time tracking, restocking alerts and barcodes."
+    },
+    "green": {
+      "category": "Mobile + Web + API",
+      "short": "Complete plantation management and activity tracking platform.",
+      "full": "Complete plantation management and activity tracking platform with data pipeline, RESTful API and interactive visualizations."
+    },
+    "metrics": {
+      "users": "Users",
+      "events": "Events",
+      "products": "Products",
+      "ordersMonth": "Orders/month"
+    }
+  }
+}

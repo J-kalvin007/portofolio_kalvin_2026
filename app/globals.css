@@ -1,0 +1,425 @@
+@import "tailwindcss";
+
+/* Enable class-based dark mode for Tailwind v4 */
+@variant dark (&:is(.dark *));
+
+
+/**
+ * @file globals.css
+ * @description Fichier racine de la configuration Tailwind CSS et du Design System "Void & Or".
+ * 
+ * @architecture
+ * Ce fichier utilise les nouvelles directives Tailwind v4 (@theme, @layer) pour injecter 
+ * les variables sémantiques CSS natives. Il définit la palette colorimétrique absolue du projet.
+ * 
+ * Pourquoi : Plutôt que de coder les couleurs en dur (`text-[#F0A500]`) partout, on utilise
+ * des variables d'environnement CSS (`var(--primary)`). Ainsi, si le client veut passer
+ * d'un "Or Solaire" à un "Rouge Rubis", il suffit de changer 2 lignes de code ici pour 
+ * que tout le site se mette à jour instantanément.
+ */
+
+/* ═══════════════════════════════════════════════════════════════
+   KALVIN PORTFOLIO — Design System: VOID & OR
+   ─────────────────────────────────────────────────────────────
+   Palette "Void & Or" — Identité visuelle duale
+   Mode sombre : Void cosmique + Or solaire
+   Mode clair  : Ivoire chaud  + Or impérial
+   ═══════════════════════════════════════════════════════════════ */
+
+/* 
+ * Déclaration globale Tailwind (@theme) 
+ * Mappe les variables CSS vers des utilitaires Tailwind utilisables (ex: `text-primary`, `bg-base-100`)
+ */
+@theme {
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+  --color-accent: var(--accent);
+  --color-neutral: var(--neutral);
+  --color-base-100: var(--base-100);
+  --color-base-200: var(--base-200);
+  --color-base-300: var(--base-300);
+  --color-base-content: var(--base-content);
+
+  /* Mapping des typographies injectées via Next.js `next/font/google` (layout.tsx) */
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+@layer base {
+  /* 
+   * :root = Variables pour le MODE CLAIR 
+   */
+  :root {
+    /* ── Fonds ── */
+    --base-100: #FAF7F0; /* Ivoire très clair (Background général) */
+    --base-200: #F2EBD6; /* Ivoire assombri (Cartes/Surfaces) */
+    --base-300: #E8DEC4; /* Ivoire profond (Bordures/Hovers) */
+    --base-border: #DAC49A;
+
+    /* ── Accents Or ── */
+    --primary: #C8900A; /* Or Impérial (Couleur principale) */
+    --secondary: #7A6B50;
+    --accent: #E5A529;
+    --neutral: #1A1410;
+    --app-accent-warm: #C97A00;
+    --app-signature: #7A1A6A;
+
+    /* ── Textes ── */
+    --base-content: #1A1410; /* Texte principal (Presque noir, légèrement brun) */
+    --text-secondary: #4A3B26;
+    --text-tertiary: #7A6B50;
+    --text-links: #5D1A5A;
+
+    /* ── Sémantiques globales ── */
+    --primary-content: #FFFFFF; /* Texte sur fond primaire (ex: Blanc sur Or) */
+    --background: var(--base-100);
+    --foreground: var(--base-content);
+
+    /* ── Glow / Effets de lumière ── */
+    --glow-color: rgba(200, 144, 10, 0.12);
+    --glow-color-strong: rgba(200, 144, 10, 0.25);
+    --glass-bg: rgba(250, 247, 240, 0.7);
+    --glass-border: rgba(218, 196, 154, 0.4);
+  }
+
+  /* 
+   * .dark = Variables pour le MODE SOMBRE 
+   * Cette classe est injectée automatiquement sur <html> par notre `ThemeInitializer.tsx`.
+   */
+  .dark {
+    /* ── Fonds ── */
+    --base-100: #070510; /* Void Cosmique (Noir très profond teinté de violet spatial) */
+    --base-200: #110D1F; /* Surfaces élevées (Cartes) */
+    --base-300: #1A1430; /* Surfaces interactives */
+    --base-border: #2C2245;
+
+    /* ── Accents Or ── */
+    --primary: #F0A500; /* Or Solaire (Vibrant, contraste avec le Void) */
+    --secondary: #7B6FA0;
+    --accent: #FFD166;
+    --neutral: #F0ECD8;
+    --app-accent-warm: #E06B00;
+    --app-signature: #FF6BDE;
+
+    /* ── Textes ── */
+    --base-content: #F0ECD8; /* Ivoire cassé pour éviter la fatigue visuelle du blanc pur #FFF */
+    --text-secondary: #B8B0A0;
+    --text-tertiary: #7B6FA0;
+    --text-links: #A78BFF;
+
+    /* ── Sémantiques globales ── */
+    --primary-content: #070510; /* Texte sur bouton (ex: Noir sur Or) */
+    --background: var(--base-100);
+    --foreground: var(--base-content);
+
+    /* ── Glow / Effets de lumière ── */
+    --glow-color: rgba(240, 165, 0, 0.08);
+    --glow-color-strong: rgba(240, 165, 0, 0.2);
+    --glass-bg: rgba(7, 5, 16, 0.7);
+    --glass-border: rgba(240, 236, 216, 0.06);
+  }
+
+  /* Application des règles par défaut sur tout le document HTML */
+  html {
+    scroll-behavior: smooth; /* Défilement doux par défaut */
+  }
+
+  body {
+    background: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    /* Transition CSS super douce quand l'utilisateur clique sur le bouton "Dark Mode" */
+    transition: background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+      color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    -webkit-font-smoothing: antialiased; /* Rendu des polices plus fin sur macOS/iOS */
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* 
+   * Filtre Noise / Bruit (Effet ultra-premium) 
+   * Ajoute une texture granulaire très subtile sur tout l'écran, ce qui casse l'aspect trop "lisse" et digital du site.
+   */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none; /* Crucial pour ne pas bloquer les clics de souris */
+    z-index: 9999;
+  }
+
+  /* Surlignage du texte avec la souris personnalisé */
+  ::selection {
+    background: rgba(240, 165, 0, 0.2);
+    color: inherit;
+  }
+
+  .dark ::selection {
+    background: rgba(240, 165, 0, 0.25);
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   SCROLLBAR PERSONNALISÉE (Webkit)
+   ═══════════════════════════════════════════════ */
+::-webkit-scrollbar {
+  width: 8px; /* Plus fine qu'une scrollbar classique */
+}
+
+::-webkit-scrollbar-track {
+  background: var(--base-200);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--base-300);
+  border-radius: 99px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary); /* Devient or au survol */
+}
+
+/* ═══════════════════════════════════════════════
+   CLASSES UTILITAIRES (Accessibles partout via @layer utilities)
+   ═══════════════════════════════════════════════ */
+@layer utilities {
+
+  /* Dégradé de texte (Or Solaire → Or Clair) */
+  .text-gradient {
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Effet Vitre dépolie (Glassmorphism) */
+  .glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+  }
+
+  /* Halo lumineux permanent autour des cartes */
+  .glow-border {
+    box-shadow: 0 0 0 1px var(--glow-color),
+      0 0 40px -10px var(--glow-color-strong);
+  }
+
+  /* Halo qui s'active au survol */
+  .hover-glow {
+    transition: box-shadow 0.5s ease;
+  }
+
+  .hover-glow:hover {
+    box-shadow: 0 0 40px -10px var(--glow-color-strong),
+      0 20px 60px -20px rgba(0, 0, 0, 0.3);
+  }
+
+  /* Raccourcis pour les polices */
+  .font-display {
+    font-family: var(--font-display);
+  }
+
+  .font-mono {
+    font-family: var(--font-mono);
+  }
+
+  /* Masque initial pour l'apparition fluide des images */
+  .image-reveal {
+    clip-path: inset(0 0 0 0);
+    transition: clip-path 0.8s cubic-bezier(0.77, 0, 0.175, 1);
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   ANIMATIONS KEYFRAMES GLOBALES
+   ═══════════════════════════════════════════════ */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes pulse-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 20px var(--glow-color);
+  }
+  50% {
+    box-shadow: 0 0 40px var(--glow-color-strong);
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   PROJETS PAGE — Animations Désintégration
+   ═══════════════════════════════════════════════ */
+
+/* Cubes s'envolant vers le haut lors de la désintégration */
+@keyframes cube-disintegrate {
+  0% {
+    transform: translateX(0) translateY(0) rotateX(0deg) rotateZ(0deg) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform:
+      translateX(var(--cube-dx, 50px))
+      translateY(var(--cube-dy, -120px))
+      rotateX(90deg)
+      rotateZ(var(--cube-rotate, 180deg))
+      scale(0);
+    opacity: 0;
+    filter: blur(2px);
+  }
+}
+
+/* Cubes convergeant lors de la reformation */
+@keyframes cube-reform {
+  0% {
+    transform:
+      translateX(var(--cube-dx, 50px))
+      translateY(var(--cube-dy, -120px))
+      rotateX(-90deg)
+      rotateZ(var(--cube-rotate, -180deg))
+      scale(0);
+    opacity: 0;
+    filter: blur(2px);
+  }
+  100% {
+    transform: translateX(0) translateY(0) rotateX(0deg) rotateZ(0deg) scale(1);
+    opacity: 1;
+    filter: blur(0px);
+  }
+}
+
+/* Étincelles de particules résiduelles */
+@keyframes sparkle {
+  0% {
+    transform: scale(0) translateY(0);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.5) translateY(-30px);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(0) translateY(-60px);
+    opacity: 0;
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   PROJETS PAGE — Shimmer Holographique
+   ═══════════════════════════════════════════════ */
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   PROJETS PAGE — Champ Stellaire (Modale)
+   ═══════════════════════════════════════════════ */
+
+/* Scintillement des étoiles individuelles */
+@keyframes star-twinkle {
+  0%, 100% {
+    opacity: var(--tw-opacity, 0.3);
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Dérive lente des couches d'étoiles (parallax) */
+@keyframes star-drift-1 {
+  0% { transform: translateX(0) translateY(0) rotate(0deg); }
+  100% { transform: translateX(-15px) translateY(-10px) rotate(0.5deg); }
+}
+
+@keyframes star-drift-2 {
+  0% { transform: translateX(0) translateY(0) rotate(0deg); }
+  100% { transform: translateX(10px) translateY(-20px) rotate(-0.3deg); }
+}
+
+@keyframes star-drift-3 {
+  0% { transform: translateX(0) translateY(0) rotate(0deg); }
+  100% { transform: translateX(-20px) translateY(15px) rotate(0.8deg); }
+}
+
+/* Pulsation des nébuleuses */
+@keyframes nebula-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.6;
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   PROJETS PAGE — Cadre Ovale Morphing (Image)
+   ═══════════════════════════════════════════════ */
+
+/* Mutation continue du border-radius pour l'effet ovale organique */
+@keyframes morph-frame {
+  0%, 100% {
+    border-radius: 60% 40% 55% 45% / 45% 55% 40% 60%;
+  }
+  25% {
+    border-radius: 45% 55% 40% 60% / 55% 45% 60% 40%;
+  }
+  50% {
+    border-radius: 55% 45% 60% 40% / 40% 60% 45% 55%;
+  }
+  75% {
+    border-radius: 40% 60% 45% 55% / 60% 40% 55% 45%;
+  }
+}
+
+/* Halo lumineux morphing synchronisé avec le cadre */
+@keyframes morph-glow {
+  0%, 100% {
+    border-radius: 60% 40% 55% 45% / 45% 55% 40% 60%;
+    opacity: 0.4;
+  }
+  50% {
+    border-radius: 55% 45% 60% 40% / 40% 60% 45% 55%;
+    opacity: 0.8;
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   PROJETS PAGE — Défilement Infini (Rain Carousels)
+   ═══════════════════════════════════════════════ */
+
+/* Défilement vers le bas (description — haut → bas) */
+@keyframes rain-scroll-down {
+  0% {
+    transform: translateY(-25%);
+  }
+  100% {
+    transform: translateY(-75%);
+  }
+}
+
+/* Défilement vers le haut (tech stack — bas → haut) */
+@keyframes rain-scroll-up {
+  0% {
+    transform: translateY(-75%);
+  }
+  100% {
+    transform: translateY(-25%);
+  }
+}

@@ -1,0 +1,292 @@
+{
+  "seo": {
+    "home": {
+      "title": "Accueil",
+      "description": "Portfolio de Kalvin Takoudjou, Ingénieur Logiciel & Architecte Web spécialiste des expériences digitales premium."
+    },
+    "projects": {
+      "title": "Mes Projets",
+      "description": "Découvrez mes créations : applications web, SaaS, et plateformes e-commerce à fort impact."
+    },
+    "about": {
+      "title": "À Propos",
+      "description": "Découvrez mon parcours, mes diplômes et les valeurs fondamentales qui guident mon travail d'ingénieur."
+    },
+    "contact": {
+      "title": "Contact",
+      "description": "Prêt à lancer votre prochain projet ? Contactez-moi pour discuter de vos besoins en développement web."
+    }
+  },
+  "nav": {
+    "home": "Accueil",
+    "projects": "Projets",
+    "about": "À propos",
+    "contact": "Contact",
+    "contactBtn": "Me contacter"
+  },
+  "hero": {
+    "badge": "Disponible pour missions remote",
+    "greeting": "Bonjour, je suis",
+    "floatingBadge1": "Développeur Senior",
+    "floatingBadge2": "Architecte Full-Stack",
+    "words": {
+      "engineer": "Ingénieur",
+      "architect": "Architecte",
+      "artisan": "Artisan"
+    },
+    "titleLine1": "Logiciel",
+    "description": "Je conçois des solutions digitales <bold1>performantes</bold1> et <bold2>élégantes</bold2> qui transforment les idées en produits d'exception.",
+    "ctaPrimary": "Voir mes projets",
+    "ctaSecondary": "Me contacter",
+    "scrollHint": "Découvrir"
+  },
+  "about_teaser": {
+    "eyebrow": "Philosophie",
+    "title": "Au-delà du code, une vision",
+    "p1": "Dans un monde saturé de bruit numérique, la <bold>qualité</bold> est le seul facteur de différenciation.",
+    "p2": "Chaque pixel, chaque interaction, chaque transition est pensé pour <bold>sublimer votre message</bold> et convertir vos visiteurs en ambassadeurs.",
+    "cta": "En savoir plus"
+  },
+  "values": {
+    "solid": "Architecture Solide",
+    "solid_desc": "Code structuré, maintenable et prêt pour l'échelle.",
+    "perf": "Performance",
+    "perf_desc": "Optimisé pour la rapidité et l'expérience utilisateur.",
+    "design": "Design Premium",
+    "design_desc": "Interfaces élégantes qui marquent les esprits.",
+    "reliability": "Fiabilité",
+    "reliability_desc": "Solutions robustes et sécurisées pour le long terme."
+  },
+  "skills": {
+    "eyebrow": "Expertise",
+    "title": "Maîtrise Technique",
+    "description": "Un arsenal technologique de pointe pour transformer des concepts complexes en solutions digitales fluides et scalables.",
+    "expert": "Expert",
+    "advanced": "Avancé",
+    "intermediate": "Intermédiaire",
+    "categories": {
+      "frontend": "Frontend",
+      "backend": "Backend",
+      "database": "Base de données",
+      "devops": "DevOps & Outils"
+    }
+  },
+  "featured": {
+    "eyebrow": "Réalisations",
+    "title": "Projets phares",
+    "description": "Solutions digitales conçues avec rigueur pour résoudre des problématiques réelles.",
+    "viewAll": "Tous mes projets"
+  },
+  "stats": {
+    "years": "Années d'expérience",
+    "projects": "Projets livrés",
+    "technologies": "Technologies",
+    "engagement": "Engagement"
+  },
+  "cta": {
+    "title1": "Prêt à élever votre",
+    "title2": "standard digital ?",
+    "description": "Discutons de votre projet. Pas de vente forcée, juste une conversation stratégique.",
+    "ctaPrimary": "Démarrer une conversation",
+    "ctaSecondary": "Télécharger mon CV"
+  },
+  "projects_page": {
+    "badge": "Portfolio Technique",
+    "title1": "Des projets qui ",
+    "title2": "concretisent vos idees",
+    "description": "Solutions digitales conçues avec rigueur pour résoudre des problématiques réelles et générer un impact mesurable.",
+    "filterAll": "Tous",
+    "viewSite": "Voir le site",
+    "sourceCode": "Code source",
+    "closeModal": "Fermer la fenêtre",
+    "viewProject": "Voir le projet",
+    "projectDetails": "Détails du projet",
+    "technologies": "Technologies"
+  },
+  "about_page": {
+    "badge": "À Propos de moi",
+    "titleLine1": "Architecte",
+    "titleLine2": "de l'Expérience",
+    "titleLine3": "Digitale",
+    "description": "Je conçois des écosystèmes numériques où la <bold1>précision technique</bold1> rencontre l'<bold2>émotion esthétique</bold2>.",
+    "subtitle": "Full Stack Developer",
+    "stats": {
+      "years": "Années d'Expérience",
+      "projects": "Projets Livrés",
+      "engagement": "Engagement Client",
+      "passion": "Passion"
+    },
+    "vision": {
+      "eyebrow": "Philosophie",
+      "title": "Au-delà du code, une vision",
+      "sidebarMantra": "Mantra",
+      "sidebarApproach": "Approche",
+      "sidebarStandard": "Standard",
+      "p1": "Dans un monde saturé de bruit numérique, la <bold>qualité</bold> est le seul facteur de différenciation.",
+      "p2": "Chaque pixel, chaque interaction, chaque transition est pensé pour <bold>sublimer votre message</bold> et convertir vos visiteurs en ambassadeurs.",
+      "quote": "\"La simplicité est la sophistication suprême.\"",
+      "p3": "Je travaille avec des clients exigeants qui comprennent que leur présence digitale est leur actif le plus précieux."
+    },
+    "values_section": {
+      "eyebrow": "Valeurs",
+      "title": "Ce qui me guide"
+    },
+    "values": {
+      "excellence": "Excellence Technique",
+      "excellence_desc": "Un code propre, maintenable et performant est la norme, pas l'exception.",
+      "vision": "Vision Stratégique",
+      "vision_desc": "Chaque ligne de code sert un objectif business clair et mesurable.",
+      "innovation": "Innovation Continue",
+      "innovation_desc": "Veille technologique constante pour anticiper les standards de demain.",
+      "reliability": "Fiabilité Absolue",
+      "reliability_desc": "Architectures robustes conçues pour la scalabilité et la sécurité."
+    },
+    "timeline": {
+      "eyebrow": "Parcours",
+      "title": "Expérience Professionnelle",
+      "experience": "Expérience",
+      "education": "Formation"
+    },
+    "testimonials": {
+      "title": "\"Ils m'ont fait confiance.\""
+    },
+    "cta": {
+      "title1": "Prêt à élever votre",
+      "title2": "Standard ?",
+      "description": "Discutons de votre projet. Pas de vente forcée, juste une conversation stratégique.",
+      "ctaPrimary": "Démarrer une conversation",
+      "ctaSecondary": "Mon CV"
+    }
+  },
+  "contact_page": {
+    "badge": "Disponible pour tous vos nouveaux projets",
+    "title1": "Démarrons un ",
+    "title2": "projet",
+    "title3": " ensemble",
+    "description": "Vous avez un projet digital ambitieux ? Je suis disponible pour des missions de consulting, d'architecture ou de développement.",
+    "stayInTouch": "Restons en contact",
+    "basedIn": "Basé à Lomé, Togo, je travaille avec des clients du monde entier.",
+    "labels": {
+      "email": "Email",
+      "phone": "Téléphone",
+      "location": "Localisation"
+    },
+    "social": "Réseaux sociaux",
+    "form": {
+      "name": "Nom Complet",
+      "namePlaceholder": "Votre nom",
+      "email": "Email",
+      "emailPlaceholder": "votre@email.com",
+      "subject": "Sujet",
+      "subjectPlaceholder": "Quel est le sujet ?",
+      "message": "Message",
+      "messagePlaceholder": "Décrivez votre projet...",
+      "submit": "Envoyer ma demande",
+      "submitting": "Envoi en cours..."
+    },
+    "validation": {
+      "nameMin": "Le nom doit contenir au moins 2 caractères",
+      "emailInvalid": "Email invalide",
+      "subjectMin": "Le sujet doit contenir au moins 3 caractères",
+      "messageMin": "Le message doit contenir au moins 10 caractères",
+      "messageMax": "Message trop long"
+    },
+    "notification": {
+      "success": "Envoyé !",
+      "error": "Erreur",
+      "successMessage": "Message envoyé avec succès !",
+      "errorMessage": "Erreur lors de l'envoi.",
+      "networkError": "Erreur réseau. Veuillez réessayer."
+    }
+  },
+  "notfound": {
+    "code": "404",
+    "title": "Page introuvable",
+    "description": "Cette adresse ne correspond à aucune page du portfolio.",
+    "cta": "Retour à l'accueil"
+  },
+  "footer": {
+    "description": "Software Engineer & Full-Stack Architect spécialisé dans la conception de solutions digitales performantes, scalables et orientées business.",
+    "navigation": "Navigation",
+    "followMe": "Me suivre",
+    "legal": "Légal",
+    "privacy": "Confidentialité",
+    "terms": "Conditions d'utilisation",
+    "copyright": "Tous droits réservés.",
+    "bottomTerms": "Conditions d'utilisation | Confidentialité."
+  },
+  "experience": {
+    "job1_title": "Consultant - Développeur Full Stack",
+    "job1_subtitle": "Myriade Groupe",
+    "job1_period": "2024 — Présent",
+    "job1_description": "Pilotage de refontes architecturales complexes. Leadership technique sur des stacks Next.js/Node.js. Conception et déploiement de solutions SaaS.",
+    "job1_location": "Paris, France",
+    "job2_title": "Développeur Freelance Full-Stack",
+    "job2_subtitle": "Projets Indépendants",
+    "job2_period": "2022 — 2024",
+    "job2_description": "Développement de solutions sur-mesure pour startups et PME. Focus UX/UI premium et optimisation des performances.",
+    "job2_location": "Remote",
+    "edu1_title": "MBA Big Data et Intelligence Artificielle",
+    "edu1_subtitle": "STUDI France",
+    "edu1_period": "2026 — En cours",
+    "edu1_description": "Spécialisation en architectures de données massives, machine learning et intégration de l'IA dans les processus métier.",
+    "edu1_location": "En ligne",
+    "edu2_title": "Licence Pro. Systèmes Informatiques et Logiciels",
+    "edu2_subtitle": "Lucas University College",
+    "edu2_period": "2020 — 2024",
+    "edu2_description": "Formation solide en génie logiciel, algorithmique, bases de données, architectures réseaux et sécurité informatique.",
+    "edu2_location": "Accra, Ghana"
+  },
+  "testimonials": {
+    "t1_quote": "Kalvin a transformé notre vision floue en une plateforme digitale d'exception. Son expertise technique n'a d'égal que sa sensibilité produit.",
+    "t1_author": "Thomas D.",
+    "t1_role": "CEO",
+    "t1_company": "TechStart",
+    "t2_quote": "Rarement vu un développeur avec un tel sens du détail. Le résultat dépasse nos attentes les plus optimistes, tant en performance qu'en design.",
+    "t2_author": "Sophie M.",
+    "t2_role": "Directrice Artistique",
+    "t2_company": "Studio Créatif",
+    "t3_quote": "Un professionnel rigoureux et créatif. Kalvin a su proposer des solutions architecturales innovantes qui ont considérablement amélioré notre produit.",
+    "t3_author": "Marc L.",
+    "t3_role": "CTO",
+    "t3_company": "DataFlow"
+  },
+  "projects_data": {
+    "challenger": {
+      "category": "Logiciel Windows",
+      "short": "Logiciel Windows de calcul du temps de travail des employés.",
+      "full": "Logiciel Windows de pointage et de calcul du temps de travail des employés."
+    },
+    "sheem": {
+      "category": "Application Mobile",
+      "short": "Application mobile de gestion événementielle avec vente de billets, paiement mobile, génération de QR codes et tableau de bord administrateur.",
+      "full": "Application mobile de gestion événementielle avec vente de billets, paiement mobile, génération de QR codes et tableau de bord administrateur."
+    },
+    "mboashop": {
+      "category": "Web",
+      "short": "E-commerce complet avec panier dynamique, paiement intégré et dashboard admin.",
+      "full": "Plateforme e-commerce full-stack avec catalogue riche, panier dynamique, paiement multi-canal et dashboard analytics."
+    },
+    "myriade": {
+      "category": "Web",
+      "short": "Site vitrine corporate premium pour un groupe de services B2B & B2C multi-secteurs.",
+      "full": "Plateforme institutionnelle moderne avec architecture SSG, animations cinématiques, spatial et optimisation SEO."
+    },
+    "stock": {
+      "category": "SaaS",
+      "short": "Gestion de stock en temps réel avec alertes automatiques et reporting avancé.",
+      "full": "SaaS de gestion d'inventaire avec suivi temps réel, alertes de réapprovisionnement et codes-barres."
+    },
+    "green": {
+      "category": "Mobile + Web + API",
+      "short": "Plateforme de gestion complète de plantation et suivi des activités.",
+      "full": "Plateforme complète de gestion de plantation et suivi des activités avec pipeline de données, API RESTful et visualisations interactives."
+    },
+    "metrics": {
+      "users": "Utilisateurs",
+      "events": "Événements",
+      "products": "Produits",
+      "ordersMonth": "Commandes/mois"
+    }
+  }
+}
