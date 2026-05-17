@@ -14,7 +14,7 @@
 
 import React, { useRef } from 'react';
 import Image from 'next/image';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion';
 import { Terminal, Globe, Cpu, Shield, Quote, ArrowRight, Download, Briefcase, GraduationCap, MapPin, Calendar } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
@@ -24,6 +24,8 @@ import SectionHeader from '@/components/ui/SectionHeader';
 import TimelineCard from './components/TimelineCard';
 import { type TimelineItem } from '@/lib/data/experience';
 import { StarField } from '@/components/projects';
+import StardustCursor from '@/components/animations/StardustCursor';
+import MagneticWrapper from '@/components/animations/MagneticWrapper';
 
 
 
@@ -35,6 +37,18 @@ export default function AboutPage() {
   // Transforme la progression du scroll (0 à 1) en un déplacement vertical (0px à -80px).
   // Donne l'impression que la photo de portrait est plus lointaine/plus lente que le reste.
   const yParallax = useTransform(scrollYProgress, [0, 1], [0, -80]);
+
+  // Window Parallax (Suit la souris) pour donner un effet 3D extrême à la photo
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  const imageX = useSpring(useTransform(mouseX, [-0.5, 0.5], [20, -20]), { stiffness: 150, damping: 20 });
+  const imageY = useSpring(useTransform(mouseY, [-0.5, 0.5], [20, -20]), { stiffness: 150, damping: 20 });
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const { clientX, clientY } = e;
+    mouseX.set(clientX / window.innerWidth - 0.5);
+    mouseY.set(clientY / window.innerHeight - 0.5);
+  };
 
   // Récupération des hooks i18n
   const t = useTranslations('about_page');
@@ -99,7 +113,9 @@ export default function AboutPage() {
   ];
 
   return (
-    <div ref={containerRef} className="min-h-screen bg-[#070510] text-base-content overflow-x-hidden relative">
+    <div ref={containerRef} onMouseMove={handleMouseMove} className="min-h-screen bg-[#070510] text-base-content overflow-x-hidden relative">
+      <StardustCursor />
+      
       {/* Modification de l'index Z pour s'assurer que le fond spatial reste derrière */}
       <div className="fixed inset-0 z-0 pointer-events-none opacity-60">
         <StarField />
@@ -156,7 +172,9 @@ export default function AboutPage() {
                transition={{ duration: 0.5, ease: "easeOut" }}
                className="relative max-w-4xl mx-auto aspect-[21/9] rounded-[2rem] overflow-hidden shadow-[0_30px_60px_-15px_rgba(240,165,0,0.15)] hover:shadow-[0_30px_80px_-15px_rgba(240,165,0,0.3)] group"
             >
-              <Image src="/images/b2.JPG" alt="Kalvin — Portrait" fill className="object-cover object-[50%_20%] transition-transform duration-[3s] group-hover:scale-110" priority />
+              <motion.div style={{ x: imageX, y: imageY }} className="absolute inset-[-40px] w-[calc(100%+80px)] h-[calc(100%+80px)]">
+                <Image src="/images/b2.JPG" alt="Kalvin — Portrait" fill className="object-cover object-[50%_20%] transition-transform duration-[3s] group-hover:scale-105" priority />
+              </motion.div>
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
               <div className="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 mix-blend-overlay transition-opacity duration-700 pointer-events-none" />
 
@@ -330,18 +348,22 @@ export default function AboutPage() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mt-12">
 
               {/* Bouton CTA Principal ultra-premium */}
-              <Link href="/contact" className="relative group overflow-hidden cursor-pointer px-10 py-5 rounded-full bg-gradient-to-r from-[#F0A500] to-[#FFD166] text-black font-extrabold text-lg shadow-[0_0_30px_rgba(240,165,0,0.3)] hover:shadow-[0_0_50px_rgba(240,165,0,0.5)] transition-all duration-500 hover:scale-105 flex items-center gap-3">
-                <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
-                <span className="relative z-10 flex items-center gap-3">
-                  {t('cta.ctaPrimary')} <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </span>
-              </Link>
+              <MagneticWrapper strength={0.3}>
+                <Link href="/contact" className="relative group overflow-hidden cursor-pointer px-10 py-5 rounded-full bg-gradient-to-r from-[#F0A500] to-[#FFD166] text-black font-extrabold text-lg shadow-[0_0_30px_rgba(240,165,0,0.3)] hover:shadow-[0_0_50px_rgba(240,165,0,0.5)] transition-all duration-500 hover:scale-105 flex items-center gap-3">
+                  <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
+                  <span className="relative z-10 flex items-center gap-3">
+                    {t('cta.ctaPrimary')} <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  </span>
+                </Link>
+              </MagneticWrapper>
 
               {/* Bouton Secondaire Premium */}
-              <a href="/cv/cv_kalvin.pdf" download className="relative overflow-hidden cursor-pointer px-8 py-5 rounded-full border border-base-content/10 bg-base-200/50 dark:bg-white/5 backdrop-blur-xl hover:border-[#F0A500]/50 hover:bg-[#F0A500]/10 text-base-content/80 hover:text-[#F0A500] font-bold transition-all duration-500 flex items-center gap-3 shadow-sm hover:shadow-[0_0_20px_rgba(240,165,0,0.2)]">
-                <Download className="w-5 h-5" /> 
-                <span className="relative z-10">{t('cta.ctaSecondary')}</span>
-              </a>
+              <MagneticWrapper strength={0.2}>
+                <a href="/cv/cv_kalvin.pdf" download className="relative overflow-hidden cursor-pointer px-8 py-5 rounded-full border border-base-content/10 bg-base-200/50 dark:bg-white/5 backdrop-blur-xl hover:border-[#F0A500]/50 hover:bg-[#F0A500]/10 text-base-content/80 hover:text-[#F0A500] font-bold transition-all duration-500 flex items-center gap-3 shadow-sm hover:shadow-[0_0_20px_rgba(240,165,0,0.2)]">
+                  <Download className="w-5 h-5" /> 
+                  <span className="relative z-10">{t('cta.ctaSecondary')}</span>
+                </a>
+              </MagneticWrapper>
 
             </div>
           </FadeIn>

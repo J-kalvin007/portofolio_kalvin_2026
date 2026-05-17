@@ -18,10 +18,12 @@
  *    pluie de description et cascade inversée de technologies
  */
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef } from 'react';
+import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { Sparkles } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import FadeIn from '@/components/animations/FadeIn';
+import StardustCursor from '@/components/animations/StardustCursor';
 import { PROJECTS, PROJECT_CATEGORIES } from '@/lib/data/projects';
 import { useProjectModal } from '@/hooks/useProjectModal';
 import { ProjectsGrid, ProjectModal } from '@/components/projects';
@@ -49,7 +51,9 @@ export default function ProjetsPage() {
   );
 
   return (
-    <div className="min-h-screen bg-base-100 text-base-content pt-28 sm:pt-36">
+    <div className="min-h-screen bg-base-100 text-base-content pt-28 sm:pt-36 relative">
+      {/* ── Cursor Stardust Ultra-Premium ── */}
+      <StardustCursor />
 
       {/* ═══════════════════════════════════════
          SECTION HERO — Titre de la page
@@ -97,18 +101,9 @@ export default function ProjetsPage() {
             <div className="flex flex-wrap gap-2 p-1.5 rounded-full glass">
 
               {filters.map(({ key, label }) => (
-
-                <button
-                  key={key}
-                  onClick={() => setActiveFilter(key)}
-                  className={`cursor-pointer px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 ${activeFilter === key
-                    ? 'bg-primary text-primary-content shadow-lg shadow-primary/20'
-                    : 'text-base-content/50 hover:text-base-content hover:bg-base-200/50'
-                    }`}
-                >
+                <MagneticButton key={key} active={activeFilter === key} onClick={() => setActiveFilter(key)}>
                   {label}
-                </button>
-
+                </MagneticButton>
               ))}
 
             </div>
@@ -149,4 +144,55 @@ export default function ProjetsPage() {
 
   );
 
+}
+
+/* ── COMPOSANT MAGNÉTIQUE POUR LES FILTRES ── */
+function MagneticButton({ children, active, onClick }: { children: React.ReactNode, active: boolean, onClick: () => void }) {
+  const ref = useRef<HTMLButtonElement>(null);
+  
+  // Position locale de la souris
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+
+  // Animation fluide (spring) pour l'effet magnétique
+  const magneticX = useSpring(x, { stiffness: 150, damping: 15, mass: 0.1 });
+  const magneticY = useSpring(y, { stiffness: 150, damping: 15, mass: 0.1 });
+
+  const handleMouse = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const { clientX, clientY } = e;
+    const { height, width, left, top } = ref.current!.getBoundingClientRect();
+    const middleX = clientX - (left + width / 2);
+    const middleY = clientY - (top + height / 2);
+    x.set(middleX * 0.4); // Force de l'attraction (0.4 = 40% du mouvement)
+    y.set(middleY * 0.4);
+  };
+
+  const reset = () => {
+    x.set(0);
+    y.set(0);
+  };
+
+  return (
+    <motion.button
+      ref={ref}
+      onClick={onClick}
+      onMouseMove={handleMouse}
+      onMouseLeave={reset}
+      animate={{ x: 0, y: 0 }}
+      style={{ x: magneticX, y: magneticY }}
+      className={`relative cursor-pointer px-6 py-2.5 rounded-full text-sm font-bold transition-colors duration-300 z-10 ${
+        active ? 'text-[#070510]' : 'text-base-content/60 hover:text-[#F0A500]'
+      }`}
+    >
+      {active && (
+        <motion.div
+          layoutId="activeFilterBg"
+          className="absolute inset-0 bg-gradient-to-r from-[#F0A500] to-[#FFD166] rounded-full shadow-[0_0_20px_rgba(240,165,0,0.4)]"
+          initial={false}
+          transition={{ type: "spring", stiffness: 400, damping: 30 }}
+        />
+      )}
+      <span className="relative z-10">{children}</span>
+    </motion.button>
+  );
 }

@@ -96,6 +96,10 @@ const ProjectCard = React.memo(function ProjectCard({ project, onSelect, index, 
   const rotateX = useSpring(useTransform(mouseY, [-0.5, 0.5], [4, -4]), { stiffness: 300, damping: 30 });
   const rotateY = useSpring(useTransform(mouseX, [-0.5, 0.5], [-4, 4]), { stiffness: 300, damping: 30 });
 
+  // Translation parallax pour l'image (Window Parallax)
+  const imageX = useSpring(useTransform(mouseX, [-0.5, 0.5], [15, -15]), { stiffness: 300, damping: 30 });
+  const imageY = useSpring(useTransform(mouseY, [-0.5, 0.5], [15, -15]), { stiffness: 300, damping: 30 });
+
   /** Calcule la position relative de la souris sur la carte (normalisée -0.5 → 0.5) */
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -154,6 +158,16 @@ const ProjectCard = React.memo(function ProjectCard({ project, onSelect, index, 
       {/* ── Overlay de Désintégration Local ── */}
       <DisintegrationOverlay phase={localPhase} cardIndex={index} />
 
+      {/* ── Scanline Effect (Glitch transition) ── */}
+      {localPhase === 'disintegrating' && (
+        <motion.div
+          initial={{ top: '-10%' }}
+          animate={{ top: '110%' }}
+          transition={{ duration: 0.45, ease: 'linear' }}
+          className="absolute left-0 right-0 h-1 bg-[#F0A500] shadow-[0_0_30px_10px_rgba(240,165,0,0.8)] z-[100] pointer-events-none mix-blend-screen"
+        />
+      )}
+
       {/* ── Conteneur Glassmorphisme ── */}
       <div className={`relative rounded-2xl overflow-hidden
         bg-white/[0.45] dark:bg-white/[0.03]
@@ -172,15 +186,20 @@ const ProjectCard = React.memo(function ProjectCard({ project, onSelect, index, 
           <div className="absolute -bottom-1/2 -left-1/2 w-full h-full bg-[radial-gradient(circle,var(--accent)_0%,transparent_70%)] opacity-[0.04]" />
         </div>
 
-        {/* ── Image Thumbnail (16:9) ── */}
+        {/* ── Image Thumbnail (16:9) avec Window Parallax ── */}
         <div className="relative aspect-[16/10] overflow-hidden">
-          <Image
-            src={project.coverImage}
-            alt={project.title}
-            fill
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            className="object-cover transition-transform duration-700 group-hover:scale-110"
-          />
+          <motion.div
+            style={{ x: imageX, y: imageY }}
+            className="absolute inset-[-25px] w-[calc(100%+50px)] h-[calc(100%+50px)]"
+          >
+            <Image
+              src={project.coverImage}
+              alt={project.title}
+              fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              className="object-cover transition-transform duration-700 group-hover:scale-105"
+            />
+          </motion.div>
 
           {/* Dégradé bas → lisibilité du texte */}
           <div className="absolute inset-0 bg-gradient-to-t from-white dark:from-[#070510] via-transparent to-transparent opacity-70" />
