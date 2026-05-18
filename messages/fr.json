@@ -221,7 +221,7 @@
     "job1_period": "2024 — Présent",
     "job1_description": "Pilotage de refontes architecturales complexes. Leadership technique sur des stacks Next.js/Node.js. Conception des solutions SaaS et applications mobiles Android et iOS.",
     "job1_location": "Lomé, Togo",
-    "job2_title": "Informaticien",
+    "job2_title": "Gestionnaire Informatique",
     "job2_subtitle": "LaRegale 228",
     "job2_period": "2023 — 2024",
     "job2_description": "Développement et maintenance de solutions pour la gestion des utilisateurs et des commandes de la societe.",
@@ -231,10 +231,10 @@
     "edu1_period": "2026 — En cours",
     "edu1_description": "Spécialisation en architectures de données massives, machine learning et intégration de l'IA dans les processus métier.",
     "edu1_location": "En ligne",
-    "edu2_title": "Licence Pro. Systèmes Informatiques et Logiciels",
+    "edu2_title": "Licence en Systèmes Informatiques et Logiciels",
     "edu2_subtitle": "IAEC Togo",
     "edu2_period": "2020 — 2023",
-    "edu2_description": "Baccalauréat Scientifique.",
+    "edu2_description": "Creation et developpement de sites web et applications mobiles avec des bases de données et des outils de gestion.",
     "edu2_location": "Lomé, Togo"
   },
   "testimonials": {

@@ -132,7 +132,7 @@ export default function HomePage() {
 
             <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.3 }}>
 
-              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-base-content leading-[1.05] tracking-tight">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-base-content leading-[1.05] tracking-tight">
 
                 {t('greeting')} <span className="text-gradient">Kalvin</span><br />
 
@@ -234,10 +234,10 @@ export default function HomePage() {
           </div>
 
           {/* Indicateur de Défilement Visuel (Petite souris animée en bas) */}
-          <motion.div 
-            initial={{ opacity: 0 }} 
-            animate={{ opacity: 1 }} 
-            transition={{ delay: 2 }} 
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 2 }}
             className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 pointer-events-auto cursor-pointer"
             onClick={() => window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })}
           >

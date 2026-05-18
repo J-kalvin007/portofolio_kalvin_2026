@@ -423,3 +423,45 @@
     transform: translateY(-25%);
   }
 }
+
+/* ═══════════════════════════════════════════════
+   À PROPOS PAGE — Marquee Testimonials
+   ═══════════════════════════════════════════════ */
+
+@keyframes marquee-left {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-33.333%); }
+}
+
+@keyframes marquee-right {
+  0% { transform: translateX(-33.333%); }
+  100% { transform: translateX(0); }
+}
+
+/* ═══════════════════════════════════════════════
+   À PROPOS PAGE — Orbital Ring (CTA)
+   ═══════════════════════════════════════════════ */
+
+@keyframes orbital-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ═══════════════════════════════════════════════
+   À PROPOS PAGE — Scroll Indicator Pulse
+   ═══════════════════════════════════════════════ */
+
+@keyframes scroll-pulse {
+  0%, 100% { opacity: 0.3; transform: translateY(0) translateX(-50%); }
+  50% { opacity: 1; transform: translateY(10px) translateX(-50%); }
+}
+
+/* ═══════════════════════════════════════════════
+   À PROPOS PAGE — Glow Line Draw
+   ═══════════════════════════════════════════════ */
+
+@keyframes line-draw {
+  0% { width: 0; opacity: 0; }
+  50% { opacity: 1; }
+  100% { width: 100%; opacity: 0.6; }
+}

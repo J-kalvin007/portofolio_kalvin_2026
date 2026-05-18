@@ -1,15 +1,9 @@
 'use client';
 
 /**
- * @file Navbar.tsx
- * @description Barre de navigation principale de l'application. Hautement interactive et responsive.
- * 
- * @architecture
- * - Navigation basée sur le défilement (Scroll-Aware) : Se cache lors du défilement vers le bas et réapparaît au défilement vers le haut (`useScroll` & `useMotionValueEvent` de framer-motion).
- * - "Glassmorphism" au scroll : La barre devient semi-transparente avec un effet de flou (`backdrop-blur-2xl`) dès qu'on quitte le sommet de la page.
- * - Gestion du menu mobile en plein écran (`AnimatePresence` pour démonter/monter avec animation).
- * - Bascule de langue (i18n) et bascule de thème clair/sombre (`ThemeToggle`).
- * - Indicateur actif dynamique sur les liens via `layoutId` (Framer Motion).
+ * @file Navbar.tsx — Ultra-Premium Navigation V2
+ * @description Barre de navigation cinématique avec glassmorphism avancé,
+ * indicateur doré magnétique, menu mobile théâtral et micro-interactions premium.
  */
 
 import { useState, useEffect } from 'react';
@@ -21,14 +15,12 @@ import Logo from './Logo';
 import ThemeToggle from './ThemeToggle';
 
 export default function Navbar() {
-  // Récupération des hooks nécessaires à l'état de la navigation et de la traduction
   const nextPathname = useNextPathname();
-  const intlPathname = usePathname(); // Hook next-intl garantissant un chemin neutre de la langue
-  const router = useRouter(); // Routeur next-intl
-  const locale = useLocale(); // 'fr' ou 'en'
-  const t = useTranslations('nav'); // Chargement des clés du dictionnaire 'nav'
+  const intlPathname = usePathname();
+  const router = useRouter();
+  const locale = useLocale();
+  const t = useTranslations('nav');
 
-  // Définition statique des liens (facilite la boucle map)
   const NAV_LINKS = [
     { href: '/' as const, label: t('home') },
     { href: '/projets' as const, label: t('projects') },
@@ -36,52 +28,32 @@ export default function Navbar() {
     { href: '/contact' as const, label: t('contact') },
   ];
 
-  // États de l'interface
-  const [menuOpen, setMenuOpen] = useState(false); // État du menu hamburger (mobile)
-  const [isScrolled, setIsScrolled] = useState(false); // Est-on descendu sur la page ?
-  const [isHidden, setIsHidden] = useState(false); // La navbar doit-elle se cacher ?
-
-  // Hook Framer Motion pour écouter la position du scroll de manière très performante (hors du cycle de rendu classique)
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isHidden, setIsHidden] = useState(false);
+  const [hoveredLink, setHoveredLink] = useState<string | null>(null);
   const { scrollY } = useScroll();
 
-  /**
-   * @function toggleLanguage
-   * Change la langue du site à la volée tout en conservant l'URL actuelle.
-   */
   const toggleLanguage = () => {
     const nextLocale = locale === 'fr' ? 'en' : 'fr';
     router.replace(intlPathname, { locale: nextLocale });
   };
 
-  /**
-   * @effect Écouteur de défilement (Scroll Listener).
-   * Pourquoi : Évite les lourdeurs de performance d'un écouteur window.addEventListener classique.
-   */
   useMotionValueEvent(scrollY, 'change', (latest) => {
     const previous = scrollY.getPrevious() ?? 0;
-    // Si on a scrollé de plus de 50px, on applique l'effet Glassmorphism
     setIsScrolled(latest > 50);
-    // Si on descend (latest > previous) de plus de 200px et que le menu mobile n'est pas ouvert, on cache la navbar
     if (latest > 200 && latest > previous && !menuOpen) {
       setIsHidden(true);
     } else {
-      // Si on remonte, on l'affiche
       setIsHidden(false);
     }
   });
 
-  /**
-   * @effect Verrouillage du scroll (Scroll Lock).
-   * Pourquoi : Quand le menu mobile est ouvert, on empêche le corps de la page de défiler derrière lui.
-   */
   useEffect(() => {
     document.body.style.overflow = menuOpen ? 'hidden' : 'unset';
-    return () => { document.body.style.overflow = 'unset'; }; // Nettoyage lors du démontage
+    return () => { document.body.style.overflow = 'unset'; };
   }, [menuOpen]);
 
-  /**
-   * Vérifie si un lien de la navbar correspond à la route actuelle.
-   */
   const isActive = (href: string) => {
     if (href === '/') return intlPathname === '/';
     return intlPathname.startsWith(href);
@@ -91,114 +63,148 @@ export default function Navbar() {
     <>
       <motion.header
         initial={{ y: -100 }}
-        animate={{ y: isHidden ? -100 : 0 }} // Cache ou montre la navbar
+        animate={{ y: isHidden ? -100 : 0 }}
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         className={`
-          fixed top-0 inset-x-0 z-50 px-6 lg:px-12 py-4
-          transition-all duration-500
+          fixed top-0 inset-x-0 z-50 transition-all duration-700
           ${isScrolled
-            ? 'bg-white/80 dark:bg-[#070510]/80 backdrop-blur-2xl shadow-[0_4px_30px_rgba(0,0,0,0.05)] border-b border-slate-200/50 dark:border-white/[0.05]'
-            : 'bg-transparent'
+            ? 'py-2.5 px-4 lg:px-8'
+            : 'py-4 px-6 lg:px-12'
           }
         `}
       >
-        <div className="max-w-[1400px] mx-auto flex justify-between items-center">
-          {/* Section Gauche : Logo */}
+        {/* Glassmorphic Background Layer */}
+        <motion.div
+          className="absolute inset-0 transition-all duration-700"
+          style={{ opacity: isScrolled ? 1 : 0 }}
+        >
+          <div className="absolute inset-x-3 inset-y-0 rounded-2xl bg-white/70 dark:bg-[#070510]/70 backdrop-blur-2xl shadow-[0_8px_32px_rgba(0,0,0,0.06)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.3)] border border-white/50 dark:border-white/[0.06]" />
+        </motion.div>
+
+        <div className="max-w-[1400px] mx-auto flex justify-between items-center relative z-10">
+          {/* Logo */}
           <div className="relative z-[60]">
-            {/* Le texte du logo disparaît subtilement au scroll pour laisser place à une Navbar minimaliste */}
-            <Logo size={36} showText={!isScrolled} />
+            <Logo size={isScrolled ? 32 : 36} showText={!isScrolled} />
           </div>
 
-          {/* Section Centrale : Navigation Desktop */}
-          <nav className={`
-            hidden md:flex relative items-center gap-2 px-3 py-2 rounded-full border transition-all duration-500
-            ${isScrolled
-              ? 'bg-white/50 dark:bg-white/5 border-slate-200/50 dark:border-white/10 shadow-sm'
-              : 'bg-transparent border-transparent'
-            }
-          `}>
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex relative items-center gap-1 px-2 py-1.5 rounded-full">
+            {/* Hover indicator (gold glow pill) */}
+            <AnimatePresence>
+              {hoveredLink && (
+                <motion.div
+                  layoutId="nav-hover-glow"
+                  className="absolute inset-y-1 rounded-full bg-primary/[0.08] dark:bg-primary/[0.12] border border-primary/20"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ type: 'spring', bounce: 0.15, duration: 0.5 }}
+                />
+              )}
+            </AnimatePresence>
+
             {NAV_LINKS.map(({ href, label }) => {
               const active = isActive(href);
               return (
                 <Link
                   key={href}
                   href={href}
-                  className="cursor-pointer relative px-5 py-2 rounded-full text-sm font-medium tracking-wide transition-colors duration-300 group"
+                  onMouseEnter={() => setHoveredLink(href)}
+                  onMouseLeave={() => setHoveredLink(null)}
+                  className="cursor-pointer relative px-5 py-2.5 rounded-full text-sm font-medium tracking-wide transition-all duration-300 group"
                 >
-                  {/* Indicateur de lien actif (Pastille animée par Framer Motion `layoutId`) */}
+                  {/* Active indicator */}
                   {active && (
                     <motion.div
-                      layoutId="nav-active-indicator" // Connecte l'animation entre tous les éléments partageant cet ID
-                      className="absolute inset-0 bg-slate-100 dark:bg-white/10 rounded-full"
+                      layoutId="nav-active-indicator"
+                      className="absolute inset-0 rounded-full bg-primary/10 dark:bg-primary/15 border border-primary/25 shadow-[0_0_15px_rgba(240,165,0,0.1)]"
                       transition={{ type: 'spring', bounce: 0.15, duration: 0.6 }}
                     />
                   )}
-                  <span className={`relative z-10 ${active
-                      ? 'text-slate-900 dark:text-white font-semibold'
-                      : 'text-slate-600 dark:text-slate-300 group-hover:text-slate-900 dark:group-hover:text-white'
-                    }`}>
+
+                  <span className={`relative z-10 transition-all duration-300 ${
+                    active
+                      ? 'text-primary font-bold drop-shadow-[0_0_8px_rgba(240,165,0,0.3)]'
+                      : 'text-base-content/60 group-hover:text-primary'
+                  }`}>
                     {label}
                   </span>
+
+                  {/* Active dot */}
+                  {active && (
+                    <motion.span
+                      layoutId="nav-active-dot"
+                      className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-primary shadow-[0_0_6px_rgba(240,165,0,0.8)]"
+                      transition={{ type: 'spring', bounce: 0.2, duration: 0.5 }}
+                    />
+                  )}
                 </Link>
               );
             })}
           </nav>
 
-          {/* Section Droite : Actions Desktop (Bouton Contact, Langue, Thème) */}
-          <div className="hidden md:flex items-center gap-4 relative z-[60]">
+          {/* Desktop Actions */}
+          <div className="hidden md:flex items-center gap-3 relative z-[60]">
+            {/* Language toggle */}
             <button
               onClick={toggleLanguage}
-              className="cursor-pointer text-xs font-bold tracking-widest uppercase text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors"
+              className="cursor-pointer relative px-3 py-1.5 rounded-lg text-xs font-bold tracking-widest uppercase text-base-content/50 hover:text-primary border border-transparent hover:border-primary/20 hover:bg-primary/5 transition-all duration-300"
             >
               {locale === 'fr' ? 'EN' : 'FR'}
             </button>
+
             <ThemeToggle />
+
+            {/* CTA Button with shimmer */}
             <Link
               href="/contact"
-              className="cursor-pointer group relative overflow-hidden px-6 py-2.5 rounded-full bg-slate-900 dark:bg-white text-white dark:text-[#070510] transition-transform duration-300 hover:scale-105 active:scale-95"
+              className="cursor-pointer group relative overflow-hidden px-7 py-2.5 rounded-full bg-gradient-to-r from-primary to-[#FFD166] text-black transition-all duration-500 hover:scale-105 hover:shadow-[0_0_25px_rgba(240,165,0,0.4)] active:scale-95"
             >
-              {/* Effet bouton "Void & Or" avec remplissage interactif */}
-              <div className="absolute inset-0 bg-primary translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-[0.22,1,0.36,1]" />
-              <span className="relative z-10 font-bold text-sm tracking-wide group-hover:text-primary-content transition-colors duration-500">
+              {/* Shimmer sweep */}
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+              <span className="relative z-10 font-bold text-sm tracking-wide">
                 {t('contactBtn')}
               </span>
             </Link>
           </div>
 
-          {/* Section Mobile : Bouton Hamburger animé + Actions Rapides */}
-          <div className="flex md:hidden items-center gap-3 relative z-[60]">
+          {/* Mobile Actions */}
+          <div className="flex md:hidden items-center gap-2.5 relative z-[60]">
             <button
               onClick={toggleLanguage}
-              className="cursor-pointer text-xs font-bold tracking-widest uppercase text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors mr-1"
+              className="cursor-pointer text-xs font-bold tracking-widest uppercase text-base-content/50 hover:text-primary transition-colors"
             >
               {locale === 'fr' ? 'EN' : 'FR'}
             </button>
             <ThemeToggle />
 
-            {/* Menu Hamburger animé (transforme 3 lignes en croix) */}
+            {/* Animated hamburger */}
             <button
-              className="cursor-pointer p-2 -mr-2 text-slate-900 dark:text-white flex flex-col justify-center items-center w-10 h-10 gap-[5px]"
+              className="cursor-pointer p-2 -mr-2 text-base-content flex flex-col justify-center items-center w-10 h-10 gap-[5px]"
               onClick={() => setMenuOpen(!menuOpen)}
               aria-label="Toggle menu"
             >
               <motion.span
-                animate={menuOpen ? { rotate: 45, y: 7 } : { rotate: 0, y: 0 }}
-                className="w-6 h-[2px] bg-current block transition-all"
+                animate={menuOpen ? { rotate: 45, y: 7, backgroundColor: 'rgb(240,165,0)' } : { rotate: 0, y: 0 }}
+                className="w-6 h-[2px] bg-current block origin-center"
+                transition={{ duration: 0.3 }}
               />
               <motion.span
-                animate={menuOpen ? { opacity: 0 } : { opacity: 1 }}
-                className="w-6 h-[2px] bg-current block transition-all"
+                animate={menuOpen ? { opacity: 0, scaleX: 0 } : { opacity: 1, scaleX: 1 }}
+                className="w-6 h-[2px] bg-current block"
+                transition={{ duration: 0.2 }}
               />
               <motion.span
-                animate={menuOpen ? { rotate: -45, y: -7 } : { rotate: 0, y: 0 }}
-                className="w-6 h-[2px] bg-current block transition-all"
+                animate={menuOpen ? { rotate: -45, y: -7, backgroundColor: 'rgb(240,165,0)' } : { rotate: 0, y: 0 }}
+                className="w-6 h-[2px] bg-current block origin-center"
+                transition={{ duration: 0.3 }}
               />
             </button>
           </div>
         </div>
       </motion.header>
 
-      {/* Interface Menu Mobile (Affichage en plein écran par-dessus la page) */}
+      {/* ═══ MOBILE MENU — Theatrical Full-Screen ═══ */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div
@@ -206,50 +212,92 @@ export default function Navbar() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed inset-0 z-40 bg-white/95 dark:bg-[#070510]/95 backdrop-blur-3xl md:hidden flex flex-col"
+            className="fixed inset-0 z-40 md:hidden flex flex-col overflow-hidden"
           >
-            {/* Ambiances de fond luxueuses pour le menu */}
-            <div className="absolute top-20 right-0 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px] pointer-events-none" />
-            <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-secondary/10 rounded-full blur-[100px] pointer-events-none" />
+            {/* Backdrop */}
+            <motion.div
+              initial={{ scale: 1.2, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 1.1, opacity: 0 }}
+              transition={{ duration: 0.6 }}
+              className="absolute inset-0 bg-white/95 dark:bg-[#070510]/95 backdrop-blur-3xl"
+            />
 
-            <div className="flex flex-col justify-center h-full px-8 pb-20 items-center">
-              <nav className="flex flex-col gap-8 items-center text-center">
+            {/* Ambient orbs */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2, duration: 1 }}
+              className="absolute top-1/4 right-0 w-[400px] h-[400px] bg-primary/8 rounded-full blur-[120px] pointer-events-none"
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.3, duration: 1 }}
+              className="absolute bottom-1/4 left-0 w-[300px] h-[300px] bg-primary/5 rounded-full blur-[100px] pointer-events-none"
+            />
+
+            {/* Grid pattern */}
+            <div className="absolute inset-0 opacity-[0.02]" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, currentColor 1px, transparent 0)', backgroundSize: '32px 32px' }} />
+
+            <div className="flex flex-col justify-center h-full px-8 pb-20 items-center relative z-10">
+              <nav className="flex flex-col gap-3 items-center text-center w-full max-w-xs">
                 {NAV_LINKS.map(({ href, label }, i) => (
-                  <div key={href} className="overflow-hidden">
-                    {/* Les liens entrent en cascade (Stagger effect) grâce au "delay" basé sur l'index "i" */}
+                  <div key={href} className="overflow-hidden w-full">
                     <motion.div
-                      initial={{ y: "100%" }}
-                      animate={{ y: 0 }}
-                      exit={{ y: "100%" }}
+                      initial={{ y: '100%', opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      exit={{ y: '100%', opacity: 0 }}
                       transition={{
-                        delay: menuOpen ? 0.1 + i * 0.08 : 0,
+                        delay: 0.1 + i * 0.08,
                         duration: 0.6,
                         ease: [0.22, 1, 0.36, 1]
                       }}
                     >
                       <Link
                         href={href}
-                        onClick={() => setMenuOpen(false)} // Ferme le menu après un clic
-                        className="cursor-pointer group relative inline-flex items-center text-2xl sm:text-3xl font-medium tracking-tight text-slate-900 dark:text-white transition-colors duration-300"
+                        onClick={() => setMenuOpen(false)}
+                        className={`cursor-pointer group relative flex items-center justify-center py-4 px-6 rounded-2xl text-2xl sm:text-3xl font-bold tracking-tight transition-all duration-500 ${
+                          isActive(href)
+                            ? 'text-primary bg-primary/10 border border-primary/20 shadow-[0_0_20px_rgba(240,165,0,0.1)]'
+                            : 'text-base-content hover:text-primary hover:bg-primary/5'
+                        }`}
                       >
-                        <span className={`relative z-10 transition-colors duration-500 ${isActive(href) ? 'text-primary' : 'group-hover:text-primary'}`}>
-                          {label}
-                        </span>
-                        {/* Barre de soulignement au survol */}
-                        <span className="absolute -bottom-2 left-0 w-0 h-[2px] bg-primary transition-all duration-500 ease-[0.22,1,0.36,1] group-hover:w-full" />
+                        {/* Active glow line */}
+                        {isActive(href) && (
+                          <span className="absolute left-4 top-1/2 -translate-y-1/2 w-1 h-8 rounded-full bg-primary shadow-[0_0_10px_rgba(240,165,0,0.6)]" />
+                        )}
+                        {label}
                       </Link>
                     </motion.div>
                   </div>
                 ))}
+
+                {/* Mobile CTA */}
+                <motion.div
+                  initial={{ y: '100%', opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  exit={{ y: '100%', opacity: 0 }}
+                  transition={{ delay: 0.45, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                  className="w-full mt-4"
+                >
+                  <Link
+                    href="/contact"
+                    onClick={() => setMenuOpen(false)}
+                    className="cursor-pointer flex items-center justify-center py-4 px-6 rounded-2xl bg-gradient-to-r from-primary to-[#FFD166] text-black font-bold text-lg tracking-wide shadow-[0_0_20px_rgba(240,165,0,0.3)] hover:shadow-[0_0_30px_rgba(240,165,0,0.5)] transition-all duration-500"
+                  >
+                    {t('contactBtn')}
+                  </Link>
+                </motion.div>
               </nav>
 
-              {/* Mentions de copyright du menu mobile */}
+              {/* Footer */}
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                transition={{ delay: 0.5, duration: 0.6 }}
-                className="absolute bottom-8 left-0 right-0 text-center text-xs text-slate-500 dark:text-slate-400 tracking-wider uppercase font-medium"
+                transition={{ delay: 0.6, duration: 0.6 }}
+                className="absolute bottom-8 left-0 right-0 text-center text-[10px] text-base-content/30 tracking-[0.3em] uppercase font-bold"
               >
                 Takoudjou Moïse Kalvin © {new Date().getFullYear()}
               </motion.div>

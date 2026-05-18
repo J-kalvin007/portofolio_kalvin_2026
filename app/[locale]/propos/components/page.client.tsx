@@ -1,61 +1,38 @@
 'use client';
 
-/**
- * @file propos/page.tsx
- * @description Page "À Propos" du portfolio. Présente l'ingénieur, sa vision, son expérience et ses références.
- * 
- * @architecture
- * - Utilise `useScroll` et `useTransform` (Framer Motion) pour générer un effet de "Parallax" 
- *   sur l'image de portrait (l'image bouge à une vitesse différente du reste du site).
- * - Componentisation locale : `TimelineCard` est créé dans ce fichier car il n'est utilisé qu'ici.
- * - Utilisation massive de `StaggerChildren` pour orchestrer l'apparition d'éléments multiples (Valeurs, Témoignages).
- * - S'appuie intégralement sur les clés de traduction (i18n) pour la gestion du texte.
- */
-
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import Image from 'next/image';
 import { motion, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion';
-import { Terminal, Globe, Cpu, Shield, Quote, ArrowRight, Download, Briefcase, GraduationCap, MapPin, Calendar } from 'lucide-react';
+import { Terminal, Globe, Cpu, Shield, ArrowRight, Download, Briefcase, GraduationCap, MapPin, Calendar, ChevronDown } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import FadeIn from '@/components/animations/FadeIn';
-import StaggerChildren, { StaggerItem } from '@/components/animations/StaggerChildren';
-import SectionHeader from '@/components/ui/SectionHeader';
-import { type TimelineItem } from '@/lib/data/experience';
-import { StarField } from '@/components/projects';
-import StardustCursor from '@/components/animations/StardustCursor';
 import MagneticWrapper from '@/components/animations/MagneticWrapper';
+import { type TimelineItem } from '@/lib/data/experience';
+import StardustCursor from '@/components/animations/StardustCursor';
+import { AnimatedCounter, ScrollWord, MarqueeRow } from './AboutAnimations';
 import TimelineCard from './TimelineCard';
 
-
-
 export default function AboutPage() {
-  // Setup du Parallax : On surveille le défilement (scrollY) du composant racine.
   const containerRef = useRef<HTMLDivElement>(null);
+  const visionRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: containerRef, offset: ['start start', 'end end'] });
-
-  // Transforme la progression du scroll (0 à 1) en un déplacement vertical (0px à -80px).
-  // Donne l'impression que la photo de portrait est plus lointaine/plus lente que le reste.
+  const { scrollYProgress: visionProgress } = useScroll({ target: visionRef, offset: ['start 0.8', 'end 0.3'] });
   const yParallax = useTransform(scrollYProgress, [0, 1], [0, -80]);
-
-  // Window Parallax (Suit la souris) pour donner un effet 3D extrême à la photo
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
-  const imageX = useSpring(useTransform(mouseX, [-0.5, 0.5], [20, -20]), { stiffness: 150, damping: 20 });
-  const imageY = useSpring(useTransform(mouseY, [-0.5, 0.5], [20, -20]), { stiffness: 150, damping: 20 });
+  const imgX = useSpring(useTransform(mouseX, [-0.5, 0.5], [15, -15]), { stiffness: 150, damping: 20 });
+  const imgY = useSpring(useTransform(mouseY, [-0.5, 0.5], [15, -15]), { stiffness: 150, damping: 20 });
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const { clientX, clientY } = e;
-    mouseX.set(clientX / window.innerWidth - 0.5);
-    mouseY.set(clientY / window.innerHeight - 0.5);
+  const handleMouseMove = (e: React.MouseEvent) => {
+    mouseX.set(e.clientX / window.innerWidth - 0.5);
+    mouseY.set(e.clientY / window.innerHeight - 0.5);
   };
 
-  // Récupération des hooks i18n
   const t = useTranslations('about_page');
   const tExp = useTranslations('experience');
   const tTest = useTranslations('testimonials');
 
-  // Dictionnaire des valeurs (Soft skills & Philosophie)
   const VALUES = [
     { icon: Terminal, title: t('values.excellence'), desc: t('values.excellence_desc') },
     { icon: Globe, title: t('values.vision'), desc: t('values.vision_desc') },
@@ -63,315 +40,293 @@ export default function AboutPage() {
     { icon: Shield, title: t('values.reliability'), desc: t('values.reliability_desc') },
   ];
 
-  // Extraction et structuration des expériences professionnelles
   const EXPERIENCE: TimelineItem[] = [
-    {
-      title: tExp('job1_title'),
-      subtitle: tExp('job1_subtitle'),
-      period: tExp('job1_period'),
-      description: tExp('job1_description'),
-      tags: ['Architecture', 'Next.js', 'Node.js', 'Leadership'],
-      location: tExp('job1_location'),
-      type: 'work',
-    },
-    {
-      title: tExp('job2_title'),
-      subtitle: tExp('job2_subtitle'),
-      period: tExp('job2_period'),
-      description: tExp('job2_description'),
-      tags: ['Full-Stack', 'React Native', 'Django', 'B2B'],
-      location: tExp('job2_location'),
-      type: 'work',
-    },
+    { title: tExp('job1_title'), subtitle: tExp('job1_subtitle'), period: tExp('job1_period'), description: tExp('job1_description'), tags: ['Architecture', 'Next.js', 'Node.js', 'Leadership'], location: tExp('job1_location'), type: 'work' },
+    { title: tExp('job2_title'), subtitle: tExp('job2_subtitle'), period: tExp('job2_period'), description: tExp('job2_description'), tags: ['Full-Stack', 'React Native', 'Django', 'B2B'], location: tExp('job2_location'), type: 'work' },
   ];
 
-  // Extraction et structuration du parcours académique
   const EDUCATION: TimelineItem[] = [
-    {
-      title: tExp('edu1_title'),
-      subtitle: tExp('edu1_subtitle'),
-      period: tExp('edu1_period'),
-      description: tExp('edu1_description'),
-      location: tExp('edu1_location'),
-      type: 'education',
-    },
-    {
-      title: tExp('edu2_title'),
-      subtitle: tExp('edu2_subtitle'),
-      period: tExp('edu2_period'),
-      description: tExp('edu2_description'),
-      location: tExp('edu2_location'),
-      type: 'education',
-    },
+    { title: tExp('edu1_title'), subtitle: tExp('edu1_subtitle'), period: tExp('edu1_period'), description: tExp('edu1_description'), location: tExp('edu1_location'), type: 'education' },
+    { title: tExp('edu2_title'), subtitle: tExp('edu2_subtitle'), period: tExp('edu2_period'), description: tExp('edu2_description'), location: tExp('edu2_location'), type: 'education' },
   ];
 
-  // Données des témoignages (Clients / Collègues)
   const TESTIMONIALS = [
     { quote: tTest('t1_quote'), author: tTest('t1_author'), role: tTest('t1_role'), company: tTest('t1_company') },
     { quote: tTest('t2_quote'), author: tTest('t2_author'), role: tTest('t2_role'), company: tTest('t2_company') },
     { quote: tTest('t3_quote'), author: tTest('t3_author'), role: tTest('t3_role'), company: tTest('t3_company') },
   ];
 
+  const nameChars = 'Kalvin'.split('');
+  const visionText = `${t('vision.p1')} ${t('vision.p2')}`.split(' ');
+  const visionP3 = t('vision.p3').split(' ');
+
+  const [spotPos, setSpotPos] = useState({ x: 0, y: 0 });
+
   return (
     <div ref={containerRef} onMouseMove={handleMouseMove} className="min-h-screen bg-base-100 text-base-content overflow-x-hidden relative">
       <StardustCursor />
 
-      {/* Modification de l'index Z pour s'assurer que le fond spatial reste derrière */}
-      <div className="fixed inset-0 z-0 pointer-events-none opacity-60">
-        <StarField />
-      </div>
+      {/* ═══ SECTION 1 — CINEMATIC HERO ═══ */}
+      <section className="relative min-h-screen flex items-center pt-24 pb-16 overflow-hidden">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[900px] rounded-full bg-primary/5 blur-[180px] pointer-events-none" />
+        <div className="absolute bottom-0 right-0 w-[500px] h-[500px] rounded-full bg-primary/[0.03] blur-[120px] pointer-events-none" />
 
-      <div className="relative z-10">
-        {/* ═══════ HERO SECTION ═══════ */}
-        <section className="relative min-h-[85vh] flex items-center justify-center pt-28 pb-20 overflow-hidden">
-          {/* Glows d'ambiance spatiale */}
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] rounded-full bg-[#F0A500]/5 blur-[150px] pointer-events-none" />
-          <div className="absolute bottom-0 right-0 w-[600px] h-[600px] rounded-full bg-[#F0A500]/[0.03] blur-[120px] pointer-events-none" />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 w-full grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8 items-center relative z-10">
+          {/* Left — Text */}
+          <div className="space-y-6 text-center lg:text-left order-2 lg:order-1">
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.6 }}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass text-xs font-bold tracking-[0.2em] uppercase text-base-content/60">
+              <span className="w-2 h-2 rounded-full bg-primary shadow-[0_0_10px_rgba(240,165,0,0.6)]" />
+              {t('badge')}
+            </motion.div>
 
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 text-center relative z-10">
+            <div className="overflow-hidden">
+              <motion.h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tight leading-[0.95]">
+                {nameChars.map((c, i) => (
+                  <motion.span key={i} initial={{ opacity: 0, y: 60 }} animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.4 + i * 0.07, duration: 0.5, ease: [0.21, 0.47, 0.32, 0.98] }}
+                    className="inline-block text-transparent bg-clip-text bg-gradient-to-b from-primary to-[#FFD166] drop-shadow-[0_0_20px_rgba(240,165,0,0.3)]">
+                    {c}
+                  </motion.span>
+                ))}
+              </motion.h1>
+            </div>
 
-            {/* <FadeIn>
-              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass text-xs font-bold tracking-[0.2em] uppercase text-base-content/60 mb-8">
-                <span className="w-2 h-2 rounded-full bg-primary shadow-[0_0_10px_rgba(0,217,255,0.5)]" />
-                {t('badge')}
+            <motion.h2 initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 1, duration: 0.7 }}
+              className="text-2xl sm:text-3xl md:text-4xl font-bold text-base-content leading-tight">
+              {t('titleLine1')}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-[#FFD166]">
+                {t('titleLine2')} {t('titleLine3')}
               </span>
-            </FadeIn> */}
+            </motion.h2>
 
-            <FadeIn delay={0.1}>
-              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-base-content leading-[0.95] tracking-tight mb-6 sm:mb-8">
-                {t('titleLine1')}
-                {/* <br /> */}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#F0A500] to-[#FFD166] drop-shadow-[0_0_15px_rgba(240,165,0,0.5)]">
-                  {t('titleLine2')}  {t('titleLine3')}
-                </span>
-                <br />
-
-              </h1>
-            </FadeIn>
-
-            {/* 
-            Description enrichie avec des balises <bold>
-            Utilise `t.rich` qui permet d'injecter des éléments React (comme <strong>) au milieu d'une chaîne i18n
-          */}
-            <FadeIn delay={0.2}>
-              <p className="text-lg md:text-xl text-base-content/50 max-w-2xl mx-auto leading-relaxed font-light">
-                {t.rich('description', {
-                  bold1: (chunks) => <strong className="text-base-content/80 font-medium">{chunks}</strong>,
-                  bold2: (chunks) => <strong className="text-base-content/80 font-medium">{chunks}</strong>,
-                })}
-              </p>
-            </FadeIn>
-
-            {/* 
-            Image de Portrait avec Effet Parallax (`style={{ y: yParallax }}`) et 3D Spatiale
-          */}
-            <FadeIn delay={0.4} className="mt-16 perspective-[2000px]">
-              <motion.div
-                style={{ y: yParallax, rotateX: 5, rotateY: -5 }}
-                whileHover={{ rotateX: 0, rotateY: 0, scale: 1.02 }}
-                transition={{ duration: 0.5, ease: "easeOut" }}
-                className="relative max-w-4xl mx-auto aspect-[21/9] rounded-[2rem] overflow-hidden shadow-[0_30px_60px_-15px_rgba(240,165,0,0.15)] hover:shadow-[0_30px_80px_-15px_rgba(240,165,0,0.3)] group"
-              >
-                <motion.div style={{ x: imageX, y: imageY }} className="absolute inset-[-40px] w-[calc(100%+80px)] h-[calc(100%+80px)]">
-                  <Image src="/images/m9.JPG" alt="Kalvin — Portrait" fill sizes="(max-width: 896px) 100vw, 896px" className="object-cover transition-transform duration-[3s] group-hover:scale-105" priority />
-                </motion.div>
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
-                <div className="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 mix-blend-overlay transition-opacity duration-700 pointer-events-none" />
-
-                <div className="absolute bottom-8 left-8 text-left z-10 transition-transform duration-700 group-hover:-translate-y-2">
-                  <p className="text-3xl text-white/90 drop-shadow-[0_0_15px_rgba(240,165,0,0.8)]">Kalvin</p>
-                  <p className="text-xs font-bold tracking-[0.2em] uppercase text-[#F0A500] mt-1 drop-shadow-sm">{t('subtitle')}</p>
-                </div>
-              </motion.div>
-            </FadeIn>
+            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.3, duration: 0.8 }}
+              className="text-lg text-base-content/50 max-w-lg font-light leading-relaxed mx-auto lg:mx-0">
+              {t('description')}
+            </motion.p>
           </div>
-        </section>
 
-        {/* ═══════ STATISTIQUES EN CHIFFRES ═══════ */}
-        <section className="py-16 border-y border-base-content/5 bg-base-200/30 dark:bg-white/[0.01]">
-          <div className="max-w-5xl mx-auto px-6 flex flex-wrap justify-center md:justify-around gap-8 md:gap-0">
-            {[
-              { value: '3+', label: t('stats.years') },
-              { value: '20+', label: t('stats.projects') },
-              { value: '100%', label: t('stats.engagement') },
-              { value: '∞', label: t('stats.passion') },
-            ].map((s) => (
-              <FadeIn key={s.label} className="text-center px-4 group">
-                <div className="text-4xl md:text-5xl font-bold mb-2 tracking-tight text-transparent bg-clip-text bg-gradient-to-b from-base-content to-base-content/50 group-hover:from-[#F0A500] group-hover:to-[#FFD166] transition-all duration-500 drop-shadow-sm group-hover:drop-shadow-[0_0_15px_rgba(240,165,0,0.5)]">
-                  {s.value}
+          {/* Right — Portrait with clip-path reveal */}
+          <div className="order-1 lg:order-2 flex justify-center perspective-[2000px]">
+            <motion.div
+              initial={{ clipPath: 'circle(0% at 50% 50%)' }}
+              animate={{ clipPath: 'circle(75% at 50% 50%)' }}
+              transition={{ delay: 0.6, duration: 1.8, ease: [0.77, 0, 0.175, 1] }}
+              style={{ y: yParallax, rotateX: 3, rotateY: -3 }}
+              whileHover={{ rotateX: 0, rotateY: 0, scale: 1.02 }}
+              className="relative w-full max-w-md aspect-[3/4] rounded-[2.5rem] overflow-hidden shadow-[0_30px_60px_-15px_rgba(240,165,0,0.2)] group"
+            >
+              <motion.div style={{ x: imgX, y: imgY }} className="absolute inset-[-30px] w-[calc(100%+60px)] h-[calc(100%+60px)]">
+                <Image src="/images/m9.JPG" alt="Kalvin — Portrait" fill sizes="(max-width: 448px) 100vw, 448px" className="object-cover transition-transform duration-[3s] group-hover:scale-105" priority />
+              </motion.div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+              <div className="absolute inset-0 bg-primary/15 opacity-0 group-hover:opacity-100 mix-blend-overlay transition-opacity duration-700" />
+              <div className="absolute bottom-6 left-6 z-10">
+                <p className="text-xs font-bold tracking-[0.2em] uppercase text-primary drop-shadow-sm">{t('subtitle')}</p>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+
+        {/* Scroll indicator */}
+        <div className="absolute bottom-8 left-1/2 z-10" style={{ animation: 'scroll-pulse 2s ease-in-out infinite' }}>
+          <ChevronDown className="w-6 h-6 text-primary" />
+        </div>
+      </section>
+
+      {/* ═══ SECTION 2 — ANIMATED COUNTERS ═══ */}
+      <section className="py-20 border-y border-base-content/5 bg-base-200/30 dark:bg-white/[0.01] relative overflow-hidden">
+        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, currentColor 1px, transparent 0)', backgroundSize: '40px 40px' }} />
+        <div className="max-w-5xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-4 relative z-10">
+          {[
+            { target: 3, suffix: '+', label: t('stats.years') },
+            { target: 20, suffix: '+', label: t('stats.projects') },
+            { target: 100, suffix: '%', label: t('stats.engagement') },
+          ].map((s, i) => (
+            <FadeIn key={s.label} delay={i * 0.1} className="text-center group">
+              <div className="text-4xl md:text-5xl font-bold mb-2 tracking-tight text-transparent bg-clip-text bg-gradient-to-b from-base-content to-base-content/50 group-hover:from-primary group-hover:to-[#FFD166] transition-all duration-500">
+                <AnimatedCounter target={s.target} suffix={s.suffix} />
+              </div>
+              <div className="w-8 h-[2px] bg-primary/30 group-hover:bg-primary group-hover:w-12 transition-all duration-500 mx-auto mb-2" />
+              <div className="text-xs font-bold uppercase tracking-[0.15em] text-base-content/40 group-hover:text-primary/80 transition-colors duration-500">{s.label}</div>
+            </FadeIn>
+          ))}
+          <FadeIn delay={0.3} className="text-center group">
+            <motion.div initial={{ scale: 0, rotate: -180 }} whileInView={{ scale: 1, rotate: 0 }} viewport={{ once: true }}
+              transition={{ delay: 1.5, duration: 0.8, type: 'spring' }}
+              className="text-4xl md:text-5xl font-bold mb-2 text-transparent bg-clip-text bg-gradient-to-b from-base-content to-base-content/50 group-hover:from-primary group-hover:to-[#FFD166] transition-all duration-500">
+              ∞
+            </motion.div>
+            <div className="w-8 h-[2px] bg-primary/30 group-hover:bg-primary group-hover:w-12 transition-all duration-500 mx-auto mb-2" />
+            <div className="text-xs font-bold uppercase tracking-[0.15em] text-base-content/40 group-hover:text-primary/80 transition-colors">{t('stats.passion')}</div>
+          </FadeIn>
+        </div>
+      </section>
+
+      {/* ═══ SECTION 3 — SCROLL REVEAL VISION ═══ */}
+      <section ref={visionRef} className="py-28 px-4 sm:px-6 relative">
+        <div className="max-w-4xl mx-auto">
+          <FadeIn>
+            <div className="inline-flex items-center gap-2.5 mb-6">
+              <span className="w-8 h-[2px] rounded-full bg-primary" />
+              <span className="text-xs font-bold uppercase tracking-[0.25em] text-primary">{t('vision.eyebrow')}</span>
+            </div>
+            <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-base-content leading-[1.1] tracking-tight mb-16">{t('vision.title')}</h2>
+          </FadeIn>
+
+          <div className="text-xl sm:text-2xl leading-relaxed text-base-content font-light mb-12">
+            {visionText.map((word, i) => (
+              <ScrollWord key={i} progress={visionProgress} index={i} total={visionText.length + visionP3.length + 5}>
+                {word}
+              </ScrollWord>
+            ))}
+          </div>
+
+          <motion.blockquote
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            className="relative p-8 sm:p-10 rounded-[2rem] glass border-l-4 border-primary my-12 shadow-xl"
+          >
+            <div className="absolute -top-4 -left-2 text-6xl text-primary/20 font-serif">&ldquo;</div>
+            <p className="text-xl sm:text-2xl text-base-content/80 italic font-light leading-relaxed">{t('vision.quote')}</p>
+          </motion.blockquote>
+
+          <div className="text-xl sm:text-2xl leading-relaxed text-base-content font-light">
+            {visionP3.map((word, i) => (
+              <ScrollWord key={i} progress={visionProgress} index={visionText.length + 5 + i} total={visionText.length + visionP3.length + 5}>
+                {word}
+              </ScrollWord>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ═══ SECTION 4 — VALUES (Spotlight Cards) ═══ */}
+      <section className="py-24 px-4 sm:px-6 bg-base-200/30 dark:bg-white/[0.01] relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-[400px] h-[400px] bg-primary/5 rounded-full blur-[120px] pointer-events-none" />
+        <div className="max-w-6xl mx-auto relative z-10">
+          <FadeIn className="text-center mb-16">
+            <div className="inline-flex items-center gap-2.5 mb-6 mx-auto">
+              <span className="w-8 h-[2px] rounded-full bg-primary" />
+              <span className="text-xs font-bold uppercase tracking-[0.25em] text-primary">{t('values_section.eyebrow')}</span>
+            </div>
+            <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-base-content leading-[1.1] tracking-tight">{t('values_section.title')}</h2>
+          </FadeIn>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+            {VALUES.map((v, i) => (
+              <FadeIn key={i} delay={i * 0.12}>
+                <div
+                  onMouseMove={(e) => { const r = e.currentTarget.getBoundingClientRect(); setSpotPos({ x: e.clientX - r.left, y: e.clientY - r.top }); }}
+                  className="group relative p-7 rounded-[2rem] bg-white dark:bg-white/[0.02] border border-base-content/[0.06] dark:border-base-content/[0.04] hover:border-primary/40 transition-all duration-700 shadow-md hover:shadow-2xl hover:shadow-primary/10 overflow-hidden h-full cursor-default"
+                >
+                  <div className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-700"
+                    style={{ background: `radial-gradient(350px circle at ${spotPos.x}px ${spotPos.y}px, rgba(240,165,0,0.12), transparent 50%)` }} />
+                  <div className="relative z-10">
+                    <div className="w-14 h-14 rounded-2xl bg-base-200 dark:bg-white/5 flex items-center justify-center mb-5 text-base-content/50 group-hover:scale-110 group-hover:bg-gradient-to-br group-hover:from-primary group-hover:to-[#FFD166] group-hover:text-black group-hover:shadow-[0_0_25px_rgba(240,165,0,0.4)] transition-all duration-500">
+                      <v.icon className="w-7 h-7" strokeWidth={1.5} />
+                    </div>
+                    <h3 className="font-bold text-lg text-base-content mb-2 group-hover:text-primary transition-colors">{v.title}</h3>
+                    <p className="text-sm text-base-content/55 leading-relaxed font-light">{v.desc}</p>
+                  </div>
                 </div>
-                <div className="text-xs font-bold uppercase tracking-[0.15em] text-base-content/40 group-hover:text-primary/80 transition-colors duration-500">{s.label}</div>
               </FadeIn>
             ))}
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* ═══════ VISION ET PHILOSOPHIE ═══════ */}
-        <section className="py-28 px-4 sm:px-6">
-          <div className="max-w-4xl mx-auto">
-            <FadeIn><SectionHeader eyebrow={t('vision.eyebrow')} title={t('vision.title')} /></FadeIn>
-
-            <div className="grid md:grid-cols-[1fr_2fr] gap-12 items-start">
-
-              {/* Colonne Gauche : Mantra Collant (Sticky Sidebar) */}
-              <FadeIn direction="left" className="hidden md:block sticky top-32">
-                <span className="block w-12 h-[2px] bg-primary mb-4" />
-                <p className="text-sm font-bold text-base-content/30 uppercase tracking-widest leading-loose">
-                  {t('vision.sidebarMantra')}<br />
-                  {t('vision.sidebarApproach')}<br />
-                  {t('vision.sidebarStandard')}
-                </p>
-              </FadeIn>
-
-              {/* Colonne Droite : Texte Long */}
-              <FadeIn direction="right">
-                <div className="space-y-6 text-lg leading-relaxed text-base-content/60 font-light">
-                  <p>{t.rich('vision.p1', { bold: (chunks) => <strong className="text-base-content/90 font-medium">{chunks}</strong> })}</p>
-                  <p>{t.rich('vision.p2', { bold: (chunks) => <strong className="text-base-content/90 font-medium">{chunks}</strong> })}</p>
-
-                  <blockquote className="pl-6 border-l-4 border-primary italic text-base-content/80 text-2xl font-display py-2 my-8">
-                    {t('vision.quote')}
-                  </blockquote>
-
-                  <p>{t('vision.p3')}</p>
-                </div>
-              </FadeIn>
+      {/* ═══ SECTION 5 — TIMELINE ═══ */}
+      <section className="py-28 px-4 sm:px-6 relative">
+        <div className="absolute top-0 bottom-0 left-[calc(50%-1px)] w-[2px] bg-gradient-to-b from-transparent via-primary/20 to-transparent hidden md:block" />
+        <div className="max-w-4xl mx-auto relative z-10">
+          <FadeIn>
+            <div className="inline-flex items-center gap-2.5 mb-6">
+              <span className="w-8 h-[2px] rounded-full bg-primary" />
+              <span className="text-xs font-bold uppercase tracking-[0.25em] text-primary">{t('timeline.eyebrow')}</span>
             </div>
+            <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-base-content leading-[1.1] tracking-tight mb-16">{t('timeline.title')}</h2>
+          </FadeIn>
+
+          <div className="flex items-center gap-3 mb-10">
+            <div className="p-3 rounded-2xl bg-primary/10 border border-primary/20 shadow-[0_0_15px_rgba(240,165,0,0.2)]">
+              <Briefcase className="w-6 h-6 text-primary" />
+            </div>
+            <h3 className="font-bold text-2xl text-base-content">{t('timeline.experience')}</h3>
           </div>
-        </section>
+          <div className="space-y-6">{EXPERIENCE.map((item, i) => <TimelineCard key={i} item={item} index={i} />)}</div>
 
-        {/* ═══════ VALEURS FONDAMENTALES ═══════ */}
-        <section className="py-24 px-4 sm:px-6 bg-base-200/30 dark:bg-white/[0.01]">
-          <div className="max-w-6xl mx-auto">
-            <FadeIn><SectionHeader eyebrow={t('values_section.eyebrow')} title={t('values_section.title')} align="center" /></FadeIn>
+          <div className="flex items-center gap-3 mb-10 mt-20">
+            <div className="p-3 rounded-2xl bg-primary/10 border border-primary/20 shadow-[0_0_15px_rgba(240,165,0,0.2)]">
+              <GraduationCap className="w-6 h-6 text-primary" />
+            </div>
+            <h3 className="font-bold text-2xl text-base-content">{t('timeline.education')}</h3>
+          </div>
+          <div className="space-y-6">{EDUCATION.map((item, i) => <TimelineCard key={i} item={item} index={i} />)}</div>
+        </div>
+      </section>
 
-            <StaggerChildren staggerDelay={0.1} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 group/values">
-              {VALUES.map((v, i) => (
-                <StaggerItem key={i}>
-                  <div className="group p-6 sm:p-8 rounded-[2rem] bg-white dark:bg-white/[0.02] border border-base-content/[0.06] dark:border-base-content/[0.04] hover:border-[#F0A500]/50 transition-all duration-500 shadow-md dark:shadow-none hover:shadow-xl dark:hover:shadow-[0_0_40px_-10px_rgba(240,165,0,0.3)] h-full hover:!opacity-100 group-hover/values:opacity-40 flex flex-col justify-center">
-                    <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-base-200 dark:bg-white/5 flex items-center justify-center mb-4 sm:mb-6 text-base-content/60 group-hover:scale-110 group-hover:bg-gradient-to-br group-hover:from-[#F0A500] group-hover:to-[#FFD166] group-hover:text-black group-hover:shadow-[0_0_20px_rgba(240,165,0,0.4)] transition-all duration-500">
-                      <v.icon className="w-6 h-6 sm:w-7 sm:h-7" strokeWidth={1.5} />
-                    </div>
-                    <h3 className="font-bold text-lg sm:text-xl text-base-content mb-2 sm:mb-3 group-hover:text-[#F0A500] transition-colors">{v.title}</h3>
-                    <p className="text-xs sm:text-sm text-base-content/60 leading-relaxed font-light">{v.desc}</p>
+      {/* ═══ SECTION 6 — MARQUEE TESTIMONIALS ═══ */}
+      <section className="py-28 bg-base-200/50 dark:bg-[#070510] relative overflow-hidden">
+        <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, currentColor 1px, transparent 0)', backgroundSize: '32px 32px' }} />
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[150px]" />
+
+        <div className="relative z-10">
+          <FadeIn className="text-center mb-14 px-6">
+            <h2 className="text-4xl md:text-6xl font-bold text-base-content/90 dark:text-white/90">{t('testimonials.title')}</h2>
+          </FadeIn>
+          <div className="space-y-6">
+            <MarqueeRow items={TESTIMONIALS} direction="left" speed={30} />
+            <MarqueeRow items={TESTIMONIALS} direction="right" speed={35} />
+          </div>
+        </div>
+      </section>
+
+      {/* ═══ SECTION 7 — GRAVITATIONAL CTA ═══ */}
+      <section className="py-28 sm:py-36 px-4 sm:px-6 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/5" />
+        <motion.div className="absolute inset-0 opacity-20 pointer-events-none"
+          animate={{ scale: [1, 1.1, 1], opacity: [0.1, 0.2, 0.1] }}
+          transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}>
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-primary/10 blur-[100px]" />
+        </motion.div>
+
+        <div className="relative z-10 max-w-4xl mx-auto text-center">
+          <FadeIn>
+            <h2 className="text-3xl sm:text-5xl md:text-6xl font-bold text-base-content leading-tight tracking-tight">
+              {t('cta.title1')}<br />
+              <span className="text-primary font-bold">{t('cta.title2')}</span>
+            </h2>
+            <p className="mt-6 text-base sm:text-lg text-base-content/50 font-light max-w-xl mx-auto">{t('cta.description')}</p>
+
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-5 mt-12">
+              <MagneticWrapper strength={0.3}>
+                <div className="relative">
+                  {/* Orbital ring */}
+                  <div className="absolute -inset-3 rounded-full border border-primary/20 pointer-events-none" style={{ animation: 'orbital-spin 8s linear infinite' }}>
+                    <div className="absolute -top-1 left-1/2 w-2 h-2 rounded-full bg-primary shadow-[0_0_10px_rgba(240,165,0,0.8)]" />
                   </div>
-                </StaggerItem>
-              ))}
-            </StaggerChildren>
-          </div>
-        </section>
-
-        {/* ═══════ PARCOURS (TIMELINE) ═══════ */}
-        <section className="py-28 px-4 sm:px-6 relative">
-          {/* Traînée lumineuse verticale (le fil de la timeline) */}
-          <div className="absolute top-0 bottom-0 left-[calc(50%-1px)] w-[2px] bg-gradient-to-b from-transparent via-[#F0A500]/20 to-transparent hidden md:block" />
-
-          <div className="max-w-4xl mx-auto relative z-10">
-            <FadeIn><SectionHeader eyebrow={t('timeline.eyebrow')} title={t('timeline.title')} /></FadeIn>
-
-            {/* Expériences Pro */}
-            <div className="flex items-center justify-center md:justify-start gap-3 mb-12">
-              <div className="p-3 rounded-2xl bg-[#F0A500]/10 border border-[#F0A500]/20 shadow-[0_0_15px_rgba(240,165,0,0.2)]">
-                <Briefcase className="w-6 h-6 text-[#F0A500]" />
-              </div>
-              <h3 className="font-bold text-2xl text-base-content tracking-tight">{t('timeline.experience')}</h3>
-            </div>
-            <div className="space-y-6">
-              {EXPERIENCE.map((item, i) => <TimelineCard key={i} item={item} index={i} />)}
-            </div>
-
-            {/* Formations */}
-            <div className="flex items-center justify-center md:justify-start gap-3 mb-12 mt-24">
-              <div className="p-3 rounded-2xl bg-[#F0A500]/10 border border-[#F0A500]/20 shadow-[0_0_15px_rgba(240,165,0,0.2)]">
-                <GraduationCap className="w-6 h-6 text-[#F0A500]" />
-              </div>
-              <h3 className="font-bold text-2xl text-base-content tracking-tight">{t('timeline.education')}</h3>
-            </div>
-            <div className="space-y-6">
-              {EDUCATION.map((item, i) => <TimelineCard key={i} item={item} index={i} />)}
-            </div>
-          </div>
-        </section>
-
-        {/* ═══════ TÉMOIGNAGES ═══════ */}
-        <section className="py-28 bg-base-200/50 dark:bg-[#070510] text-base-content dark:text-white relative overflow-hidden">
-          {/* Motif de fond : Grille subtile en pointillés */}
-          <div className="absolute inset-0 opacity-5" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, currentColor 1px, transparent 0)', backgroundSize: '32px 32px' }} />
-          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/15 rounded-full blur-[120px]" />
-
-          <div className="max-w-5xl mx-auto px-6 relative z-10">
-            <FadeIn><h2 className="text-4xl md:text-6xl text-center font-bold text-base-content/90 dark:text-white/90 mb-16">{t('testimonials.title')}</h2></FadeIn>
-
-            <StaggerChildren staggerDelay={0.15} className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-              {TESTIMONIALS.map((testimonial, i) => (
-                <StaggerItem key={i}>
-                  <motion.div whileHover={{ y: -10, scale: 1.02 }} className="group/test relative p-6 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] bg-white dark:bg-white/[0.02] border border-base-content/5 dark:border-white/10 backdrop-blur-xl h-full flex flex-col shadow-lg dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] hover:shadow-xl dark:hover:shadow-[0_0_40px_-10px_rgba(240,165,0,0.2)] hover:border-base-content/10 dark:hover:border-white/20 transition-all duration-700 overflow-hidden">
-
-                    {/* Holographic Shimmer Background */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-[#F0A500]/10 via-transparent to-transparent opacity-0 group-hover/test:opacity-100 transition-opacity duration-700 pointer-events-none" />
-                    <div className="absolute -inset-[100%] animate-[spin_10s_linear_infinite] opacity-0 group-hover/test:opacity-[0.02] bg-[conic-gradient(from_90deg_at_50%_50%,#00000000_50%,#F0A500_100%)] pointer-events-none" />
-
-                    <div className="relative z-10 flex-1 flex flex-col">
-                      <Quote className="w-8 h-8 sm:w-10 sm:h-10 text-[#F0A500] mb-4 sm:mb-6 opacity-40 group-hover/test:opacity-80 group-hover/test:scale-110 transition-all duration-500 drop-shadow-[0_0_10px_rgba(240,165,0,0.5)]" />
-                      <p className="text-base sm:text-lg leading-relaxed text-base-content/80 dark:text-white/80 font-light flex-1 mb-6 sm:mb-8 italic">{testimonial.quote}</p>
-
-                      <div className="flex items-center gap-4">
-                        {/* Avatar généré avec l'initiale de l'auteur */}
-                        <div className="w-12 h-12 rounded-[1rem] bg-gradient-to-br from-[#F0A500] to-[#FFD166] flex items-center justify-center font-extrabold text-[#070510] text-xl shadow-[0_0_15px_rgba(240,165,0,0.5)]">
-                          {testimonial.author.charAt(0)}
-                        </div>
-                        <div>
-                          <div className="font-bold text-base-content dark:text-white text-base">{testimonial.author}</div>
-                          <div className="text-xs text-[#F0A500]/80 font-medium tracking-wide uppercase mt-0.5">{testimonial.role}, {testimonial.company}</div>
-                        </div>
-                      </div>
-                    </div>
-                  </motion.div>
-                </StaggerItem>
-              ))}
-            </StaggerChildren>
-          </div>
-        </section>
-
-        {/* ═══════ APPEL À L'ACTION (CTA FINAL) ═══════ */}
-        <section className="py-24 sm:py-32 px-4 sm:px-6 relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/5" />
-          <div className="relative z-10 max-w-4xl mx-auto text-center">
-            <FadeIn>
-              <h2 className="text-3xl sm:text-5xl md:text-6xl font-bold text-base-content leading-tight tracking-tight">
-                {t('cta.title1')}<br />
-                <span className="text-primary font-bold">{t('cta.title2')}</span>
-              </h2>
-              <p className="mt-6 text-base sm:text-lg text-base-content/50 font-light max-w-xl mx-auto">
-                {t('cta.description')}
-              </p>
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 mt-10 sm:mt-12">
-
-                {/* Bouton CTA Principal ultra-premium */}
-                <MagneticWrapper strength={0.3}>
-                  <Link href="/contact" className="relative group overflow-hidden cursor-pointer flex justify-center items-center px-8 py-4 sm:px-10 sm:py-5 rounded-full bg-gradient-to-r from-[#F0A500] to-[#FFD166] text-black font-extrabold text-base sm:text-lg shadow-[0_0_30px_rgba(240,165,0,0.3)] hover:shadow-[0_0_50px_rgba(240,165,0,0.5)] transition-all duration-500 hover:scale-105 w-[260px] sm:w-auto">
+                  <Link href="/contact" className="relative group overflow-hidden cursor-pointer flex justify-center items-center px-10 py-5 rounded-full bg-gradient-to-r from-primary to-[#FFD166] text-black font-extrabold text-lg shadow-[0_0_30px_rgba(240,165,0,0.3)] hover:shadow-[0_0_50px_rgba(240,165,0,0.5)] transition-all duration-500 hover:scale-105">
                     <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
-                    <span className="relative z-10 flex items-center gap-2 sm:gap-3">
-                      {t('cta.ctaPrimary')} <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
+                    <span className="relative z-10 flex items-center gap-3">
+                      {t('cta.ctaPrimary')} <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                     </span>
                   </Link>
-                </MagneticWrapper>
+                </div>
+              </MagneticWrapper>
 
-                {/* Bouton Secondaire Premium */}
-                <MagneticWrapper strength={0.2}>
-                  <a href="/cv/cv_kalvin.pdf" download className="relative overflow-hidden cursor-pointer flex justify-center items-center px-8 py-4 sm:px-10 sm:py-5 rounded-full border border-base-content/10 bg-base-200/50 dark:bg-white/5 backdrop-blur-xl hover:border-[#F0A500]/50 hover:bg-[#F0A500]/10 text-base-content/80 hover:text-[#F0A500] font-bold text-base sm:text-lg transition-all duration-500 shadow-sm hover:shadow-[0_0_20px_rgba(240,165,0,0.2)] w-[260px] sm:w-auto gap-2 sm:gap-3">
-                    <Download className="w-4 h-4 sm:w-5 sm:h-5" />
-                    <span className="relative z-10">{t('cta.ctaSecondary')}</span>
-                  </a>
-                </MagneticWrapper>
-
-              </div>
-            </FadeIn>
-          </div>
-        </section>
-
-      </div>
+              <MagneticWrapper strength={0.2}>
+                <a href="/cv/cv_kalvin.pdf" download className="relative overflow-hidden cursor-pointer flex justify-center items-center px-10 py-5 rounded-full border border-base-content/10 bg-base-200/50 dark:bg-white/5 backdrop-blur-xl hover:border-primary/50 hover:bg-primary/10 text-base-content/80 hover:text-primary font-bold text-lg transition-all duration-500 shadow-sm hover:shadow-[0_0_20px_rgba(240,165,0,0.2)] gap-3">
+                  <Download className="w-5 h-5" />
+                  <span className="relative z-10">{t('cta.ctaSecondary')}</span>
+                </a>
+              </MagneticWrapper>
+            </div>
+          </FadeIn>
+        </div>
+      </section>
     </div>
   );
 }
-
