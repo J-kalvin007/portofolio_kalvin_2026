@@ -195,7 +195,7 @@ const LAYER_DRIFT = {
   1: { x: ['0%', '-3%', '2%', '0%'], y: ['0%', '2%', '-3%', '0%'] },
   2: { x: ['0%', '3%', '-2%', '0%'], y: ['0%', '-2%', '4%', '0%'] },
   3: { x: ['0%', '-5%', '3%', '0%'], y: ['0%', '4%', '-2%', '0%'] },
-} as const;
+};
 
 const StarField = React.memo(function StarField() {
   const stars = useStarField();
