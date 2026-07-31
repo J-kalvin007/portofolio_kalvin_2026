@@ -1,3 +1,324 @@
+// 'use client';
+
+// /**
+//  * @file ProjectCard.tsx
+//  * @description Carte projet ultra-premium avec glassmorphisme multi-couches.
+//  * 
+//  * @design
+//  * - Glassmorphism tier : backdrop-blur-2xl, surfaces translucides avec fuites de lumière colorées
+//  * - Hover 3D : tilt subtil avec useMotionValue + useTransform (perspective)
+//  * - Shimmer holographique sur l'image au survol
+//  * - Bordure chromatic glow animée
+//  * - CTA magnétique avec slide-in au survol
+//  * 
+//  * @animation Masterclass Disintegration Mix :
+//  * 1. Scroll Reveal : Se reforme en entrant dans le viewport
+//  * 2. Filter Change : Se désintègre avant de disparaître
+//  * 3. Click : Se désintègre pour s'ouvrir
+//  * 
+//  * @dark_mode Adapté automatiquement via les variables CSS du design system "Void & Or"
+//  * @light_mode Verre dépoli sur dégradé doux, ultra-clean
+//  */
+
+// import React, { useCallback, useState, useEffect } from 'react';
+// import Image from 'next/image';
+// import { motion, useMotionValue, useTransform, useSpring, usePresence } from 'framer-motion';
+// import { ArrowUpRight } from 'lucide-react';
+// import { useTranslations } from 'next-intl';
+// import type { Project } from '@/lib/data/projects';
+// import { SLUG_MAP, TECH_SVG_MAP_CARD } from '@/types/project.types';
+// import DisintegrationOverlay from './DisintegrationOverlay';
+// import type { DisintegrationPhase } from '@/types/project.types';
+
+// interface ProjectCardProps {
+//   /** Données du projet à afficher */
+//   project: Project;
+//   /** Callback déclenché au clic sur la carte */
+//   onSelect: (project: Project) => void;
+//   /** Index pour le stagger d'animation */
+//   index: number;
+//   /** Indique si la carte doit être floutée/réduite (quand une autre carte est survolée) */
+//   isDimmed?: boolean;
+//   /** Callback quand la souris entre sur la carte */
+//   onMouseEnter?: () => void;
+//   /** Callback quand la souris quitte la carte */
+//   onMouseLeave?: () => void;
+// }
+
+// /**
+//  * @component ProjectCard
+//  * Carte individuelle avec glassmorphisme, 3D tilt hover et shimmer holographique.
+//  */
+// const ProjectCard = React.memo(function ProjectCard({ project, onSelect, index, isDimmed, onMouseEnter, onMouseLeave }: ProjectCardProps) {
+//   const tData = useTranslations('projects_data');
+//   const t = useTranslations('projects_page');
+//   const key = SLUG_MAP[project.slug] || 'challenger';
+
+//   /* ── Masterclass Disintegration Logic ── */
+//   const [isPresent, safeToRemove] = usePresence();
+//   const [localPhase, setLocalPhase] = useState<DisintegrationPhase>('idle');
+//   const [hasRevealed, setHasRevealed] = useState(false);
+
+//   // 1. Unmount (Changement de Filtre) : La carte se désintègre avant de disparaître
+//   useEffect(() => {
+//     if (!isPresent) {
+//       setLocalPhase('disintegrating');
+//       const timer = setTimeout(() => {
+//         safeToRemove();
+//       }, 500); // Durée de l'animation CSS des cubes
+//       return () => clearTimeout(timer);
+//     }
+//   }, [isPresent, safeToRemove]);
+
+//   // 2. Scroll Reveal : La carte se reforme lorsqu'elle entre à l'écran
+//   const handleViewportEnter = useCallback(() => {
+//     if (!hasRevealed) {
+//       setHasRevealed(true);
+//       setLocalPhase('reforming');
+//       setTimeout(() => setLocalPhase('idle'), 500);
+//     }
+//   }, [hasRevealed]);
+
+//   // 3. Click (Portal Effect) : La carte se désintègre pour s'ouvrir
+//   const handleClick = useCallback(() => {
+//     setLocalPhase('disintegrating');
+//     setTimeout(() => {
+//       onSelect(project);
+//       setLocalPhase('idle'); // Réinitialisation silencieuse
+//     }, 450); // Un peu plus rapide que l'animation pour plus de fluidité
+//   }, [onSelect, project]);
+
+//   /* ── 3D Tilt Effect via MotionValues ── */
+//   const mouseX = useMotionValue(0);
+//   const mouseY = useMotionValue(0);
+
+//   // Transformation des coordonnées souris en rotation 3D (subtile : ±4°)
+//   const rotateX = useSpring(useTransform(mouseY, [-0.5, 0.5], [4, -4]), { stiffness: 300, damping: 30 });
+//   const rotateY = useSpring(useTransform(mouseX, [-0.5, 0.5], [-4, 4]), { stiffness: 300, damping: 30 });
+
+//   // Translation parallax pour l'image (Window Parallax)
+//   const imageX = useSpring(useTransform(mouseX, [-0.5, 0.5], [15, -15]), { stiffness: 300, damping: 30 });
+//   const imageY = useSpring(useTransform(mouseY, [-0.5, 0.5], [15, -15]), { stiffness: 300, damping: 30 });
+
+//   /** Calcule la position relative de la souris sur la carte (normalisée -0.5 → 0.5) */
+//   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+//     const rect = e.currentTarget.getBoundingClientRect();
+//     mouseX.set((e.clientX - rect.left) / rect.width - 0.5);
+//     mouseY.set((e.clientY - rect.top) / rect.height - 0.5);
+//   }, [mouseX, mouseY]);
+
+//   /** Réinitialise le tilt quand la souris quitte la carte */
+//   const handleMouseLeave = useCallback(() => {
+//     mouseX.set(0);
+//     mouseY.set(0);
+//     if (onMouseLeave) onMouseLeave();
+//   }, [mouseX, mouseY, onMouseLeave]);
+
+//   return (
+//     <motion.div
+//       layout
+//       layoutId={`project-card-${project.slug}`}
+//       initial={{ opacity: 0, y: 100, rotateX: 30, scale: 0.9, translateZ: -100 }}
+//       whileInView={{ opacity: 1, y: 0, rotateX: 0, scale: 1, translateZ: 0 }}
+//       viewport={{ once: true, margin: "-50px" }}
+//       onViewportEnter={handleViewportEnter}
+//       transition={{ duration: 0.8, type: 'spring', bounce: 0.4, delay: index * 0.1 }}
+//       onClick={handleClick}
+//       onMouseEnter={onMouseEnter}
+//       onMouseMove={handleMouseMove}
+//       onMouseLeave={handleMouseLeave}
+//       style={{ rotateX, rotateY, transformPerspective: 1200 }}
+//       className={`group relative cursor-pointer project-card-spotlight transition-all duration-700 ease-out outline-none focus:outline-none focus-visible:outline-none focus:ring-0 focus-visible:ring-0 ${
+//         isDimmed ? 'opacity-40 scale-[0.96] grayscale-[50%] blur-[2px]' : 'opacity-100 scale-100 grayscale-0 blur-0'
+//       }`}
+//       role="button"
+//       tabIndex={0}
+//       aria-label={`${t('viewProject')} : ${project.title}`}
+//       onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleClick(); }}
+//     >
+//       {/* ── Spotlight Global Hover Glow ── */}
+//       <div 
+//         className="pointer-events-none absolute -inset-px rounded-2xl opacity-0 transition duration-500 group-hover/grid:opacity-100 z-50 mix-blend-screen"
+//         style={{
+//           background: `radial-gradient(500px circle at var(--mouse-x, 0) var(--mouse-y, 0), rgba(240,165,0,0.12), transparent 40%)`
+//         }}
+//       />
+//       {/* ── Spotlight Global Hover Border ── */}
+//       <div 
+//         className="pointer-events-none absolute -inset-px rounded-2xl opacity-0 transition duration-500 group-hover/grid:opacity-100 z-50"
+//         style={{
+//           background: `radial-gradient(400px circle at var(--mouse-x, 0) var(--mouse-y, 0), rgba(240,165,0,0.8), transparent 40%)`,
+//           WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+//           WebkitMaskComposite: 'xor',
+//           maskComposite: 'exclude',
+//           padding: '1px'
+//         }}
+//       />
+
+//       {/* ── Overlay de Désintégration Local ── */}
+//       <DisintegrationOverlay phase={localPhase} cardIndex={index} />
+
+//       {/* ── Scanline Effect (Glitch transition) ── */}
+//       {localPhase === 'disintegrating' && (
+//         <motion.div
+//           initial={{ top: '-10%' }}
+//           animate={{ top: '110%' }}
+//           transition={{ duration: 0.45, ease: 'linear' }}
+//           className="absolute left-0 right-0 h-1 bg-[#F0A500] shadow-[0_0_30px_10px_rgba(240,165,0,0.8)] z-[100] pointer-events-none mix-blend-screen"
+//         />
+//       )}
+
+//       {/* ── Conteneur Glassmorphisme ── */}
+//       <div className={`relative rounded-2xl overflow-hidden
+//         bg-white/[0.45] dark:bg-white/[0.03]
+//         backdrop-blur-2xl
+//         border border-black/[0.06] dark:border-white/[0.08]
+//         shadow-lg shadow-black/[0.04] dark:shadow-black/[0.3]
+//         transition-all duration-500 ease-out
+//         group-hover:border-[var(--primary)]/30
+//         group-hover:shadow-[0_0_40px_-10px_var(--glow-color-strong),0_20px_60px_-20px_rgba(0,0,0,0.3)]
+//         group-hover:-translate-y-3 group-hover:scale-[1.02]
+//         ${localPhase === 'disintegrating' ? 'opacity-0 scale-95 blur-md' : 'opacity-100 scale-100 blur-0'}
+//       `}>
+//         {/* ── Lumière colorée interne (light leak) ── */}
+//         <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none z-0">
+//           <div className="absolute -top-1/2 -right-1/2 w-full h-full bg-[radial-gradient(circle,var(--primary)_0%,transparent_70%)] opacity-[0.06]" />
+//           <div className="absolute -bottom-1/2 -left-1/2 w-full h-full bg-[radial-gradient(circle,var(--accent)_0%,transparent_70%)] opacity-[0.04]" />
+//         </div>
+
+//         {/* ── Image Thumbnail (16:9) avec Window Parallax ── */}
+//         <div className="relative aspect-[16/10] overflow-hidden">
+//           <motion.div
+//             style={{ x: imageX, y: imageY }}
+//             className="absolute inset-[-25px] w-[calc(100%+50px)] h-[calc(100%+50px)]"
+//           >
+//             <Image
+//               src={project.coverImage}
+//               alt={project.title}
+//               fill
+//               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+//               className="object-cover transition-transform duration-700 group-hover:scale-105"
+//             />
+//           </motion.div>
+
+//           {/* Dégradé bas → lisibilité du texte */}
+//           <div className="absolute inset-0 bg-gradient-to-t from-white dark:from-[#070510] via-transparent to-transparent opacity-70" />
+
+//           {/* ── Shimmer Holographique au hover ── */}
+//           <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none
+//             bg-[linear-gradient(105deg,transparent_30%,rgba(255,255,255,0.15)_45%,rgba(255,255,255,0.25)_50%,rgba(255,255,255,0.15)_55%,transparent_70%)]
+//             dark:bg-[linear-gradient(105deg,transparent_30%,rgba(255,255,255,0.08)_45%,rgba(255,255,255,0.15)_50%,rgba(255,255,255,0.08)_55%,transparent_70%)]
+//             animate-[shimmer_2s_ease-in-out_infinite]
+//           " />
+
+//           {/* Badge catégorie */}
+//           <div className="absolute top-4 left-4 z-10">
+//             <span className="px-3 py-1 rounded-full bg-[var(--primary)]/20 backdrop-blur-md text-[var(--primary)] text-xs font-bold uppercase tracking-wider">
+//               {tData(`${key}.category`)}
+//             </span>
+//           </div>
+
+//           {/* Badge année */}
+//           <div className="absolute top-4 right-4 z-10">
+//             <span className="px-2.5 py-1 rounded-full bg-black/20 dark:bg-white/10 backdrop-blur-md text-white/80 text-[10px] font-mono font-bold tracking-wider">
+//               {project.year}
+//             </span>
+//           </div>
+//         </div>
+
+//         {/* ── Corps de la carte ── */}
+//         <div className="relative p-6 z-10">
+//           {/* Titre avec gradient subtil */}
+//           <h3 className="font-bold text-lg text-base-content mb-2 group-hover:text-gradient transition-colors duration-300 tracking-tight">
+//             {project.title}
+//           </h3>
+
+//           {/* Description courte */}
+//           <p className="text-sm text-base-content/50 leading-relaxed line-clamp-2 mb-4">
+//             {tData(`${key}.short`)}
+//           </p>
+
+//           {/* ── Stack technique (SVG icons row) ── */}
+//           <div className="flex items-center gap-2 mb-4">
+//             {project.techStack.slice(0, 4).map((tech) => {
+//               const svgPath = TECH_SVG_MAP_CARD[tech];
+//               return svgPath ? (
+//                 <div key={tech} className="w-5 h-5 relative opacity-50 group-hover:opacity-80 transition-opacity" title={tech}>
+//                   <Image src={svgPath} alt={tech} fill className="object-contain dark:invert-[0.15]" />
+//                 </div>
+//               ) : (
+//                 <span key={tech} className="text-[9px] font-bold uppercase tracking-wider text-base-content/30 px-1.5 py-0.5 rounded bg-base-200/50 dark:bg-white/5">
+//                   {tech}
+//                 </span>
+//               );
+//             })}
+//             {project.techStack.length > 4 && (
+//               <span className="text-[10px] font-mono text-base-content/30">
+//                 +{project.techStack.length - 4}
+//               </span>
+//             )}
+//           </div>
+
+//           {/* ── CTA Ghost Button — Effet magnétique ── */}
+//           <div className="overflow-hidden">
+//             <motion.div
+//               initial={{ y: '100%', opacity: 0 }}
+//               whileInView={{ y: 0, opacity: 1 }}
+//               transition={{ delay: 0.1 + index * 0.05 }}
+//               className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.15em]
+//                 text-base-content/40 group-hover:text-[var(--primary)] transition-colors duration-500"
+//             >
+//               <span>{t('viewProject')}</span>
+//               <ArrowUpRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+//             </motion.div>
+//           </div>
+//         </div>
+//       </div>
+//     </motion.div>
+//   );
+// });
+
+// export default ProjectCard;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 'use client';
 
 /**
@@ -20,15 +341,24 @@
  * @light_mode Verre dépoli sur dégradé doux, ultra-clean
  */
 
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
-import { motion, useMotionValue, useTransform, useSpring, usePresence } from 'framer-motion';
+import { motion, useMotionValue, useReducedMotion, useTransform, useSpring, usePresence } from 'framer-motion';
 import { ArrowUpRight } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import type { Project } from '@/lib/data/projects';
 import { SLUG_MAP, TECH_SVG_MAP_CARD } from '@/types/project.types';
 import DisintegrationOverlay from './DisintegrationOverlay';
 import type { DisintegrationPhase } from '@/types/project.types';
+
+/** Durée de l'animation de cubes, partagée avec `DisintegrationOverlay`. */
+const DISINTEGRATION_DURATION = 500;
+
+/** Délai avant ouverture de la modale — légèrement plus court, pour l'enchaînement. */
+const OPEN_DELAY = 450;
+
+/** Nombre maximal d'icônes de technologies affichées avant le compteur « +N ». */
+const MAX_VISIBLE_TECHS = 4;
 
 interface ProjectCardProps {
   /** Données du projet à afficher */
@@ -54,10 +384,24 @@ const ProjectCard = React.memo(function ProjectCard({ project, onSelect, index, 
   const t = useTranslations('projects_page');
   const key = SLUG_MAP[project.slug] || 'challenger';
 
+  const shouldReduceMotion = useReducedMotion();
+
   /* ── Masterclass Disintegration Logic ── */
   const [isPresent, safeToRemove] = usePresence();
   const [localPhase, setLocalPhase] = useState<DisintegrationPhase>('idle');
   const [hasRevealed, setHasRevealed] = useState(false);
+
+  /**
+   * Les minuteries sont conservées pour être annulées au démontage.
+   * `handleClick` et `handleViewportEnter` posaient chacun un `setTimeout`
+   * jamais nettoyé : quitter la page pendant l'animation déclenchait un
+   * `setState` — et un `onSelect` — sur un arbre déjà démonté.
+   */
+  const phaseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => () => {
+    if (phaseTimerRef.current) clearTimeout(phaseTimerRef.current);
+  }, []);
 
   // 1. Unmount (Changement de Filtre) : La carte se désintègre avant de disparaître
   useEffect(() => {
@@ -65,28 +409,39 @@ const ProjectCard = React.memo(function ProjectCard({ project, onSelect, index, 
       setLocalPhase('disintegrating');
       const timer = setTimeout(() => {
         safeToRemove();
-      }, 500); // Durée de l'animation CSS des cubes
+      }, DISINTEGRATION_DURATION); // Durée de l'animation CSS des cubes
       return () => clearTimeout(timer);
     }
   }, [isPresent, safeToRemove]);
 
   // 2. Scroll Reveal : La carte se reforme lorsqu'elle entre à l'écran
   const handleViewportEnter = useCallback(() => {
-    if (!hasRevealed) {
-      setHasRevealed(true);
-      setLocalPhase('reforming');
-      setTimeout(() => setLocalPhase('idle'), 500);
-    }
+    if (hasRevealed) return;
+
+    setHasRevealed(true);
+    setLocalPhase('reforming');
+
+    if (phaseTimerRef.current) clearTimeout(phaseTimerRef.current);
+    phaseTimerRef.current = setTimeout(() => setLocalPhase('idle'), DISINTEGRATION_DURATION);
   }, [hasRevealed]);
 
   // 3. Click (Portal Effect) : La carte se désintègre pour s'ouvrir
   const handleClick = useCallback(() => {
+    // En mouvement réduit, l'ouverture est immédiate : 120 particules en vol
+    // sont précisément ce que cette préférence demande d'éviter.
+    if (shouldReduceMotion) {
+      onSelect(project);
+      return;
+    }
+
     setLocalPhase('disintegrating');
-    setTimeout(() => {
+
+    if (phaseTimerRef.current) clearTimeout(phaseTimerRef.current);
+    phaseTimerRef.current = setTimeout(() => {
       onSelect(project);
       setLocalPhase('idle'); // Réinitialisation silencieuse
-    }, 450); // Un peu plus rapide que l'animation pour plus de fluidité
-  }, [onSelect, project]);
+    }, OPEN_DELAY); // Un peu plus rapide que l'animation pour plus de fluidité
+  }, [onSelect, project, shouldReduceMotion]);
 
   /* ── 3D Tilt Effect via MotionValues ── */
   const mouseX = useMotionValue(0);
@@ -102,10 +457,12 @@ const ProjectCard = React.memo(function ProjectCard({ project, onSelect, index, 
 
   /** Calcule la position relative de la souris sur la carte (normalisée -0.5 → 0.5) */
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    if (shouldReduceMotion) return;
+
     const rect = e.currentTarget.getBoundingClientRect();
     mouseX.set((e.clientX - rect.left) / rect.width - 0.5);
     mouseY.set((e.clientY - rect.top) / rect.height - 0.5);
-  }, [mouseX, mouseY]);
+  }, [mouseX, mouseY, shouldReduceMotion]);
 
   /** Réinitialise le tilt quand la souris quitte la carte */
   const handleMouseLeave = useCallback(() => {
@@ -114,40 +471,65 @@ const ProjectCard = React.memo(function ProjectCard({ project, onSelect, index, 
     if (onMouseLeave) onMouseLeave();
   }, [mouseX, mouseY, onMouseLeave]);
 
+  /** Clavier : `Entrée` et `Espace` activent la carte, comme un vrai bouton. */
+  const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+
+    // Sans cela, `Espace` fait aussi défiler la page sous la carte.
+    e.preventDefault();
+    handleClick();
+  }, [handleClick]);
+
   return (
     <motion.div
       layout
       layoutId={`project-card-${project.slug}`}
-      initial={{ opacity: 0, y: 100, rotateX: 30, scale: 0.9, translateZ: -100 }}
-      whileInView={{ opacity: 1, y: 0, rotateX: 0, scale: 1, translateZ: 0 }}
+      /* `rotateX` et `translateZ` ont été retirés de l'animation d'entrée.
+         `rotateX` était piloté simultanément par `initial`/`whileInView` **et**
+         par la valeur de mouvement du tilt déclarée dans `style` : deux sources
+         pour la même transformation, qui se disputaient le contrôle pendant
+         toute l'apparition. L'entrée conserve son élan par la translation et
+         l'échelle, sans interférer avec le tilt. */
+      initial={{ opacity: 0, y: 80, scale: 0.92 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
       viewport={{ once: true, margin: "-50px" }}
       onViewportEnter={handleViewportEnter}
-      transition={{ duration: 0.8, type: 'spring', bounce: 0.4, delay: index * 0.1 }}
+      transition={{ duration: 0.8, type: 'spring', bounce: 0.35, delay: index * 0.08 }}
       onClick={handleClick}
       onMouseEnter={onMouseEnter}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       style={{ rotateX, rotateY, transformPerspective: 1200 }}
-      className={`group relative cursor-pointer project-card-spotlight transition-all duration-700 ease-out outline-none focus:outline-none focus-visible:outline-none focus:ring-0 focus-visible:ring-0 ${
-        isDimmed ? 'opacity-40 scale-[0.96] grayscale-[50%] blur-[2px]' : 'opacity-100 scale-100 grayscale-0 blur-0'
-      }`}
+      /* L'indicateur de focus était explicitement supprimé sur quatre variantes
+         (`focus:outline-none focus-visible:outline-none focus:ring-0
+         focus-visible:ring-0`). Sur un élément `role="button"` avec
+         `tabIndex={0}`, cela rend la carte totalement invisible au clavier —
+         manquement au critère WCAG 2.4.7. Un anneau franc le remplace. */
+      className={`group relative cursor-pointer project-card-spotlight rounded-2xl
+        transition-[opacity,transform,filter] duration-700 ease-out
+        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4 focus-visible:ring-offset-base-100 ${isDimmed ? 'opacity-45 scale-[0.97] saturate-[0.6]' : 'opacity-100 scale-100 saturate-100'
+        }`}
       role="button"
       tabIndex={0}
       aria-label={`${t('viewProject')} : ${project.title}`}
-      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleClick(); }}
+      onKeyDown={handleKeyDown}
     >
-      {/* ── Spotlight Global Hover Glow ── */}
-      <div 
-        className="pointer-events-none absolute -inset-px rounded-2xl opacity-0 transition duration-500 group-hover/grid:opacity-100 z-50 mix-blend-screen"
+      {/* ── Spotlight Global Hover Glow ──
+          Ces deux calques n'apparaissaient jamais : `group-hover/grid:` exige un
+          ancêtre porteur de `group/grid`, désormais posé sur `ProjectsGrid`. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -inset-px rounded-2xl opacity-0 transition-opacity duration-500 group-hover/grid:opacity-100 z-50 mix-blend-screen"
         style={{
-          background: `radial-gradient(500px circle at var(--mouse-x, 0) var(--mouse-y, 0), rgba(240,165,0,0.12), transparent 40%)`
+          background: `radial-gradient(500px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(240,165,0,0.12), transparent 40%)`
         }}
       />
       {/* ── Spotlight Global Hover Border ── */}
-      <div 
-        className="pointer-events-none absolute -inset-px rounded-2xl opacity-0 transition duration-500 group-hover/grid:opacity-100 z-50"
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -inset-px rounded-2xl opacity-0 transition-opacity duration-500 group-hover/grid:opacity-100 z-50"
         style={{
-          background: `radial-gradient(400px circle at var(--mouse-x, 0) var(--mouse-y, 0), rgba(240,165,0,0.8), transparent 40%)`,
+          background: `radial-gradient(400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(240,165,0,0.8), transparent 40%)`,
           WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
           WebkitMaskComposite: 'xor',
           maskComposite: 'exclude',
@@ -159,8 +541,9 @@ const ProjectCard = React.memo(function ProjectCard({ project, onSelect, index, 
       <DisintegrationOverlay phase={localPhase} cardIndex={index} />
 
       {/* ── Scanline Effect (Glitch transition) ── */}
-      {localPhase === 'disintegrating' && (
+      {localPhase === 'disintegrating' && !shouldReduceMotion && (
         <motion.div
+          aria-hidden="true"
           initial={{ top: '-10%' }}
           animate={{ top: '110%' }}
           transition={{ duration: 0.45, ease: 'linear' }}
@@ -170,23 +553,24 @@ const ProjectCard = React.memo(function ProjectCard({ project, onSelect, index, 
 
       {/* ── Conteneur Glassmorphisme ── */}
       <div className={`relative rounded-2xl overflow-hidden
-        bg-white/[0.45] dark:bg-white/[0.03]
+        bg-base-100/[0.55] dark:bg-white/[0.03]
         backdrop-blur-2xl
-        border border-black/[0.06] dark:border-white/[0.08]
-        shadow-lg shadow-black/[0.04] dark:shadow-black/[0.3]
+        border border-base-content/[0.07] dark:border-white/[0.08]
+        shadow-[inset_0_1px_0_0_rgba(255,255,255,0.5),0_1px_2px_-1px_rgba(0,0,0,0.05),0_16px_36px_-24px_rgba(0,0,0,0.3)]
+        dark:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05),0_16px_40px_-24px_rgba(0,0,0,0.7)]
         transition-all duration-500 ease-out
         group-hover:border-[var(--primary)]/30
-        group-hover:shadow-[0_0_40px_-10px_var(--glow-color-strong),0_20px_60px_-20px_rgba(0,0,0,0.3)]
-        group-hover:-translate-y-3 group-hover:scale-[1.02]
+        group-hover:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.6),0_28px_60px_-28px_var(--glow-color-strong)]
+        group-hover:-translate-y-2 motion-reduce:transform-none
         ${localPhase === 'disintegrating' ? 'opacity-0 scale-95 blur-md' : 'opacity-100 scale-100 blur-0'}
       `}>
         {/* ── Lumière colorée interne (light leak) ── */}
-        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none z-0">
+        <div aria-hidden="true" className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none z-0">
           <div className="absolute -top-1/2 -right-1/2 w-full h-full bg-[radial-gradient(circle,var(--primary)_0%,transparent_70%)] opacity-[0.06]" />
           <div className="absolute -bottom-1/2 -left-1/2 w-full h-full bg-[radial-gradient(circle,var(--accent)_0%,transparent_70%)] opacity-[0.04]" />
         </div>
 
-        {/* ── Image Thumbnail (16:9) avec Window Parallax ── */}
+        {/* ── Image Thumbnail (16:10) avec Window Parallax ── */}
         <div className="relative aspect-[16/10] overflow-hidden">
           <motion.div
             style={{ x: imageX, y: imageY }}
@@ -197,18 +581,21 @@ const ProjectCard = React.memo(function ProjectCard({ project, onSelect, index, 
               alt={project.title}
               fill
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              className="object-cover transition-transform duration-700 group-hover:scale-105"
+              className="object-cover transition-transform duration-700 group-hover:scale-105 motion-reduce:transform-none"
             />
           </motion.div>
 
           {/* Dégradé bas → lisibilité du texte */}
-          <div className="absolute inset-0 bg-gradient-to-t from-white dark:from-[#070510] via-transparent to-transparent opacity-70" />
+          <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-base-100 via-transparent to-transparent opacity-70" />
 
-          {/* ── Shimmer Holographique au hover ── */}
-          <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none
+          {/* ── Shimmer Holographique au hover ──
+              L'animation ne tourne plus qu'au survol. Elle était déclarée
+              `infinite` en permanence : neuf compositions animées en continu
+              sur la page, y compris sur des cartes hors écran. */}
+          <div aria-hidden="true" className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none
             bg-[linear-gradient(105deg,transparent_30%,rgba(255,255,255,0.15)_45%,rgba(255,255,255,0.25)_50%,rgba(255,255,255,0.15)_55%,transparent_70%)]
             dark:bg-[linear-gradient(105deg,transparent_30%,rgba(255,255,255,0.08)_45%,rgba(255,255,255,0.15)_50%,rgba(255,255,255,0.08)_55%,transparent_70%)]
-            animate-[shimmer_2s_ease-in-out_infinite]
+            group-hover:animate-[shimmer_2s_ease-in-out_infinite] motion-reduce:animate-none
           " />
 
           {/* Badge catégorie */}
@@ -220,7 +607,7 @@ const ProjectCard = React.memo(function ProjectCard({ project, onSelect, index, 
 
           {/* Badge année */}
           <div className="absolute top-4 right-4 z-10">
-            <span className="px-2.5 py-1 rounded-full bg-black/20 dark:bg-white/10 backdrop-blur-md text-white/80 text-[10px] font-mono font-bold tracking-wider">
+            <span className="px-2.5 py-1 rounded-full bg-black/25 backdrop-blur-md text-white/80 text-[10px] font-mono font-bold tracking-wider tabular-nums">
               {project.year}
             </span>
           </div>
@@ -228,48 +615,55 @@ const ProjectCard = React.memo(function ProjectCard({ project, onSelect, index, 
 
         {/* ── Corps de la carte ── */}
         <div className="relative p-6 z-10">
-          {/* Titre avec gradient subtil */}
-          <h3 className="font-bold text-lg text-base-content mb-2 group-hover:text-gradient transition-colors duration-300 tracking-tight">
+          {/* Titre */}
+          <h3 className="font-bold text-lg text-base-content mb-2 tracking-[-0.02em] group-hover:text-primary transition-colors duration-300">
             {project.title}
           </h3>
 
           {/* Description courte */}
-          <p className="text-sm text-base-content/50 leading-relaxed line-clamp-2 mb-4">
+          <p className="text-sm text-base-content/50 leading-[1.65] line-clamp-2 mb-4">
             {tData(`${key}.short`)}
           </p>
 
           {/* ── Stack technique (SVG icons row) ── */}
-          <div className="flex items-center gap-2 mb-4">
-            {project.techStack.slice(0, 4).map((tech) => {
+          <ul className="flex items-center gap-2 mb-4 list-none p-0">
+            {project.techStack.slice(0, MAX_VISIBLE_TECHS).map((tech) => {
               const svgPath = TECH_SVG_MAP_CARD[tech];
-              return svgPath ? (
-                <div key={tech} className="w-5 h-5 relative opacity-50 group-hover:opacity-80 transition-opacity" title={tech}>
-                  <Image src={svgPath} alt={tech} fill className="object-contain dark:invert-[0.15]" />
-                </div>
-              ) : (
-                <span key={tech} className="text-[9px] font-bold uppercase tracking-wider text-base-content/30 px-1.5 py-0.5 rounded bg-base-200/50 dark:bg-white/5">
-                  {tech}
-                </span>
+              return (
+                <li key={tech}>
+                  {svgPath ? (
+                    <div className="w-5 h-5 relative opacity-50 group-hover:opacity-80 transition-opacity" title={tech}>
+                      {/* `alt` vidé : le nom figure déjà dans l'attribut `title`
+                          et la carte porte un `aria-label` complet. */}
+                      <Image src={svgPath} alt="" aria-hidden="true" fill sizes="20px" className="object-contain dark:invert-[0.15]" />
+                    </div>
+                  ) : (
+                    <span className="text-[9px] font-bold uppercase tracking-wider text-base-content/30 px-1.5 py-0.5 rounded bg-base-200/50 dark:bg-white/5">
+                      {tech}
+                    </span>
+                  )}
+                </li>
               );
             })}
-            {project.techStack.length > 4 && (
-              <span className="text-[10px] font-mono text-base-content/30">
-                +{project.techStack.length - 4}
-              </span>
+            {project.techStack.length > MAX_VISIBLE_TECHS && (
+              <li className="text-[10px] font-mono text-base-content/30 tabular-nums">
+                +{project.techStack.length - MAX_VISIBLE_TECHS}
+              </li>
             )}
-          </div>
+          </ul>
 
           {/* ── CTA Ghost Button — Effet magnétique ── */}
           <div className="overflow-hidden">
             <motion.div
               initial={{ y: '100%', opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}
+              viewport={{ once: true }}
               transition={{ delay: 0.1 + index * 0.05 }}
               className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.15em]
                 text-base-content/40 group-hover:text-[var(--primary)] transition-colors duration-500"
             >
               <span>{t('viewProject')}</span>
-              <ArrowUpRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              <ArrowUpRight aria-hidden="true" className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transform-none" />
             </motion.div>
           </div>
         </div>
