@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* Système de design : rôles de couleur, échelles, élévations (voir le fichier). */
+@import "./design-system.css";
+
 /* Enable class-based dark mode for Tailwind v4 */
 /* ⚠️ Le sélecteur ne couvrait que les *descendants* de `.dark`. L'élément
    porteur lui-même — `<html class="dark">` — en était exclu : toute utilitaire
@@ -111,8 +114,10 @@
     --text-links: #5D1A5A;
 
     /* ── Sémantiques globales ── */
-    --primary-content: #FFFFFF;
-    /* Texte sur fond primaire (ex: Blanc sur Or) */
+    /* Texte sur fond primaire. ⚠️ Correctif d'accessibilité : blanc sur l'or
+       impérial (#C8900A) ne donnait que 2,82:1 — sous le seuil WCAG AA (4,5:1)
+       sur tous les boutons dorés du mode clair. Encre sombre : 6,66:1. */
+    --primary-content: #16110A;
     --background: var(--base-100);
     --foreground: var(--base-content);
 
@@ -122,9 +127,6 @@
     --glass-bg: rgba(255, 255, 255, 0.75);
     --glass-border: rgba(0, 0, 0, 0.06);
 
-    /* Or exprimé en composantes, pour composer des `rgb(… / alpha)` en ligne
-       sans recopier le littéral hexadécimal dans les composants. */
-    --primary-rgb: 200, 144, 10;
   }
 
   /* 
@@ -169,7 +171,6 @@
     --glass-bg: rgba(7, 5, 16, 0.7);
     --glass-border: rgba(240, 236, 216, 0.06);
 
-    --primary-rgb: 240, 165, 0;
   }
 
   /* Application des règles par défaut sur tout le document HTML */
@@ -204,17 +205,15 @@
     z-index: 9999;
   }
 
-  /* Surlignage du texte avec la souris personnalisé */
-  /* Les composantes viennent de la variable de thème : la sélection reprenait
-     l'or solaire du mode sombre (#F0A500) même en mode clair, où la couleur
-     principale est l'or impérial (#C8900A). */
+  /* Surlignage du texte sélectionné.
+     ⚠️ Correctif : la règle précédente écrivait `rgb(var(--primary-rgb) / 0.2)`
+     avec des composantes séparées par des virgules (« 200, 144, 10 »). Mêler
+     virgules et barre oblique est une syntaxe invalide : Chrome la rejetait
+     (`CSS.supports` → false), le fond calculé était transparent et la couleur
+     de sélection ne s'appliquait jamais. `color-mix` évite le piège. */
   ::selection {
-    background: rgb(var(--primary-rgb) / 0.2);
+    background: color-mix(in srgb, var(--ds-brand) 24%, transparent);
     color: inherit;
-  }
-
-  .dark ::selection {
-    background: rgb(var(--primary-rgb) / 0.25);
   }
 
   /* Anneau de focus par défaut.
