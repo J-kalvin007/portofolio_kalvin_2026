@@ -84,15 +84,17 @@ const ProjectCard = React.memo(function ProjectCard({ project, onSelect, index, 
     if (phaseTimerRef.current) clearTimeout(phaseTimerRef.current);
   }, []);
 
-  // 1. Unmount (Changement de Filtre) : La carte se désintègre avant de disparaître
+  // 1. Unmount (Changement de Filtre) : La carte se désintègre avant de disparaître.
+  //    La phase est dérivée de la présence pendant le rendu ; l'effet ne fait
+  //    que programmer le retrait effectif une fois l'animation terminée.
+  const phase: DisintegrationPhase = isPresent ? localPhase : 'disintegrating';
+
   useEffect(() => {
-    if (!isPresent) {
-      setLocalPhase('disintegrating');
-      const timer = setTimeout(() => {
-        safeToRemove();
-      }, DISINTEGRATION_DURATION); // Durée de l'animation CSS des cubes
-      return () => clearTimeout(timer);
-    }
+    if (isPresent) return;
+    const timer = setTimeout(() => {
+      safeToRemove();
+    }, DISINTEGRATION_DURATION); // Durée de l'animation CSS des cubes
+    return () => clearTimeout(timer);
   }, [isPresent, safeToRemove]);
 
   // 2. Scroll Reveal : La carte se reforme lorsqu'elle entre à l'écran
@@ -219,10 +221,10 @@ const ProjectCard = React.memo(function ProjectCard({ project, onSelect, index, 
       />
 
       {/* ── Overlay de Désintégration Local ── */}
-      <DisintegrationOverlay phase={localPhase} cardIndex={index} />
+      <DisintegrationOverlay phase={phase} cardIndex={index} />
 
       {/* ── Scanline Effect (Glitch transition) ── */}
-      {localPhase === 'disintegrating' && !shouldReduceMotion && (
+      {phase === 'disintegrating' && !shouldReduceMotion && (
         <motion.div
           aria-hidden="true"
           initial={{ top: '-10%' }}
@@ -243,7 +245,7 @@ const ProjectCard = React.memo(function ProjectCard({ project, onSelect, index, 
         group-hover:border-[var(--primary)]/30
         group-hover:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.6),0_28px_60px_-28px_var(--glow-color-strong)]
         group-hover:-translate-y-2 motion-reduce:transform-none
-        ${localPhase === 'disintegrating' ? 'opacity-0 scale-95 blur-md' : 'opacity-100 scale-100 blur-0'}
+        ${phase === 'disintegrating' ? 'opacity-0 scale-95 blur-md' : 'opacity-100 scale-100 blur-0'}
       `}>
         {/* ── Lumière colorée interne (light leak) ── */}
         <div aria-hidden="true" className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none z-0">

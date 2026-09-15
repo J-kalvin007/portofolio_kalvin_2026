@@ -15,8 +15,9 @@
  * l'erreur uniquement dans la zone de contenu principal.
  */
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import PageErreur from '@/components/layout/pageErreur';
+import { useClientSnapshot } from '@/hooks/useClientSnapshot';
 
 /* ═══════════════════════════════════════════════════════════════════════════
    ▌ MESSAGES
@@ -47,6 +48,12 @@ const ERROR_MESSAGES = {
 /** Langue de repli si l'attribut `lang` est absent ou non reconnu. */
 const FALLBACK_LOCALE: keyof typeof ERROR_MESSAGES = 'fr';
 
+/** Langue posée sur `<html lang>` par le layout, si elle est connue. */
+const readDocumentLocale = (): keyof typeof ERROR_MESSAGES => {
+  const documentLocale = document.documentElement.lang;
+  return documentLocale in ERROR_MESSAGES ? (documentLocale as keyof typeof ERROR_MESSAGES) : FALLBACK_LOCALE;
+};
+
 export default function Error({
   error,
   reset,
@@ -55,16 +62,9 @@ export default function Error({
   reset: () => void; // Fonction pour forcer un nouveau rendu (réessayer)
 }) {
 
-  // Résolu après montage : `document` n'existe pas au rendu serveur, et le
-  // premier rendu client doit correspondre au balisage serveur.
-  const [locale, setLocale] = useState<keyof typeof ERROR_MESSAGES>(FALLBACK_LOCALE);
-
-  useEffect(() => {
-    const documentLocale = document.documentElement.lang;
-    if (documentLocale in ERROR_MESSAGES) {
-      setLocale(documentLocale as keyof typeof ERROR_MESSAGES);
-    }
-  }, []);
+  // Repli au rendu serveur et à l'hydratation (`document` n'y existe pas),
+  // langue réelle ensuite, sans écart d'hydratation (hooks/useClientSnapshot.ts).
+  const locale = useClientSnapshot(readDocumentLocale, FALLBACK_LOCALE);
 
   /**
    * @effect 

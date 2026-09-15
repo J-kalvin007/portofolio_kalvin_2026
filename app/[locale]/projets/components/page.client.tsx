@@ -7,7 +7,7 @@
  * 
  * @architecture
  * - Component-driven : tous les composants UI sont isolés dans `components/projects/`
- * - Custom Hooks : `useProjectModal` (état modale), `useDisintegrationGrid` (animation grille)
+ * - Custom Hook : `useProjectModal` (état de la modale)
  * - Séparation stricte : données (lib/data), logique (hooks), présentation (components)
  * - i18n : toutes les chaînes via `useTranslations()` — zéro texte en dur
  * - Dark/Light : variables CSS du design system "Void & Or" via Tailwind `dark:` variants

@@ -15,8 +15,10 @@
  * que l'utilisateur verra toujours une page d'erreur premium, même en cas de panne critique du framework.
  */
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import PageErreur from '@/components/layout/pageErreur';
+import { useClientSnapshot } from '@/hooks/useClientSnapshot';
+import { readPrefersDarkTheme } from '@/lib/theme-preference';
 import './globals.css'; // Essentiel pour avoir Tailwind actif si le layout plante
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -47,6 +49,12 @@ type ErrorLocale = keyof typeof GLOBAL_ERROR_MESSAGES;
 /** Langue de repli, alignée sur la locale par défaut de l'application. */
 const FALLBACK_LOCALE: ErrorLocale = 'fr';
 
+/** Langue déclarée par le navigateur, si elle fait partie des langues du site. */
+const readBrowserLocale = (): ErrorLocale => {
+  const browserLocale = navigator.language.slice(0, 2);
+  return browserLocale in GLOBAL_ERROR_MESSAGES ? (browserLocale as ErrorLocale) : FALLBACK_LOCALE;
+};
+
 export default function GlobalError({
   error,
   reset,
@@ -54,30 +62,14 @@ export default function GlobalError({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
-  const [locale, setLocale] = useState<ErrorLocale>(FALLBACK_LOCALE);
-
-  /**
-   * Le thème était forcé à `dark` en dur : un visiteur en mode clair recevait
-   * une page d'erreur sombre, sans rapport avec le reste de sa session.
-   * `dark` reste la valeur du rendu serveur — elle correspond à l'identité
-   * « Void & Or » et évite tout scintillement pour la majorité des visiteurs —
-   * puis la préférence réelle est appliquée dès le montage.
+  /*
+   * Langue et thème ne sont connus que dans le navigateur. Au rendu serveur :
+   * français et thème sombre (identité par défaut du site) ; ensuite, la
+   * préférence réelle, lue sans écart d'hydratation (hooks/useClientSnapshot.ts).
+   * Le thème n'est plus forcé à `dark` pour un visiteur en mode clair.
    */
-  const [isDark, setIsDark] = useState(true);
-
-  useEffect(() => {
-    // Langue : préférence du navigateur, seul signal encore disponible.
-    const browserLocale = navigator.language.slice(0, 2);
-    if (browserLocale in GLOBAL_ERROR_MESSAGES) setLocale(browserLocale as ErrorLocale);
-
-    // Thème : même logique que le script anti-FOUC du layout principal.
-    try {
-      const stored = localStorage.getItem('theme') || 'system';
-      setIsDark(stored === 'dark' || (stored === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches));
-    } catch {
-      /* localStorage indisponible (navigation privée stricte) : on garde le repli sombre. */
-    }
-  }, []);
+  const locale = useClientSnapshot(readBrowserLocale, FALLBACK_LOCALE);
+  const isDark = useClientSnapshot(readPrefersDarkTheme, true);
 
   useEffect(() => {
     console.error('Erreur fatale interceptée par global-error.tsx :', error);

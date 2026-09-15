@@ -14,11 +14,11 @@
  * repose beaucoup sur le mode sombre, mais l'accessibilité exige qu'un mode clair soit disponible.
  */
 
-import { useState, useEffect } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { Sun, Moon } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useTheme } from '@/lib/useTheme';
+import { useIsClient } from '@/hooks/useClientSnapshot';
 
 // Les différents modes de thème disponibles dans le cycle du bouton
 const THEME_CYCLE = ['light', 'dark'] as const;
@@ -32,14 +32,12 @@ const ICONS = {
 export default function ThemeToggle({ className = '' }: { className?: string }) {
   // Extraction de l'état actuel et de la fonction de mutation depuis Zustand
   const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
+  // Le thème réel n'est connu que dans le navigateur : avant cela, un repli neutre
+  // est rendu, sans écart d'hydratation (voir hooks/useClientSnapshot.ts).
+  const mounted = useIsClient();
 
   const tTheme = useTranslations('theme');
   const shouldReduceMotion = useReducedMotion();
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   /**
    * @function cycleTheme

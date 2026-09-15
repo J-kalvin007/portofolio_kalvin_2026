@@ -7,6 +7,7 @@
  */
 
 import React, { useEffect, useState } from 'react';
+import { useIsClient } from '@/hooks/useClientSnapshot';
 import { motion, useMotionValue, useSpring } from 'framer-motion';
 
 export default function StardustCursor() {
@@ -24,11 +25,7 @@ export default function StardustCursor() {
   const auraX = useSpring(mouseX, { stiffness: 100, damping: 20, mass: 0.5 });
   const auraY = useSpring(mouseY, { stiffness: 100, damping: 20, mass: 0.5 });
 
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useIsClient();
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {

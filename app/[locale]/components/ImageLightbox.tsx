@@ -5,6 +5,7 @@ import { AnimatePresence, motion, useMotionValue, useReducedMotion, useTransform
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { useIsClient } from "@/hooks/useClientSnapshot";
 
 /* ═══════════════════════════════════════════════════════════════════════════
    ▌ CONSTANTES D'INTERACTION
@@ -67,23 +68,23 @@ const ImageLightbox = ({ images, currentIndex, onClose, onNext, onPrev }: ImageL
     const containerRef = useRef<HTMLDivElement>(null);
 
     /* ── Portail : monté uniquement côté client ────────────────────────────── */
-    const [isMounted, setIsMounted] = useState(false);
-    useEffect(() => setIsMounted(true), []);
+    const isMounted = useIsClient();
 
     /* ── Sens de navigation, déduit de la variation d'index ────────────────── */
-    const previousIndexRef = useRef(currentIndex);
-    const [direction, setDirection] = useState(0);
-
-    useEffect(() => {
-        const delta = currentIndex - previousIndexRef.current;
+    // Calculé pendant le rendu, dès que l'index change (motif « informations du
+    // rendu précédent » de la documentation React). L'ancien `useEffect`
+    // affichait d'abord l'image avec le sens de la navigation PRÉCÉDENTE, puis
+    // corrigeait au rendu suivant.
+    const [navigation, setNavigation] = useState({ index: currentIndex, direction: 0 });
+    if (navigation.index !== currentIndex) {
+        const delta = currentIndex - navigation.index;
         const total = images.length;
 
         // Un saut d'amplitude maximale correspond à un bouclage : le sens réel est inversé.
         const isWrapAround = total > 2 && Math.abs(delta) === total - 1;
-        setDirection(delta === 0 ? 0 : isWrapAround ? -Math.sign(delta) : Math.sign(delta));
-
-        previousIndexRef.current = currentIndex;
-    }, [currentIndex, images.length]);
+        setNavigation({ index: currentIndex, direction: isWrapAround ? -Math.sign(delta) : Math.sign(delta) });
+    }
+    const direction = navigation.direction;
 
     /* ── Geste vertical couplé à l'opacité et à l'échelle ──────────────────── */
     const dragY = useMotionValue(0);

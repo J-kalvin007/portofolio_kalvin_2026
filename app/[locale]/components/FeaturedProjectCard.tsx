@@ -114,12 +114,14 @@ const FeaturedProjectCard = ({ project, index }: { project: Project, index: numb
                                 transition={{ duration: 0.65, ease: EASE_OUT_EXPO }}
                                 className="absolute inset-0"
                             >
+                                {/* Pas de `priority` : cette carte se trouve loin sous la ligne de
+                                    flottaison. Le préchargement qu'il déclenchait concurrençait l'image
+                                    du hero, seule candidate légitime au LCP de la page. */}
                                 <Image
                                     src={images[currentImg]}
                                     alt={tGallery('screenshotAlt', { title: project.title, position: currentImg + 1 })}
                                     fill
                                     sizes={PROJECT_IMAGE_SIZES}
-                                    priority={index === 0}
                                     className="object-cover transition-transform duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)]
                                                group-hover:scale-[1.025] motion-reduce:transform-none"
                                 />
