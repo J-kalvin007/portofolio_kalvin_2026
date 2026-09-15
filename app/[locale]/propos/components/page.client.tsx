@@ -211,7 +211,7 @@ export default function AboutPage() {
               className="relative w-full max-w-md aspect-[3/4] rounded-[2.5rem] overflow-hidden shadow-[0_30px_60px_-15px_var(--glow-color-strong)] group"
             >
               <motion.div style={{ x: imgX, y: imgY }} className="absolute inset-[-30px] w-[calc(100%+60px)] h-[calc(100%+60px)]">
-                <Image src="/images/m9.jpg" alt="Kalvin — Portrait" fill sizes="(max-width: 448px) 100vw, 448px" className="object-cover transition-transform duration-[3s] group-hover:scale-105" priority />
+                <Image src="/images/m9.webp" alt="Kalvin — Portrait" fill sizes="(max-width: 448px) 100vw, 448px" className="object-cover transition-transform duration-[3s] group-hover:scale-105" priority />
               </motion.div>
               <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
               <div aria-hidden="true" className="absolute inset-0 bg-primary/15 opacity-0 group-hover:opacity-100 mix-blend-overlay transition-opacity duration-700" />
