@@ -190,12 +190,18 @@ const STAR_KEYFRAMES = `
   }
 }`;
 
-/** Dérive de parallaxe par couche — la plus proche bouge le plus. */
-const LAYER_DRIFT = {
+/**
+ * Dérive de parallaxe par couche — la plus proche bouge le plus.
+ *
+ * Typage explicite plutôt que `as const` : framer-motion attend des tableaux
+ * d'images clés **mutables**. Le tuple `readonly` produit par `as const` était
+ * refusé par TypeScript (TS2322) et bloquait la vérification de types du projet.
+ */
+const LAYER_DRIFT: Record<1 | 2 | 3, { x: string[]; y: string[] }> = {
   1: { x: ['0%', '-3%', '2%', '0%'], y: ['0%', '2%', '-3%', '0%'] },
   2: { x: ['0%', '3%', '-2%', '0%'], y: ['0%', '-2%', '4%', '0%'] },
   3: { x: ['0%', '-5%', '3%', '0%'], y: ['0%', '4%', '-2%', '0%'] },
-} as const;
+};
 
 const StarField = React.memo(function StarField() {
   const stars = useStarField();
@@ -263,7 +269,7 @@ const StarField = React.memo(function StarField() {
       {/* ── Étoiles par couche ── */}
       {[1, 2, 3].map((layer) => {
         // Parallax drift directionnel selon la couche
-        const drift = LAYER_DRIFT[layer as keyof typeof LAYER_DRIFT];
+        const drift = LAYER_DRIFT[layer as 1 | 2 | 3];
 
         return (
           <motion.div
@@ -287,8 +293,12 @@ const StarField = React.memo(function StarField() {
                     opacity: shouldReduceMotion ? star.opacity : undefined,
                     '--star-min': star.opacity * 0.1,
                     '--star-max': star.opacity,
-                    '--star-dx': `${star.moveX}px`,
-                    '--star-dy': `${star.moveY}px`,
+                    // Amplitude au sommet de la dérive (image clé 50 %).
+                    // `moveX` est un tableau de trajectoire : l'interpoler tel
+                    // quel donnait "0,-23.4,55.1,0px", une longueur invalide qui
+                    // annulait la transformation — les étoiles ne dérivaient pas.
+                    '--star-dx': `${star.moveX[1]}px`,
+                    '--star-dy': `${star.moveY[1]}px`,
                     animation: shouldReduceMotion
                       ? undefined
                       : `star-twinkle-drift ${star.duration}s ease-in-out ${star.delay}s infinite`,
