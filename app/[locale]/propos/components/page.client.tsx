@@ -29,9 +29,10 @@
  *  3. **Or du mode sombre imposé en mode clair** — `#FFD166` et
  *     `rgba(240,165,0,…)` étaient écrits en dur. Remplacés par les tokens du
  *     thème (`primary`, `accent`, `--glow-color*`).
- *  4. **Indicateur de défilement décentré** — la keyframe `scroll-pulse` porte
- *     le `translateX(-50%)` ; sans classe de repli, l'icône se décalait dès que
- *     l'animation était coupée (`prefers-reduced-motion`).
+ *  4. **Indicateur de défilement décentré** — la keyframe `scroll-pulse` centrait
+ *     l'icône elle-même : décentrée dès que l'animation était coupée
+ *     (`prefers-reduced-motion`). Le centrage est désormais porté par la classe,
+ *     la keyframe n'anime plus que la pulsation (voir `globals.css`).
  *  5. **Titre épelé par les lecteurs d'écran** — « Kalvin » est découpé en six
  *     `span` animés ; le titre porte désormais son nom accessible entier.
  *  6. **Décors annoncés** — icônes et guillemet décoratifs masqués aux
@@ -222,8 +223,9 @@ export default function AboutPage() {
         </div>
 
         {/* Indicateur de défilement — décoratif.
-            `-translate-x-1/2` prend le relais du centrage quand la keyframe
-            `scroll-pulse` (qui le porte aussi) est coupée. */}
+            Centrage par `-translate-x-1/2` (propriété `translate`), pulsation par
+            la keyframe `scroll-pulse` (propriété `transform`) : les deux ne se
+            marchent plus dessus. */}
         <div aria-hidden="true" className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10" style={{ animation: 'scroll-pulse 2s ease-in-out infinite' }}>
           <ChevronDown className="w-6 h-6 text-primary" />
         </div>
