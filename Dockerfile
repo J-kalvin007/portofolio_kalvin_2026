@@ -15,7 +15,12 @@
 # ÉTAPE 1 : IMAGE DE BASE
 # ------------------------------------------------------------------------------
 # Utilisation d'Alpine Linux pour sa légèreté extrême (~5MB de base)
-FROM node:18-alpine AS base
+#
+# ⚠️ Correctif : l'image était `node:18-alpine`. Next.js 16 exige Node.js
+# >= 20.9.0 et son binaire s'arrête sur une erreur en dessous : le build Docker
+# échouait à `RUN npm run build`. Node 24 est la LTS active (Node 20 est en fin
+# de vie depuis avril 2026) et c'est la version avec laquelle le build est validé.
+FROM node:24-alpine AS base
 
 # ------------------------------------------------------------------------------
 # ÉTAPE 2 : GESTION DES DÉPENDANCES (deps)
