@@ -1,5 +1,5 @@
-version: '3.8'
-
+# La clé `version` a été retirée : elle est obsolète dans Docker Compose v2,
+# qui l'ignore et affiche un avertissement.
 services:
   portfolio:
     container_name: portfolio_kalvin
@@ -11,6 +11,12 @@ services:
     restart: always
     environment:
       - NODE_ENV=production
-      # - RESEND_API_KEY=${RESEND_API_KEY} # Décommentez pour injecter une clé API Email
-    # volumes:
-    #  - ./.env.local:/app/.env.local # Décommentez pour utiliser le fichier .env local
+    # Variables d'exécution lues dans .env.local (facultatif) — notamment
+    # EMAIL_HOST_USER et EMAIL_HOST_PASSWORD, sans lesquelles le formulaire de
+    # contact répond « service indisponible ». Elles n'étaient transmises au
+    # conteneur par aucun moyen (la ligne d'exemple citait RESEND_API_KEY, une
+    # clé que le projet n'utilise pas). Les secrets restent hors de l'image :
+    # ils sont injectés au démarrage, jamais copiés au build (.dockerignore).
+    env_file:
+      - path: .env.local
+        required: false

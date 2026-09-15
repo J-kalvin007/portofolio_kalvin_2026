@@ -24,8 +24,9 @@ import { z } from 'zod';
 import { useLocale, useTranslations } from 'next-intl';
 import FadeIn from '@/components/animations/FadeIn';
 import StardustCursor from '@/components/animations/StardustCursor';
+import { CONTACT_LIMITS, HONEYPOT_FIELD } from '@/lib/contact';
 
-type ContactFormData = { name: string; email: string; subject: string; message: string };
+type ContactFormData = { name: string; email: string; subject: string; message: string; [HONEYPOT_FIELD]?: string };
 
 /* ═══════════════════════════════════════════════════════════════════════════
    ▌ TOKENS DE LA PAGE
@@ -38,8 +39,8 @@ type ContactFormData = { name: string; email: string; subject: string; message: 
 /** Or « Void & Or ». Réservé aux dégradés en ligne — partout ailleurs, on passe par le token `primary`. */
 const GOLD_RGB = '240,165,0';
 
-/** Longueur maximale du message — source unique partagée par le schéma Zod et le compteur. */
-const MESSAGE_MAX_LENGTH = 2000;
+/** Longueur maximale du message — source unique partagée avec l'API (lib/contact.ts). */
+const MESSAGE_MAX_LENGTH = CONTACT_LIMITS.messageMax;
 
 /** Seuil (en %) à partir duquel le compteur de caractères devient visible puis alarmant. */
 const COUNTER_VISIBLE_RATIO = 0.6;
@@ -61,10 +62,13 @@ export default function ContactPage() {
   const shouldReduceMotion = useReducedMotion();
 
   const contactSchema = z.object({
-    name: z.string().min(2, t('validation.nameMin')),
+    // Mêmes limites que l'API : un formulaire valide à l'écran l'est aussi côté serveur.
+    name: z.string().min(CONTACT_LIMITS.nameMin, t('validation.nameMin')).max(CONTACT_LIMITS.nameMax, t('validation.nameMax', { max: CONTACT_LIMITS.nameMax })),
     email: z.string().email(t('validation.emailInvalid')),
-    subject: z.string().min(3, t('validation.subjectMin')),
-    message: z.string().min(10, t('validation.messageMin')).max(MESSAGE_MAX_LENGTH, t('validation.messageMax')),
+    subject: z.string().min(CONTACT_LIMITS.subjectMin, t('validation.subjectMin')).max(CONTACT_LIMITS.subjectMax, t('validation.subjectMax', { max: CONTACT_LIMITS.subjectMax })),
+    message: z.string().min(CONTACT_LIMITS.messageMin, t('validation.messageMin')).max(MESSAGE_MAX_LENGTH, t('validation.messageMax')),
+    // Pot de miel : jamais validé côté client (un robot ne doit recevoir aucun signal).
+    [HONEYPOT_FIELD]: z.string().optional(),
   });
 
   const { register, handleSubmit, formState: { errors }, reset, control } = useForm<ContactFormData>({
@@ -437,6 +441,7 @@ export default function ContactPage() {
                         id="name"
                         type="text"
                         autoComplete="name"
+                        maxLength={CONTACT_LIMITS.nameMax}
                         aria-invalid={!!errors.name}
                         aria-describedby={errors.name ? 'name-error' : undefined}
                         {...register('name')}
@@ -473,6 +478,7 @@ export default function ContactPage() {
                       id="subject"
                       type="text"
                       autoComplete="off"
+                      maxLength={CONTACT_LIMITS.subjectMax}
                       aria-invalid={!!errors.subject}
                       aria-describedby={errors.subject ? 'subject-error' : undefined}
                       {...register('subject')}
@@ -504,6 +510,17 @@ export default function ContactPage() {
                       placeholder={t('form.messagePlaceholder')}
                     />
                     {errors.message && <p id="message-error" className="text-red-500 text-xs ml-0.5 font-medium">{errors.message.message}</p>}
+                  </div>
+
+                  {/* ── Pot de miel anti-robot ────────────────────────────────
+                      Hors écran, retiré du parcours clavier et masqué aux lecteurs
+                      d'écran : aucun humain ne le voit ni ne le remplit. Un robot qui
+                      complète tous les champs le remplit, et l'API abandonne alors
+                      l'envoi en répondant « succès ». Ce champ était attendu par l'API
+                      mais n'avait jamais été ajouté au formulaire. */}
+                  <div aria-hidden="true" className="absolute -left-[10000px] top-auto h-px w-px overflow-hidden">
+                    <label htmlFor={HONEYPOT_FIELD}>Website</label>
+                    <input id={HONEYPOT_FIELD} type="text" tabIndex={-1} autoComplete="off" {...register(HONEYPOT_FIELD)} />
                   </div>
 
                   {/* ── Bouton d'envoi ────────────────────────────────────────

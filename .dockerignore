@@ -5,4 +5,7 @@ npm-debug.log
 README.md
 .next
 .git
-.env.local
+# Aucun fichier d'environnement dans le contexte de build : `COPY . .` les
+# aurait inscrits dans une couche de l'image (seul .env.local était exclu).
+.env*
+!.env.example

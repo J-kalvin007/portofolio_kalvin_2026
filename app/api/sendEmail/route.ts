@@ -17,6 +17,7 @@ import type { Transporter } from 'nodemailer';
 import { z } from 'zod';
 import { escapeHtml } from '@/lib/html-escape';
 import { SITE_URL, SITE_NAME } from '@/lib/site';
+import { CONTACT_LIMITS, CONTACT_MAX_BODY_BYTES, HONEYPOT_FIELD } from '@/lib/contact';
 
 /**
  * `nodemailer` ouvre des sockets TCP : il ne peut pas tourner sur le runtime Edge.
@@ -106,6 +107,7 @@ const API_MESSAGES = {
     success: 'Message envoyé avec succès !',
     invalid: 'Données invalides.',
     rateLimited: 'Trop de messages envoyés. Merci de réessayer plus tard.',
+    tooLarge: 'Le message envoyé est trop volumineux.',
     failure: "Erreur lors de l'envoi du message. Veuillez réessayer.",
     misconfigured: "Le service d'envoi est momentanément indisponible.",
   },
@@ -113,6 +115,7 @@ const API_MESSAGES = {
     success: 'Message sent successfully.',
     invalid: 'Invalid data.',
     rateLimited: 'Too many messages sent. Please try again later.',
+    tooLarge: 'The submitted message is too large.',
     failure: 'The message could not be sent. Please try again.',
     misconfigured: 'The mail service is temporarily unavailable.',
   },
@@ -142,20 +145,25 @@ function stripHeaderInjection(s: string): string {
  * et envoyer des données corrompues directement avec cURL ou Postman.
  */
 const contactSchema = z.object({
-  name: z.string().min(2, 'Le nom doit contenir au moins 2 caractères').max(100, 'Le nom est trop long'),
-  email: z.string().email('Email invalide'),
-  subject: z.string().min(3, 'Le sujet doit contenir au moins 3 caractères').max(200, 'Le sujet est trop long'),
-  message: z.string().min(10, 'Le message doit contenir au moins 10 caractères').max(2000, 'Le message est trop long'),
+  // Limites importées de lib/contact.ts : identiques à celles du formulaire.
+  name: z.string().min(CONTACT_LIMITS.nameMin).max(CONTACT_LIMITS.nameMax),
+  email: z.string().email(),
+  subject: z.string().min(CONTACT_LIMITS.subjectMin).max(CONTACT_LIMITS.subjectMax),
+  message: z.string().min(CONTACT_LIMITS.messageMin).max(CONTACT_LIMITS.messageMax),
 
   /** Langue de l'interface, facultative — voir `resolveLocale`. */
   locale: z.string().max(5).optional(),
 
   /**
    * Pot de miel : champ invisible que seuls les robots remplissent.
-   * Facultatif côté schéma pour rester rétrocompatible ; s'il arrive rempli,
-   * la requête est abandonnée en silence (voir plus bas).
+   *
+   * ⚠️ Correctif. Le schéma imposait `.max(0)` : un robot qui remplissait le
+   * champ faisait donc ÉCHOUER la validation et recevait une erreur 400 — il
+   * apprenait qu'il avait été repéré, et la branche « succès silencieux » plus
+   * bas ne pouvait jamais s'exécuter. Le champ est désormais accepté tel quel,
+   * et c'est sa présence qui déclenche l'abandon silencieux.
    */
-  website: z.string().max(0).optional().or(z.literal('')),
+  [HONEYPOT_FIELD]: z.string().max(500).optional(),
 });
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -218,16 +226,52 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const body = await request.json();
+    /* ── 0 bis. Corps de requête borné et JSON valide ───────────────────────
+       `request.json()` lisait le corps entier en mémoire quelle que soit sa
+       taille, puis levait une exception sur un JSON invalide — traitée comme une
+       panne serveur (500). Un corps démesuré est maintenant refusé (413), un
+       JSON illisible est une erreur du client (400). */
+    const declaredLength = Number(request.headers.get('content-length') ?? 0);
+    if (declaredLength > CONTACT_MAX_BODY_BYTES) {
+      return NextResponse.json(
+        { success: false, message: API_MESSAGES[locale].tooLarge },
+        { status: 413, headers: { 'Cache-Control': 'no-store' } }
+      );
+    }
+
+    const rawBody = await request.text();
+    if (Buffer.byteLength(rawBody) > CONTACT_MAX_BODY_BYTES) {
+      return NextResponse.json(
+        { success: false, message: API_MESSAGES[locale].tooLarge },
+        { status: 413, headers: { 'Cache-Control': 'no-store' } }
+      );
+    }
+
+    let body: unknown;
+    try {
+      body = JSON.parse(rawBody);
+    } catch {
+      return NextResponse.json(
+        { success: false, message: API_MESSAGES[locale].invalid },
+        { status: 400, headers: { 'Cache-Control': 'no-store' } }
+      );
+    }
+
+    // Langue lue AVANT la validation : si les données sont invalides, le message
+    // d'erreur doit déjà être dans la langue de l'interface. Elle n'était résolue
+    // qu'après une validation réussie — un visiteur anglophone recevait donc
+    // « Données invalides. ».
+    if (body && typeof body === 'object' && 'locale' in body && typeof body.locale === 'string') {
+      locale = resolveLocale(request, body.locale);
+    }
 
     // 1. Validation de sécurité Zod (Lèvera une erreur si les données sont incorrectes)
     const validatedData = contactSchema.parse(body);
-    locale = resolveLocale(request, validatedData.locale);
 
     /* ── 1 bis. Pot de miel ─────────────────────────────────────────────────
        Un robot remplit tous les champs qu'il trouve. On répond succès pour ne
        pas lui apprendre qu'il a été repéré, et on n'envoie rien. */
-    if (validatedData.website) {
+    if (validatedData[HONEYPOT_FIELD]) {
       return NextResponse.json(
         { success: true, message: API_MESSAGES[locale].success },
         { status: 200, headers: { 'Cache-Control': 'no-store' } }
@@ -298,7 +342,10 @@ export async function POST(request: NextRequest) {
     // Si Zod a détecté une faille dans la validation
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { success: false, message: API_MESSAGES[locale].invalid, errors: error.issues },
+        // Le détail des erreurs Zod (`error.issues`) n'est plus renvoyé : le
+        // formulaire ne l'utilise pas (il valide avec les mêmes règles avant
+        // l'envoi), et il décrivait le schéma interne à quiconque interroge l'API.
+        { success: false, message: API_MESSAGES[locale].invalid },
         { status: 400, headers: { 'Cache-Control': 'no-store' } } // Bad Request
       );
     }
