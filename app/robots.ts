@@ -1,23 +1,3 @@
-// import { MetadataRoute } from 'next';
-
-// export default function robots(): MetadataRoute.Robots {
-//   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://kalvin-portfolio.com';
-
-//   return {
-//     rules: {
-//       userAgent: '*',
-//       allow: '/',
-//     },
-//     sitemap: `${baseUrl}/sitemap.xml`,
-//   };
-// }
-
-
-
-
-
-
-
 
 import { MetadataRoute } from 'next';
 import { SITE_URL } from '@/lib/site';
