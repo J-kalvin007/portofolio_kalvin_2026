@@ -316,32 +316,11 @@ html {
     border: 1px solid var(--glass-border);
   }
 
-  /* Halo lumineux permanent autour des cartes */
-  .glow-border {
-    box-shadow: 0 0 0 1px var(--glow-color),
-      0 0 40px -10px var(--glow-color-strong);
-  }
-
-  /* Halo qui s'active au survol */
-  .hover-glow {
-    transition: box-shadow 0.5s ease;
-  }
-
-  .hover-glow:hover {
-    box-shadow: 0 0 40px -10px var(--glow-color-strong),
-      0 20px 60px -20px rgba(0, 0, 0, 0.3);
-  }
-
   /* Les raccourcis `.font-display` et `.font-mono` ont été retirés d'ici :
      Tailwind v4 génère déjà ces utilitaires à partir des variables `--font-*`
      déclarées dans `@theme`. Les redéfinir créait deux règles concurrentes pour
      la même classe, avec un ordre de cascade dépendant de la compilation. */
 
-  /* Masque initial pour l'apparition fluide des images */
-  .image-reveal {
-    clip-path: inset(0 0 0 0);
-    transition: clip-path 0.8s cubic-bezier(0.77, 0, 0.175, 1);
-  }
 }
 
 /* ═══════════════════════════════════════════════
@@ -356,18 +335,6 @@ html {
 
   50% {
     transform: translateY(-10px);
-  }
-}
-
-@keyframes pulse-glow {
-
-  0%,
-  100% {
-    box-shadow: 0 0 20px var(--glow-color);
-  }
-
-  50% {
-    box-shadow: 0 0 40px var(--glow-color-strong);
   }
 }
 
@@ -440,51 +407,10 @@ html {
 
 /* ═══════════════════════════════════════════════
    PROJETS PAGE — Champ Stellaire (Modale)
+   ─────────────────────────────────────────────
+   Le scintillement et la dérive des étoiles sont portés par une keyframe
+   locale (`star-twinkle-drift`) injectée par `modal/StarField.tsx`.
    ═══════════════════════════════════════════════ */
-
-/* Scintillement des étoiles individuelles */
-@keyframes star-twinkle {
-
-  0%,
-  100% {
-    opacity: var(--tw-opacity, 0.3);
-  }
-
-  50% {
-    opacity: 1;
-  }
-}
-
-/* Dérive lente des couches d'étoiles (parallax) */
-@keyframes star-drift-1 {
-  0% {
-    transform: translateX(0) translateY(0) rotate(0deg);
-  }
-
-  100% {
-    transform: translateX(-15px) translateY(-10px) rotate(0.5deg);
-  }
-}
-
-@keyframes star-drift-2 {
-  0% {
-    transform: translateX(0) translateY(0) rotate(0deg);
-  }
-
-  100% {
-    transform: translateX(10px) translateY(-20px) rotate(-0.3deg);
-  }
-}
-
-@keyframes star-drift-3 {
-  0% {
-    transform: translateX(0) translateY(0) rotate(0deg);
-  }
-
-  100% {
-    transform: translateX(-20px) translateY(15px) rotate(0.8deg);
-  }
-}
 
 /* Pulsation des nébuleuses */
 @keyframes nebula-pulse {
@@ -498,102 +424,6 @@ html {
   50% {
     transform: scale(1.2);
     opacity: 0.6;
-  }
-}
-
-/* ═══════════════════════════════════════════════
-   PROJETS PAGE — Cadre Ovale Morphing (Image)
-   ═══════════════════════════════════════════════ */
-
-/* Mutation continue du border-radius pour l'effet ovale organique */
-@keyframes morph-frame {
-
-  0%,
-  100% {
-    border-radius: 60% 40% 55% 45% / 45% 55% 40% 60%;
-  }
-
-  25% {
-    border-radius: 45% 55% 40% 60% / 55% 45% 60% 40%;
-  }
-
-  50% {
-    border-radius: 55% 45% 60% 40% / 40% 60% 45% 55%;
-  }
-
-  75% {
-    border-radius: 40% 60% 45% 55% / 60% 40% 55% 45%;
-  }
-}
-
-/* Halo lumineux morphing synchronisé avec le cadre */
-@keyframes morph-glow {
-
-  0%,
-  100% {
-    border-radius: 60% 40% 55% 45% / 45% 55% 40% 60%;
-    opacity: 0.4;
-  }
-
-  50% {
-    border-radius: 55% 45% 60% 40% / 40% 60% 45% 55%;
-    opacity: 0.8;
-  }
-}
-
-/* ═══════════════════════════════════════════════
-   PROJETS PAGE — Défilement Infini (Rain Carousels)
-   ═══════════════════════════════════════════════ */
-
-/* Défilement vers le bas (description — haut → bas) */
-@keyframes rain-scroll-down {
-  0% {
-    transform: translateY(-25%);
-  }
-
-  100% {
-    transform: translateY(-75%);
-  }
-}
-
-/* Défilement vers le haut (tech stack — bas → haut) */
-@keyframes rain-scroll-up {
-  0% {
-    transform: translateY(-75%);
-  }
-
-  100% {
-    transform: translateY(-25%);
-  }
-}
-
-/* ═══════════════════════════════════════════════
-   À PROPOS PAGE — Marquee Testimonials
-   ─────────────────────────────────────────────
-   ℹ️ Ces deux keyframes ne sont plus référencées : `AboutAnimations.tsx` pilote
-   désormais son rail lui-même, afin de pouvoir vraiment marquer la pause au
-   survol et honorer `prefers-reduced-motion`. Elles sont conservées le temps de
-   vérifier qu'aucun autre composant ne s'en sert, puis supprimables.
-   (Leur valeur de -33,333 % était correcte pour un contenu triplé.)
-   ═══════════════════════════════════════════════ */
-
-@keyframes marquee-left {
-  0% {
-    transform: translateX(0);
-  }
-
-  100% {
-    transform: translateX(-33.333%);
-  }
-}
-
-@keyframes marquee-right {
-  0% {
-    transform: translateX(-33.333%);
-  }
-
-  100% {
-    transform: translateX(0);
   }
 }
 
@@ -614,12 +444,15 @@ html {
 /* ═══════════════════════════════════════════════
    À PROPOS PAGE — Scroll Indicator Pulse
    ─────────────────────────────────────────────
-   ⚠️ Ces keyframes portent le centrage horizontal (`translateX(-50%)`) en plus
-   de la pulsation. L'élément dépend donc de l'animation pour être centré : dès
-   qu'elle s'arrête — en `prefers-reduced-motion`, notamment — il se décale de la
-   moitié de sa largeur. C'est pourquoi une classe `-translate-x-1/2` a été
-   ajoutée sur l'élément côté React : elle prend le relais quand l'animation ne
-   tourne pas.
+   La keyframe n'anime que la pulsation verticale. Le centrage horizontal est
+   confié à la classe `-translate-x-1/2` posée sur l'élément.
+
+   ⚠️ Correctif. La keyframe portait aussi `translateX(-50%)`. Or Tailwind v4
+   implémente `-translate-x-1/2` avec la propriété CSS `translate`, qui
+   **s'additionne** à `transform` au lieu de la remplacer : pendant l'animation,
+   l'élément était décalé de -100 % de sa largeur, puis se recentrait d'un coup
+   dès que l'animation était coupée (`prefers-reduced-motion`). Une seule
+   propriété par responsabilité : `translate` centre, `transform` anime.
    ═══════════════════════════════════════════════ */
 
 @keyframes scroll-pulse {
@@ -627,31 +460,12 @@ html {
   0%,
   100% {
     opacity: 0.3;
-    transform: translateY(0) translateX(-50%);
+    transform: translateY(0);
   }
 
   50% {
     opacity: 1;
-    transform: translateY(10px) translateX(-50%);
+    transform: translateY(10px);
   }
 }
 
-/* ═══════════════════════════════════════════════
-   À PROPOS PAGE — Glow Line Draw
-   ═══════════════════════════════════════════════ */
-
-@keyframes line-draw {
-  0% {
-    width: 0;
-    opacity: 0;
-  }
-
-  50% {
-    opacity: 1;
-  }
-
-  100% {
-    width: 100%;
-    opacity: 0.6;
-  }
-}
