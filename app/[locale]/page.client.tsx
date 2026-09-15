@@ -248,7 +248,7 @@ export default function HomePage() {
               <div className="relative w-56 h-56 sm:w-72 sm:h-72 rounded-full overflow-hidden
                               ring-1 ring-base-content/10 ring-offset-[14px] ring-offset-base-100
                               shadow-[0_32px_64px_-28px_rgba(0,0,0,0.55)]">
-                <Image src="/images/Kalvin.jpg" alt="Kalvin" fill sizes="(max-width: 640px) 224px, 288px" className="object-cover" priority />
+                <Image src="/images/Kalvin.webp" alt="Kalvin" fill sizes="(max-width: 640px) 224px, 288px" className="object-cover" priority />
                 <div aria-hidden="true" className="absolute inset-0 rounded-full shadow-[inset_0_0_40px_rgba(0,0,0,0.18)] pointer-events-none" />
               </div>
             </motion.div>
