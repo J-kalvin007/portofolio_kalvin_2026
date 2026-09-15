@@ -3,6 +3,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { motion, useAnimationFrame, useInView, useMotionValue, useReducedMotion, useTransform, type MotionValue } from 'framer-motion';
 import { Quote } from 'lucide-react';
+import type { Testimonial } from '@/lib/data/testimonials';
 
 /* ═══════════════════════════════════════════════════════════════════════════
    ▌ MÉCANIQUE DU RAIL DE TÉMOIGNAGES
@@ -93,7 +94,7 @@ export function ScrollWord({ children, progress, index, total }: { children: str
 }
 
 /* ── Rangée Marquee Témoignages ── */
-export function MarqueeRow({ items, direction = 'left', speed = 35 }: { items: { quote: string; author: string; role: string; company: string }[]; direction?: 'left' | 'right'; speed?: number }) {
+export function MarqueeRow({ items, direction = 'left', speed = 35 }: { items: Testimonial[]; direction?: 'left' | 'right'; speed?: number }) {
   const tripled = useMemo(() => [...items, ...items, ...items], [items]);
 
   const shouldReduceMotion = useReducedMotion();
@@ -179,7 +180,7 @@ export function MarqueeRow({ items, direction = 'left', speed = 35 }: { items: {
    la police à empattements est déjà chargée par le layout ; l'employer sur un
    unique signe typographique lui donne enfin une raison d'être.
    ═══════════════════════════════════════════════════════════════════════════ */
-function TestimonialCard({ testimonial }: { testimonial: { quote: string; author: string; role: string; company: string } }) {
+function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
   return (
     <figure
       className="group/c w-[320px] sm:w-[360px] shrink-0 p-7 rounded-[1.75rem] flex flex-col
