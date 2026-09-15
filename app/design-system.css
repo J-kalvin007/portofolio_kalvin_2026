@@ -1,0 +1,199 @@
+/**
+ * @file design-system.css
+ * @description Système de design du portfolio : rôles de couleur, échelles
+ * typographiques, élévations, rayons, rythme et mouvement.
+ *
+ * @architecture
+ * Deux couches, volontairement séparées :
+ *
+ *  1. **Valeurs** (`--ds-*`, dans `:root` et `.dark`) — les couleurs concrètes.
+ *     Changer de direction artistique = changer ces valeurs, et rien d'autre.
+ *  2. **Rôles** (`@theme`) — les noms que les composants utilisent :
+ *     `bg-canvas`, `text-ink-muted`, `border-line`, `shadow-e2`, `rounded-card`,
+ *     `text-heading`, `py-section`, `ease-emphasized`…
+ *     Un composant ne nomme jamais une teinte, il nomme une intention.
+ *
+ * @remarks **Pourquoi ce fichier existe.** L'audit a mesuré dans le code
+ * 24 niveaux d'opacité appliqués à la même encre, 62 ombres écrites à la main et
+ * 14 rayons de bordure différents. Chaque valeur était raisonnable isolément ;
+ * ensemble, elles ne formaient aucun système — d'où l'impression d'interface
+ * « générée ». Ici, chaque dimension est une échelle **courte et fermée** :
+ * 4 niveaux d'encre, 3 élévations, 3 rayons, 8 tailles de texte.
+ *
+ * **Coexistence.** Les anciens noms (`primary`, `base-100`, `base-content`…)
+ * restent définis dans `globals.css` : les pages actuelles s'affichent à
+ * l'identique. Chaque page adopte ces rôles lors de sa refonte ; les anciens
+ * noms seront retirés quand plus aucun composant ne les utilisera.
+ *
+ * **Valeurs provisoires.** Celles ci-dessous transposent la palette actuelle
+ * « Void & Or » dans les nouveaux rôles, avec des contrastes corrigés et mesurés
+ * (WCAG 2.2). Elles seront remplacées par celles de la direction retenue.
+ */
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ▌ 1. VALEURS — mode clair
+   ───────────────────────────────────────────────────────────────────────────
+   Contrastes mesurés sur `canvas` (et sur `surface` pour les encres) :
+     ink 18,9:1 · ink-soft 10,4:1 · ink-muted 5,7:1 (5,3:1 sur surface)
+     brand-text 5,7:1 · brand-ink sur brand 6,7:1
+   `ink-faint` (3,3:1) est réservé au décor et aux très grands textes :
+   jamais pour une information à lire.
+   ═══════════════════════════════════════════════════════════════════════════ */
+:root {
+  /* Surfaces : du plus bas au plus haut */
+  --ds-canvas: #ffffff;
+  --ds-surface: #f6f6f7;
+  --ds-surface-sunken: #efeff1;
+
+  /* Encres : 4 niveaux, pas un de plus */
+  --ds-ink: #111111;
+  --ds-ink-soft: #3f3f46;
+  --ds-ink-muted: #666670;
+  --ds-ink-faint: #8c8c96;
+
+  /* Filets */
+  --ds-line: #e4e4e7;
+  --ds-line-strong: #8c8c96;
+
+  /* Marque : une couleur rare, réservée aux actions et à un geste par écran.
+     `brand` est un remplissage (le texte qu'il porte, `brand-ink`, assure le
+     contraste) ; `brand-text` est la variante lisible en texte courant. */
+  --ds-brand: #c8900a;
+  --ds-brand-ink: #16110a;
+  --ds-brand-text: #8a5f00;
+  --ds-brand-soft: color-mix(in srgb, #c8900a 12%, transparent);
+
+  /* Retours d'état (formulaires) */
+  --ds-success: #15803d;
+  --ds-danger: #b91c1c;
+
+  /* Anneau de focus clavier — même teinte que le texte de marque (5,7:1) */
+  --ds-focus: #8a5f00;
+
+  /* Couleur d'ombre : une seule source de lumière, en haut */
+  --ds-shadow-color: 0deg 0% 0%;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ▌ 1 bis. VALEURS — mode sombre
+   ───────────────────────────────────────────────────────────────────────────
+   Contrastes mesurés sur `canvas` :
+     ink 17,0:1 · ink-soft 11,9:1 · ink-muted 7,2:1 (6,8:1 sur surface)
+     brand-text 9,7:1 · brand-ink sur brand 9,7:1 · ink-faint 3,9:1 (décor)
+   ═══════════════════════════════════════════════════════════════════════════ */
+.dark {
+  --ds-canvas: #070510;
+  --ds-surface: #110d1f;
+  --ds-surface-sunken: #0c0918;
+
+  --ds-ink: #f0ecd8;
+  --ds-ink-soft: #ccc6b5;
+  --ds-ink-muted: #a09a8a;
+  --ds-ink-faint: #6f6985;
+
+  --ds-line: #231c36;
+  --ds-line-strong: #3a3057;
+
+  --ds-brand: #f0a500;
+  --ds-brand-ink: #070510;
+  --ds-brand-text: #f0a500;
+  --ds-brand-soft: color-mix(in srgb, #f0a500 14%, transparent);
+
+  --ds-success: #4ade80;
+  --ds-danger: #f87171;
+
+  --ds-focus: #ffd166;
+
+  /* Sur fond sombre, une ombre doit être plus dense pour rester perceptible */
+  --ds-shadow-color: 250deg 60% 2%;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ▌ 2. RÔLES — exposés à Tailwind
+   ═══════════════════════════════════════════════════════════════════════════ */
+@theme {
+  /* ── Couleurs ─────────────────────────────────────────────────────────── */
+  --color-canvas: var(--ds-canvas);
+  --color-surface: var(--ds-surface);
+  --color-surface-sunken: var(--ds-surface-sunken);
+
+  --color-ink: var(--ds-ink);
+  --color-ink-soft: var(--ds-ink-soft);
+  --color-ink-muted: var(--ds-ink-muted);
+  --color-ink-faint: var(--ds-ink-faint);
+
+  --color-line: var(--ds-line);
+  --color-line-strong: var(--ds-line-strong);
+
+  --color-brand: var(--ds-brand);
+  --color-brand-ink: var(--ds-brand-ink);
+  --color-brand-text: var(--ds-brand-text);
+  --color-brand-soft: var(--ds-brand-soft);
+
+  --color-success: var(--ds-success);
+  --color-danger: var(--ds-danger);
+  --color-focus: var(--ds-focus);
+
+  /* ── Élévation : 3 niveaux, une seule source de lumière ───────────────────
+     e1 : posé (cartes au repos) · e2 : soulevé (survol, menus)
+     e3 : superposé (modales, visionneuse) */
+  --shadow-e1: 0 1px 1px hsl(var(--ds-shadow-color) / 0.06), 0 1px 3px hsl(var(--ds-shadow-color) / 0.08);
+  --shadow-e2: 0 2px 4px hsl(var(--ds-shadow-color) / 0.06), 0 12px 28px -8px hsl(var(--ds-shadow-color) / 0.18);
+  --shadow-e3: 0 4px 8px hsl(var(--ds-shadow-color) / 0.08), 0 32px 64px -16px hsl(var(--ds-shadow-color) / 0.32);
+
+  /* ── Rayons : 3 valeurs sémantiques (+ `rounded-full` pour les pastilles) ──
+     Les rayons emboîtés restent concentriques : rayon extérieur =
+     rayon intérieur + marge intérieure. */
+  --radius-control: 0.625rem; /* 10 px — champs, boutons, étiquettes */
+  --radius-card: 1rem;        /* 16 px — cartes, vignettes */
+  --radius-panel: 1.5rem;     /* 24 px — panneaux, modales, grands visuels */
+
+  /* ── Typographie : 8 rôles, tailles fluides (téléphone → grand écran) ───── */
+  --text-display: clamp(2.75rem, 1.55rem + 5.2vw, 6rem);
+  --text-display--line-height: 0.95;
+  --text-display--letter-spacing: -0.04em;
+
+  --text-title: clamp(2.25rem, 1.5rem + 3.2vw, 4rem);
+  --text-title--line-height: 1.02;
+  --text-title--letter-spacing: -0.035em;
+
+  --text-heading: clamp(1.75rem, 1.3rem + 1.8vw, 2.625rem);
+  --text-heading--line-height: 1.1;
+  --text-heading--letter-spacing: -0.025em;
+
+  --text-subheading: clamp(1.1875rem, 1.05rem + 0.55vw, 1.5rem);
+  --text-subheading--line-height: 1.3;
+  --text-subheading--letter-spacing: -0.015em;
+
+  --text-lead: clamp(1.0625rem, 1rem + 0.35vw, 1.3125rem);
+  --text-lead--line-height: 1.6;
+
+  --text-body: 1rem;
+  --text-body--line-height: 1.7;
+
+  --text-caption: 0.875rem;
+  --text-caption--line-height: 1.5;
+
+  --text-overline: 0.75rem;
+  --text-overline--line-height: 1.2;
+  --text-overline--letter-spacing: 0.16em;
+
+  /* ── Rythme vertical et largeurs ──────────────────────────────────────────
+     `py-section` sépare deux sections, `gap-block` deux blocs d'une section.
+     Une seule progression, au lieu des 6 valeurs de marges relevées à l'audit. */
+  --spacing-section: clamp(5rem, 3rem + 8vw, 10rem);
+  --spacing-block: clamp(2.5rem, 1.75rem + 3.5vw, 5rem);
+
+  --container-reading: 42rem; /* texte long : ~70 caractères par ligne (nom distinct de `max-w-prose`, utilitaire Tailwind existant) */
+  --container-content: 72rem; /* contenu courant */
+  --container-wide: 88rem;    /* compositions pleine largeur */
+
+  /* ── Mouvement : une courbe, trois durées ─────────────────────────────── */
+  --ease-emphasized: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+:root {
+  --motion-fast: 150ms;  /* retours immédiats : survol, pression */
+  --motion-base: 300ms;  /* changements d'état : ouverture, filtre */
+  --motion-slow: 700ms;  /* entrées de contenu, une seule fois par section */
+}
