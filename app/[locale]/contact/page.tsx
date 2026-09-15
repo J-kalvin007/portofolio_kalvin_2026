@@ -1,9 +1,10 @@
+import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
-import { Metadata } from 'next';
+import { resolveLocale, type LocaleParams } from '@/i18n/params';
 import ContactPageClient from './components/page.client';
 
-export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
-  const { locale } = await params;
+export async function generateMetadata({ params }: LocaleParams): Promise<Metadata> {
+  const locale = await resolveLocale(params);
   const t = await getTranslations({ locale, namespace: 'seo.contact' });
 
   return {
@@ -13,7 +14,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
       title: t('title'),
       description: t('description'),
       url: `/${locale}/contact`,
-    }
+    },
   };
 }
 

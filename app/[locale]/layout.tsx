@@ -14,9 +14,10 @@
 import type { Metadata, Viewport } from 'next';
 import { Inter, Playfair_Display, JetBrains_Mono } from 'next/font/google';
 import { NextIntlClientProvider } from 'next-intl';
-import { getMessages, setRequestLocale } from 'next-intl/server';
+import { getMessages, getTranslations, setRequestLocale } from 'next-intl/server';
 import { routing } from '@/i18n/routing';
-import { notFound } from 'next/navigation';
+import { resolveLocale, type LocaleParams } from '@/i18n/params';
+import { SITE_NAME, SITE_URL } from '@/lib/site';
 import '../globals.css';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
@@ -76,23 +77,35 @@ export const viewport: Viewport = {
  * @description Génère dynamiquement les balises `<meta>` pour le SEO et le partage social (OpenGraph, Twitter).
  * @param params Contient la locale ('fr' ou 'en') provenant de l'URL.
  */
-export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
-  const { locale } = await params;
+/** Correspondance langue de l'URL → locale OpenGraph (format `langue_PAYS`). */
+const OPEN_GRAPH_LOCALES = { fr: 'fr_FR', en: 'en_US' } as const;
 
-  const isFr = locale === 'fr';
+/**
+ * Image de partage actuelle : le monogramme, **carré 1080 × 1080**.
+ * Elle était déclarée en 1200 × 630 : LinkedIn, WhatsApp et Facebook recadraient
+ * donc l'aperçu sur de fausses dimensions. Les dimensions réelles sont déclarées
+ * et la carte Twitter passe au format carré (`summary`). Une vraie carte de
+ * partage 1200 × 630 viendra avec la nouvelle identité visuelle.
+ */
+const SHARE_IMAGE = { url: '/logo/kal_logo_01.png', width: 1080, height: 1080 } as const;
 
-  // Textes SEO traduits dynamiquement
-  const title = isFr ? 'Kalvin Takoudjou — Ingénieur Logiciel & Architecte Web' : 'Kalvin Takoudjou — Software Engineer & Web Architect';
-  const description = isFr
-    ? "Portfolio officiel de Kalvin Takoudjou, Ingénieur Logiciel spécialisé dans la création d'applications web ultra-premium, fintech et architectures full-stack performantes."
-    : "Official portfolio of Kalvin Takoudjou, Software Engineer specialized in creating ultra-premium web applications, fintech solutions, and high-performance full-stack architectures.";
+export async function generateMetadata({ params }: LocaleParams): Promise<Metadata> {
+  const locale = await resolveLocale(params);
+  const t = await getTranslations({ locale, namespace: 'seo.site' });
+
+  // Textes SEO traduits (catalogue `seo.site`)
+  const title = t('title');
+  const description = t('description');
   const keywords = [
     'Kalvin Takoudjou', 'Software Engineer', 'Ingénieur Logiciel', 'Développeur Web', 'Full-Stack',
     'React', 'Next.js', 'TypeScript', 'TailwindCSS', 'Fintech', 'Luxe', 'Premium Web Design', 'Architecte Web', 'Togo', 'Lomé'
   ];
 
   return {
-    metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'),
+    // Source unique de l'URL du site (`lib/site.ts`). Le repli local
+    // `http://localhost:3000` produisait des balises canoniques et OpenGraph
+    // pointant vers localhost dès que la variable d'environnement manquait.
+    metadataBase: new URL(SITE_URL),
     title: {
       default: title,
       template: '%s | Kalvin Takoudjou', // Modèle utilisé par les sous-pages (ex: "Contact | Kalvin Takoudjou")
@@ -120,24 +133,19 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     // Configuration OpenGraph (Pour l'aperçu sur LinkedIn, WhatsApp, Facebook, etc.)
     openGraph: {
       type: 'website',
-      locale: isFr ? 'fr_FR' : 'en_US',
-      alternateLocale: isFr ? ['en_US'] : ['fr_FR'],
+      locale: OPEN_GRAPH_LOCALES[locale],
+      alternateLocale: routing.locales.filter((l) => l !== locale).map((l) => OPEN_GRAPH_LOCALES[l]),
       title,
       description,
-      siteName: 'Kalvin Portfolio',
-      images: [{
-        url: '/logo/kal_logo_01.png',
-        width: 1200,
-        height: 630,
-        alt: 'Kalvin Takoudjou - Software Engineer',
-      }],
+      siteName: SITE_NAME,
+      images: [{ ...SHARE_IMAGE, alt: t('imageAlt') }],
     },
-    // Configuration Twitter Cards
+    // Configuration Twitter Cards — format carré, cohérent avec l'image actuelle
     twitter: {
-      card: 'summary_large_image',
+      card: 'summary',
       title,
       description,
-      images: ['/logo/kal_logo_01.png'],
+      images: [SHARE_IMAGE.url],
     },
     // Instructions pour les robots d'indexation (GoogleBot)
     robots: {
@@ -169,16 +177,10 @@ export function generateStaticParams() {
 export default async function LocaleLayout({
   children,
   params,
-}: {
-  children: React.ReactNode;
-  params: Promise<{ locale: string }>;
-}) {
-  const { locale } = await params;
-
-  // Validation de sécurité : Si la langue de l'URL n'est pas supportée, on lève une erreur 404
-  if (!routing.locales.includes(locale as 'fr' | 'en')) {
-    notFound();
-  }
+}: LocaleParams & { children: React.ReactNode }) {
+  // Validation de sécurité : une langue non supportée déclenche une 404,
+  // et la valeur renvoyée est typée `Locale` (voir `i18n/params.ts`).
+  const locale = await resolveLocale(params);
 
   // Permet d'activer les API statiques next-intl dans ce layout Server Component
   setRequestLocale(locale);
@@ -186,8 +188,8 @@ export default async function LocaleLayout({
   // Charge les dictionnaires JSON
   const messages = await getMessages();
 
-  /** Libellé du lien d'évitement — hors catalogue i18n, aucune clé nouvelle requise. */
-  const skipLabel = locale === 'fr' ? 'Aller au contenu principal' : 'Skip to main content';
+  /** Libellé du lien d'évitement. */
+  const skipLabel = (await getTranslations({ locale, namespace: 'a11y' }))('skipToContent');
 
   return (
     <html

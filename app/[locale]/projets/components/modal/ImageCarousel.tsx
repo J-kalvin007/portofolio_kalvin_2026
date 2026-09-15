@@ -18,7 +18,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence, useReducedMotion, type PanInfo } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { useLocale } from 'next-intl';
+import { useTranslations } from 'next-intl';
 
 interface ImageCarouselProps {
   /** Tableau de chemins d'images du projet */
@@ -38,16 +38,14 @@ export default function ImageCarousel({ images, title }: ImageCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState(0);
 
-  const locale = useLocale();
+  const tGallery = useTranslations('gallery');
   const shouldReduceMotion = useReducedMotion();
 
-  /* ── Libellés hors catalogue i18n (aucune clé nouvelle n'est requise) ───── */
-  const isFrench = locale === 'fr';
-  const previousLabel = isFrench ? 'Image précédente' : 'Previous image';
-  const nextLabel = isFrench ? 'Image suivante' : 'Next image';
-  const galleryLabel = isFrench ? 'Galerie du projet' : 'Project gallery';
-  const imageLabel = (position: number) =>
-    isFrench ? `Image ${position} sur ${images.length}` : `Image ${position} of ${images.length}`;
+  /* ── Libellés (catalogue `gallery`, partagé avec la visionneuse de l'accueil) ── */
+  const previousLabel = tGallery('previous');
+  const nextLabel = tGallery('next');
+  const galleryLabel = tGallery('label');
+  const imageLabel = (position: number) => tGallery('position', { position, total: images.length });
 
   /** Navigue vers l'image suivante */
   const goNext = useCallback(() => {

@@ -1,5 +1,10 @@
 {
   "seo": {
+    "site": {
+      "title": "Kalvin Takoudjou — Ingénieur logiciel & architecte web",
+      "description": "Portfolio de Kalvin Takoudjou, ingénieur logiciel full-stack : applications web et mobiles, plateformes e-commerce et architectures performantes.",
+      "imageAlt": "Kalvin Takoudjou — Ingénieur logiciel"
+    },
     "home": {
       "title": "Accueil",
       "description": "Portfolio de Kalvin Takoudjou, Ingénieur Logiciel & Architecte Web spécialiste des expériences digitales premium."
@@ -22,7 +27,11 @@
     "projects": "Projets",
     "about": "À propos",
     "contact": "Contact",
-    "contactBtn": "Me contacter"
+    "contactBtn": "Me contacter",
+    "mainNavigation": "Navigation principale",
+    "openMenu": "Ouvrir le menu",
+    "closeMenu": "Fermer le menu",
+    "switchLanguage": "Switch to English"
   },
   "hero": {
     "badge": "Disponible pour missions remote",
@@ -34,11 +43,11 @@
       "architect": "Architecte",
       "artisan": "Artisan"
     },
-    "titleLine1": "Logiciel",
+    "titleWithRole": "<role></role> Logiciel",
     "description": "Je conçois des solutions digitales <bold1>performantes</bold1> et <bold2>élégantes</bold2> qui transforment les idées en produits d'exception.",
     "ctaPrimary": "Voir mes projets",
     "ctaSecondary": "Me contacter",
-    "scrollHint": "Découvrir"
+    "scrollHint": "Faire défiler vers le contenu"
   },
   "about_teaser": {
     "eyebrow": "Philosophie",
@@ -75,7 +84,9 @@
     "eyebrow": "Réalisations",
     "title": "Projets phares",
     "description": "Solutions digitales conçues avec rigueur pour résoudre des problématiques réelles.",
-    "viewAll": "Tous mes projets"
+    "viewAll": "Tous mes projets",
+    "viewProject": "Voir le projet",
+    "sourceCode": "Code source de {title} sur GitHub"
   },
   "stats": {
     "years": "Années d'expérience",
@@ -93,7 +104,7 @@
   "projects_page": {
     "badge": "Portfolio Technique",
     "title1": "Des projets qui ",
-    "title2": "concretisent vos idees",
+    "title2": "concrétisent vos idées",
     "description": "Solutions digitales conçues avec rigueur pour résoudre des problématiques réelles et générer un impact mesurable.",
     "filterAll": "Tous",
     "viewSite": "Voir le site",
@@ -101,7 +112,20 @@
     "closeModal": "Fermer la fenêtre",
     "viewProject": "Voir le projet",
     "projectDetails": "Détails du projet",
-    "technologies": "Technologies"
+    "technologies": "Technologies",
+    "filtersLabel": "Filtrer par catégorie",
+    "projectCount": "{count, plural, =0 {Aucun projet} one {# projet} other {# projets}}",
+    "emptyTitle": "Aucun projet dans cette catégorie",
+    "emptyAction": "Voir tous les projets",
+    "categories": {
+      "desktop": "Logiciel Windows",
+      "mobile": "Application mobile",
+      "web": "Application web",
+      "saas": "SaaS",
+      "platform": "Mobile + Web + API"
+    },
+    "viewProjectNamed": "Voir le projet : {title}",
+    "projectDetailsNamed": "Détails du projet : {title}"
   },
   "about_page": {
     "badge": "À Propos de moi",
@@ -182,7 +206,10 @@
       "message": "Message",
       "messagePlaceholder": "Décrivez votre projet...",
       "submit": "Envoyer ma demande",
-      "submitting": "Envoi en cours..."
+      "submitting": "Envoi en cours...",
+      "eyebrow": "Écrire",
+      "heading": "Envoyez un message",
+      "promise": "Réponse sous 24 heures"
     },
     "validation": {
       "nameMin": "Le nom doit contenir au moins 2 caractères",
@@ -196,7 +223,8 @@
       "error": "Erreur",
       "successMessage": "Message envoyé avec succès !",
       "errorMessage": "Erreur lors de l'envoi.",
-      "networkError": "Erreur réseau. Veuillez réessayer."
+      "networkError": "Erreur réseau. Veuillez réessayer.",
+      "dismiss": "Fermer la notification"
     }
   },
   "notfound": {
@@ -213,7 +241,8 @@
     "privacy": "Confidentialité",
     "terms": "Conditions d'utilisation",
     "copyright": "Tous droits réservés.",
-    "bottomTerms": "Conditions d'utilisation | Confidentialité."
+    "bottomTerms": "Conditions d'utilisation | Confidentialité.",
+    "scrollTop": "Remonter en haut de page"
   },
   "experience": {
     "job1_title": "Consultant - Développeur Full Stack",
@@ -253,34 +282,36 @@
   },
   "projects_data": {
     "challenger": {
-      "category": "Logiciel Windows",
       "short": "Logiciel Windows de calcul du temps de travail des employés.",
       "full": "Logiciel Windows de pointage et de calcul du temps de travail des employés."
     },
     "sheem": {
-      "category": "Application Mobile",
       "short": "Application mobile de gestion événementielle avec vente de billets, paiement mobile, génération de QR codes et tableau de bord administrateur.",
       "full": "Application mobile de gestion événementielle avec vente de billets, paiement mobile, génération de QR codes et tableau de bord administrateur."
     },
     "mboashop": {
-      "category": "Web",
       "short": "E-commerce complet avec panier dynamique, paiement intégré et dashboard admin.",
       "full": "Plateforme e-commerce full-stack avec catalogue riche, panier dynamique, paiement multi-canal et dashboard analytics."
     },
     "myriade": {
-      "category": "Web",
       "short": "Site vitrine corporate premium pour un groupe de services B2B & B2C multi-secteurs.",
       "full": "Plateforme institutionnelle moderne avec architecture SSG, animations cinématiques, spatial et optimisation SEO."
     },
     "stock": {
-      "category": "SaaS",
       "short": "Gestion de stock en temps réel avec alertes automatiques et reporting avancé.",
       "full": "SaaS de gestion d'inventaire avec suivi temps réel, alertes de réapprovisionnement et codes-barres."
     },
     "green": {
-      "category": "Mobile + Web + API",
       "short": "Plateforme de gestion complète de plantation et suivi des activités.",
       "full": "Plateforme complète de gestion de plantation et suivi des activités avec pipeline de données, API RESTful et visualisations interactives."
+    },
+    "locamanager": {
+      "short": "Application mobile Android et iOS de gestion complète de biens immobiliers mis en location.",
+      "full": "Application mobile Android et iOS de gestion de biens immobiliers mis en location, avec pipeline de données, API RESTful et visualisations interactives."
+    },
+    "lotus": {
+      "short": "Plateforme multi-tenant de gestion complète de magasins et de boutiques.",
+      "full": "Plateforme multi-tenant de gestion des promotions en magasin, avec pipeline de données, API RESTful et visualisations interactives."
     },
     "metrics": {
       "users": "Utilisateurs",
@@ -288,5 +319,28 @@
       "products": "Produits",
       "ordersMonth": "Commandes/mois"
     }
+  },
+  "a11y": {
+    "skipToContent": "Aller au contenu principal"
+  },
+  "brand": {
+    "role": "Ingénieur logiciel",
+    "homeLabel": "Kalvin — retour à l'accueil"
+  },
+  "theme": {
+    "toLight": "Passer en mode clair",
+    "toDark": "Passer en mode sombre"
+  },
+  "gallery": {
+    "label": "Galerie du projet",
+    "open": "Agrandir la galerie de {title}",
+    "previous": "Image précédente",
+    "next": "Image suivante",
+    "close": "Fermer la galerie",
+    "goTo": "Aller à l'image {position}",
+    "position": "Image {position} sur {total}",
+    "imagesLabel": "Images du projet",
+    "screenshotAlt": "{title} — capture d'écran {position}",
+    "keyboardHint": "←/→ pour naviguer, Échap pour fermer"
   }
 }

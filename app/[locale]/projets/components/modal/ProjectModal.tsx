@@ -44,7 +44,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, ExternalLink, Github } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import type { Project } from '@/lib/data/projects';
-import { SLUG_MAP, TECH_SVG_MAP_CARD } from '@/types/project.types';
+import { TECH_SVG_MAP_CARD } from '@/types/project.types';
 import StarField from './StarField';
 import ImageCarousel from './ImageCarousel';
 import DescriptionRain from './DescriptionRain';
@@ -119,7 +119,7 @@ export default function ProjectModal({ project, isOpen, onClose }: ProjectModalP
 
   if (!project) return null;
 
-  const key = SLUG_MAP[project.slug] || 'challenger';
+  const key = project.i18nKey;
   const fullDescription = tData(`${key}.full`);
 
   return (
@@ -133,7 +133,7 @@ export default function ProjectModal({ project, isOpen, onClose }: ProjectModalP
           className="fixed inset-0 z-50 overflow-hidden outline-none"
           role="dialog"
           aria-modal="true"
-          aria-label={`${t('projectDetails')} : ${project.title}`}
+          aria-label={t('projectDetailsNamed', { title: project.title })}
           tabIndex={-1}
           ref={dialogRef}
         >
@@ -164,7 +164,7 @@ export default function ProjectModal({ project, isOpen, onClose }: ProjectModalP
                   <span className="inline-block px-3 py-1 rounded-full
                     bg-[var(--primary)]/20 text-[var(--primary)]
                     text-[10px] font-bold uppercase tracking-[0.2em] mb-2 tabular-nums">
-                    {tData(`${key}.category`)} · {project.year}
+                    {t(`categories.${project.category}`)} · {project.year}
                   </span>
                   <h2 className="text-2xl sm:text-3xl font-bold text-base-content dark:text-white tracking-[-0.03em]">
                     {project.title}

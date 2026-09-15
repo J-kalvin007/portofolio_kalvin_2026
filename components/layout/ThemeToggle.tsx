@@ -17,7 +17,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { Sun, Moon } from 'lucide-react';
-import { useLocale } from 'next-intl';
+import { useTranslations } from 'next-intl';
 import { useTheme } from '@/lib/useTheme';
 
 // Les différents modes de thème disponibles dans le cycle du bouton
@@ -29,25 +29,12 @@ const ICONS = {
   dark: Moon,
 } as const;
 
-/**
- * Libellés bilingues.
- * `aria-label` annonçait « Theme: dark. Click to change. » à un visiteur
- * francophone, et l'infobulle était francophone pour un visiteur anglophone :
- * les deux étaient figés, chacun dans une langue différente.
- * Un libellé de bascule doit décrire **l'action à venir**, pas l'état courant —
- * « Passer en mode clair » est actionnable, « Thème : sombre » ne l'est pas.
- */
-const TOGGLE_LABELS = {
-  fr: { toLight: 'Passer en mode clair', toDark: 'Passer en mode sombre' },
-  en: { toLight: 'Switch to light mode', toDark: 'Switch to dark mode' },
-} as const;
-
 export default function ThemeToggle({ className = '' }: { className?: string }) {
   // Extraction de l'état actuel et de la fonction de mutation depuis Zustand
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
-  const locale = useLocale();
+  const tTheme = useTranslations('theme');
   const shouldReduceMotion = useReducedMotion();
 
   useEffect(() => {
@@ -68,8 +55,9 @@ export default function ThemeToggle({ className = '' }: { className?: string }) 
   // Résolution dynamique de l'icône à afficher en fonction du thème actif (Fallback sur Lune par sécurité)
   const Icon = ICONS[theme as keyof typeof ICONS] || Moon;
 
-  const labels = TOGGLE_LABELS[locale === 'en' ? 'en' : 'fr'];
-  const actionLabel = theme === 'dark' ? labels.toLight : labels.toDark;
+  // Un libellé de bascule décrit **l'action à venir**, pas l'état courant :
+  // « Passer en mode clair » est actionnable, « Thème : sombre » ne l'est pas.
+  const actionLabel = theme === 'dark' ? tTheme('toLight') : tTheme('toDark');
 
   /** Habillage partagé par le repli d'hydratation et le bouton réel. */
   const shellClasses = `

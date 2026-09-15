@@ -42,18 +42,11 @@ export interface Star {
 }
 
 /* ═══════════════════════════════════════════════
-   CONSTANTES — Mapping slug → i18n + tech → SVG
+   CONSTANTES — Mapping technologie → icône SVG
+   ─────────────────────────────────────────────
+   La table `SLUG_MAP` (slug → clé de traduction) a été retirée : chaque projet
+   déclare désormais sa clé typée (`Project.i18nKey`, `lib/data/projects.ts`).
    ═══════════════════════════════════════════════ */
-
-/** Mapping slug projet → clé de traduction i18n dans `projects_data` */
-export const SLUG_MAP: Record<string, string> = {
-  'challenger-app': 'challenger',
-  'Sheem!': 'sheem',
-  'mboashop-ecommerce': 'mboashop',
-  'myriade-groupe': 'myriade',
-  'stock-manager': 'stock',
-  'green-Challenger': 'green',
-};
 
 /**
  * Mapping nom de technologie → chemin du fichier SVG dans /public/svg/.

@@ -6,8 +6,8 @@ import { Code2 } from "lucide-react";
 import Image from "next/image";
 import { useCallback, useRef } from "react";
 import { useReducedMotion } from "framer-motion";
+import { useTranslations } from "next-intl";
 import type { Skill } from "@/lib/data/skills";
-import type { Translator } from "@/types/i18n.types";
 
 /* ═══════════════════════════════════════════════════════════════════════════
    ▌ PHYSIQUE DE LA CARTE
@@ -34,7 +34,13 @@ const LEVEL_SEGMENTS = [1, 2, 3, 4, 5] as const;
  * lisible d'un coup d'œil grâce à une jauge à 5 segments — l'information est
  * quantitative, elle mérite une forme quantitative.
  */
-const SkillCard = ({ skill, tSkills }: { skill: Skill; tSkills: Translator }) => {
+/*
+ * La fonction de traduction était transmise en prop depuis la page, à travers
+ * `MarqueeRow`. Le composant la lit désormais lui-même : c'est l'usage prévu par
+ * next-intl, et cela supprime une prop dont le type ne pouvait pas être précis.
+ */
+const SkillCard = ({ skill }: { skill: Skill }) => {
+    const tSkills = useTranslations('skills');
     const cardRef = useRef<HTMLDivElement>(null);
     const shouldReduceMotion = useReducedMotion();
 

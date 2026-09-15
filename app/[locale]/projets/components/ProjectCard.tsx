@@ -26,7 +26,7 @@ import { motion, useMotionValue, useReducedMotion, useTransform, useSpring, useP
 import { ArrowUpRight } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import type { Project } from '@/lib/data/projects';
-import { SLUG_MAP, TECH_SVG_MAP_CARD } from '@/types/project.types';
+import { TECH_SVG_MAP_CARD } from '@/types/project.types';
 import DisintegrationOverlay from './DisintegrationOverlay';
 import type { DisintegrationPhase } from '@/types/project.types';
 
@@ -61,7 +61,9 @@ interface ProjectCardProps {
 const ProjectCard = React.memo(function ProjectCard({ project, onSelect, index, isDimmed, onMouseEnter, onMouseLeave }: ProjectCardProps) {
   const tData = useTranslations('projects_data');
   const t = useTranslations('projects_page');
-  const key = SLUG_MAP[project.slug] || 'challenger';
+  // Clé typée portée par le projet : l'ancien repli `|| 'challenger'` affichait la
+  // description de Challenger App sur les cartes de LocaManager et de Lotus.
+  const key = project.i18nKey;
 
   const shouldReduceMotion = useReducedMotion();
 
@@ -190,7 +192,7 @@ const ProjectCard = React.memo(function ProjectCard({ project, onSelect, index, 
         }`}
       role="button"
       tabIndex={0}
-      aria-label={`${t('viewProject')} : ${project.title}`}
+      aria-label={t('viewProjectNamed', { title: project.title })}
       onKeyDown={handleKeyDown}
     >
       {/* ── Spotlight Global Hover Glow ──
@@ -280,7 +282,7 @@ const ProjectCard = React.memo(function ProjectCard({ project, onSelect, index, 
           {/* Badge catégorie */}
           <div className="absolute top-4 left-4 z-10">
             <span className="px-3 py-1 rounded-full bg-[var(--primary)]/20 backdrop-blur-md text-[var(--primary)] text-xs font-bold uppercase tracking-wider">
-              {tData(`${key}.category`)}
+              {t(`categories.${project.category}`)}
             </span>
           </div>
 

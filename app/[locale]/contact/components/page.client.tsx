@@ -58,7 +58,6 @@ export default function ContactPage() {
 
   const t = useTranslations('contact_page');
   const locale = useLocale();
-  const isFrench = locale === 'fr';
   const shouldReduceMotion = useReducedMotion();
 
   const contactSchema = z.object({
@@ -79,7 +78,9 @@ export default function ContactPage() {
       const response = await fetch('/api/sendEmail', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
+        // `locale` : l'API répond dans la langue de l'interface. Sans ce champ,
+        // elle devinait la langue via l'en-tête Accept-Language du navigateur.
+        body: JSON.stringify({ ...data, locale }),
       });
       const result = await response.json();
       if (response.ok) {
@@ -160,11 +161,11 @@ export default function ContactPage() {
     { icon: '/svg/linkedin.svg', href: 'https://linkedin.com/', label: 'LinkedIn' },
   ];
 
-  /* ── Libellés hors catalogue i18n (aucune clé nouvelle n'est requise) ───── */
-  const formHeading = isFrench ? 'Envoyez un message' : 'Send a message';
-  const formPromise = isFrench ? 'Réponse sous 24 heures' : 'Answered within 24 hours';
-  const formEyebrow = isFrench ? 'Écrire' : 'Write';
-  const dismissLabel = isFrench ? 'Fermer la notification' : 'Dismiss notification';
+  /* ── Libellés (catalogue `contact_page`) ─────────────────────────────── */
+  const formHeading = t('form.heading');
+  const formPromise = t('form.promise');
+  const formEyebrow = t('form.eyebrow');
+  const dismissLabel = t('notification.dismiss');
 
   return (
     <div className="min-h-screen bg-base-100 text-base-content overflow-hidden relative">
