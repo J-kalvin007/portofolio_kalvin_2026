@@ -1,0 +1,12 @@
+# Fins de ligne normalisées en LF dans le dépôt, quel que soit le système.
+# Sans cette règle, les fichiers édités sous Windows alternaient CRLF et LF :
+# chaque commit mêlait de faux changements de ligne aux vrais changements.
+* text=auto eol=lf
+
+# Fichiers binaires : jamais de conversion.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.pdf binary
+*.ico binary
