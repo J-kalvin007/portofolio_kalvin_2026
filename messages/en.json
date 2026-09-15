@@ -213,8 +213,10 @@
     },
     "validation": {
       "nameMin": "Name must be at least 2 characters",
+      "nameMax": "Name must be at most {max} characters",
       "emailInvalid": "Invalid email",
       "subjectMin": "Subject must be at least 3 characters",
+      "subjectMax": "Subject must be at most {max} characters",
       "messageMin": "Message must be at least 10 characters",
       "messageMax": "Message too long"
     },
