@@ -77,6 +77,9 @@ function TypewriterText({ words, className = '' }: { words: readonly string[]; c
     );
 
     const word = safeWords[currentWord % safeWords.length];
+
+    /** En mouvement réduit, le mot est toujours affiché en entier. */
+    const visibleLength = shouldReduceMotion ? word.length : currentChar;
     const isWordComplete = currentChar >= word.length;
     const isWordCleared = currentChar <= 0;
 
@@ -122,16 +125,15 @@ function TypewriterText({ words, className = '' }: { words: readonly string[]; c
     useEffect(() => {
         if (!shouldReduceMotion) return;
 
-        setCurrentChar(word.length);
-        setIsDeleting(false);
-
+        // Le mot s'affiche entier par dérivation au rendu (`visibleLength`) :
+        // seul le relais vers le mot suivant passe par une minuterie.
         const timeout = setTimeout(
             () => setCurrentWord((prev) => (prev + 1) % safeWords.length),
             REDUCED_MOTION_INTERVAL
         );
 
         return () => clearTimeout(timeout);
-    }, [shouldReduceMotion, word, safeWords.length]);
+    }, [shouldReduceMotion, currentWord, safeWords.length]);
 
     /* ═══════════════════════════════════════════════════════════════════════
        ▌ RENDU
@@ -153,7 +155,7 @@ function TypewriterText({ words, className = '' }: { words: readonly string[]; c
 
             {/* ── Texte animé (décoratif du point de vue de l'accessibilité) ──── */}
             <span aria-hidden="true" className="col-start-1 row-start-1">
-                {word.substring(0, currentChar)}
+                {word.substring(0, visibleLength)}
 
                 {/* Caret : un vrai bloc dimensionné en `em`, il suit la taille du titre.
                     Il reste plein pendant la frappe et ne clignote qu'à l'arrêt. */}

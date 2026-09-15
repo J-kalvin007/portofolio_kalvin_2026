@@ -38,14 +38,9 @@ export default function AnimatedCounter({
   const [count, setCount] = useState(0);
 
   useEffect(() => {
-    if (!isInView) return;
-
     // Le nombre est une information, pas une décoration : en mouvement réduit,
-    // il s'affiche directement.
-    if (shouldReduceMotion) {
-      setCount(value);
-      return;
-    }
+    // il s'affiche directement (valeur dérivée au rendu, voir `displayedCount`).
+    if (!isInView || shouldReduceMotion) return;
 
     let animationFrame: number;
 
@@ -75,11 +70,14 @@ export default function AnimatedCounter({
     return () => cancelAnimationFrame(animationFrame);
   }, [isInView, value, duration, shouldReduceMotion]);
 
+  /** Dérivé pendant le rendu : aucun `setState` synchrone dans un effet. */
+  const displayedCount = shouldReduceMotion ? value : count;
+
   return (
     // `tabular-nums` fige la chasse des chiffres : sans lui, le nombre se dilate
     // et se contracte pendant tout le comptage, et les blocs voisins bougent avec.
     <span ref={ref} className={`tabular-nums ${className}`}>
-      {prefix}{count}{suffix}
+      {prefix}{displayedCount}{suffix}
     </span>
   );
 }

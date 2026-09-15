@@ -14,8 +14,10 @@
  * Pourquoi : Évite l'erreur fatale "Missing <html> and <body> tags" de Next.js pour les mauvaises URLs globales.
  */
 
-import { useEffect, useState } from 'react';
+
 import PageErreur from '@/components/layout/pageErreur';
+import { useClientSnapshot } from '@/hooks/useClientSnapshot';
+import { readPrefersDarkTheme } from '@/lib/theme-preference';
 import './globals.css';
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -46,23 +48,21 @@ type NotFoundLocale = keyof typeof NOT_FOUND_MESSAGES;
 /** Langue de repli, alignée sur la locale par défaut de l'application. */
 const FALLBACK_LOCALE: NotFoundLocale = 'fr';
 
+/** Langue déclarée par le navigateur, si elle fait partie des langues du site. */
+const readBrowserLocale = (): NotFoundLocale => {
+  const browserLocale = navigator.language.slice(0, 2);
+  return browserLocale in NOT_FOUND_MESSAGES ? (browserLocale as NotFoundLocale) : FALLBACK_LOCALE;
+};
+
 export default function NotFound() {
-  const [locale, setLocale] = useState<NotFoundLocale>(FALLBACK_LOCALE);
-
-  /** `dark` au rendu serveur — identité « Void & Or » — puis préférence réelle au montage. */
-  const [isDark, setIsDark] = useState(true);
-
-  useEffect(() => {
-    const browserLocale = navigator.language.slice(0, 2);
-    if (browserLocale in NOT_FOUND_MESSAGES) setLocale(browserLocale as NotFoundLocale);
-
-    try {
-      const stored = localStorage.getItem('theme') || 'system';
-      setIsDark(stored === 'dark' || (stored === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches));
-    } catch {
-      /* localStorage indisponible : on garde le repli sombre. */
-    }
-  }, []);
+  /*
+   * Langue et thème ne sont connus que dans le navigateur. Au rendu serveur :
+   * français et thème sombre (identité par défaut du site) ; ensuite, la
+   * préférence réelle, lue sans écart d'hydratation (hooks/useClientSnapshot.ts).
+   * Le thème n'est plus forcé à `dark` pour un visiteur en mode clair.
+   */
+  const locale = useClientSnapshot(readBrowserLocale, FALLBACK_LOCALE);
+  const isDark = useClientSnapshot(readPrefersDarkTheme, true);
 
   const { title, message } = NOT_FOUND_MESSAGES[locale];
 

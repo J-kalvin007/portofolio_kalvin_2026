@@ -160,10 +160,19 @@ export default function Navbar() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [menuOpen, closeMenu]);
 
-  /** Ferme le menu à chaque changement de route — sécurité si un lien externe est ajouté. */
-  useEffect(() => {
+  /**
+   * Ferme le menu à chaque changement de route — sécurité si un lien externe est ajouté.
+   *
+   * Motif « ajuster l'état quand une prop change » (documentation React) : la
+   * comparaison a lieu pendant le rendu. Un `useEffect` produisait un premier
+   * rendu avec le menu encore ouvert sur la nouvelle page, puis un second pour
+   * le fermer.
+   */
+  const [pathnameOfLastRender, setPathnameOfLastRender] = useState(intlPathname);
+  if (pathnameOfLastRender !== intlPathname) {
+    setPathnameOfLastRender(intlPathname);
     setMenuOpen(false);
-  }, [intlPathname]);
+  }
 
   const isActive = (href: string) => {
     if (href === '/') return intlPathname === '/';

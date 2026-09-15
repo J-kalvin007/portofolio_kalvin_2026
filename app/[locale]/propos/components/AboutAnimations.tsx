@@ -39,13 +39,9 @@ export function AnimatedCounter({ target, suffix = '', duration = 2 }: { target:
   const shouldReduceMotion = useReducedMotion();
 
   useEffect(() => {
-    if (!isInView) return;
-
-    // Mouvement réduit : la valeur est une information, elle s'affiche directement.
-    if (shouldReduceMotion) {
-      setCount(target);
-      return;
-    }
+    // Mouvement réduit : la valeur est une information, elle s'affiche directement
+    // (valeur dérivée au rendu, sans setState synchrone dans l'effet).
+    if (!isInView || shouldReduceMotion) return;
 
     // La boucle d'origine n'était jamais annulée : quitter la page en cours de
     // comptage laissait `requestAnimationFrame` appeler `setCount` sur un
@@ -65,7 +61,7 @@ export function AnimatedCounter({ target, suffix = '', duration = 2 }: { target:
 
   // `tabular-nums` fige la chasse des chiffres : sans lui, le nombre se dilate
   // et se contracte pendant tout le comptage.
-  return <span ref={ref} className="tabular-nums">{count}{suffix}</span>;
+  return <span ref={ref} className="tabular-nums">{shouldReduceMotion ? target : count}{suffix}</span>;
 }
 
 /* ── Mot révélé au scroll ── */
