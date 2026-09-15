@@ -2,7 +2,7 @@
 "use client";
 
 import { AnimatePresence, motion, useMotionValue, useReducedMotion, useTransform, type PanInfo } from "framer-motion";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
@@ -55,8 +55,13 @@ interface ImageLightboxProps {
 }
 
 const ImageLightbox = ({ images, currentIndex, onClose, onNext, onPrev }: ImageLightboxProps) => {
-    const locale = useLocale();
-    const tLightbox = useTranslations('lightbox');
+    /*
+     * Namespace `gallery` : l'ancien namespace `lightbox` n'existait dans aucun
+     * catalogue. Les boutons Précédent / Suivant / Fermer étaient annoncés aux
+     * lecteurs d'écran sous la forme brute « lightbox.previous ». Le typage des
+     * traductions (types/i18n.types.ts) rend désormais ce défaut impossible.
+     */
+    const tGallery = useTranslations('gallery');
 
     const shouldReduceMotion = useReducedMotion();
     const containerRef = useRef<HTMLDivElement>(null);
@@ -194,11 +199,9 @@ const ImageLightbox = ({ images, currentIndex, onClose, onNext, onPrev }: ImageL
         });
     }, [currentIndex, images]);
 
-    /* ── Libellés hors catalogue i18n : même stratégie que le texte d'aide existant ── */
-    const isFrench = locale === 'fr';
-    const galleryLabel = isFrench ? 'Galerie du projet' : 'Project gallery';
-    const thumbnailLabel = (position: number) =>
-        isFrench ? `Aller à l'image ${position}` : `Go to image ${position}`;
+    /* ── Libellés (catalogue `gallery`) ──────────────────────────────────── */
+    const galleryLabel = tGallery('label');
+    const thumbnailLabel = (position: number) => tGallery('goTo', { position });
 
     if (!isMounted) return null;
 
@@ -243,7 +246,7 @@ const ImageLightbox = ({ images, currentIndex, onClose, onNext, onPrev }: ImageL
                         key={currentIndex}
                         custom={direction}
                         src={images[currentIndex]}
-                        alt={`Galerie ${currentIndex + 1}`}
+                        alt={tGallery('position', { position: currentIndex + 1, total: images.length })}
                         draggable={false}
                         variants={shouldReduceMotion ? undefined : slideVariants}
                         initial={shouldReduceMotion ? { opacity: 0 } : "enter"}
@@ -266,7 +269,7 @@ const ImageLightbox = ({ images, currentIndex, onClose, onNext, onPrev }: ImageL
                                        hover:scale-105 active:scale-95 motion-reduce:transform-none
                                        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-black/40
                                        cursor-pointer"
-                            aria-label={tLightbox('previous')}
+                            aria-label={tGallery('previous')}
                         >
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -292,7 +295,7 @@ const ImageLightbox = ({ images, currentIndex, onClose, onNext, onPrev }: ImageL
                                        hover:scale-105 active:scale-95 motion-reduce:transform-none
                                        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-black/40
                                        cursor-pointer"
-                            aria-label={tLightbox('next')}
+                            aria-label={tGallery('next')}
                         >
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -331,7 +334,7 @@ const ImageLightbox = ({ images, currentIndex, onClose, onNext, onPrev }: ImageL
                             className="p-1 rounded-md hover:bg-white/10 transition-colors
                                        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70
                                        cursor-pointer"
-                            aria-label={tLightbox('close')}
+                            aria-label={tGallery('close')}
                         >
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -391,7 +394,7 @@ const ImageLightbox = ({ images, currentIndex, onClose, onNext, onPrev }: ImageL
             {/* Message d'indication pour les utilisateurs de clavier */}
             <div className="absolute bottom-8 md:bottom-[5.5rem] left-1/2 -translate-x-1/2 pointer-events-none
                             text-white/60 text-[11px] tracking-[0.14em] uppercase font-medium whitespace-nowrap">
-                {isFrench ? '←/→ pour naviguer, Échap pour fermer' : '←/→ to navigate, Esc to close'}
+                {tGallery('keyboardHint')}
             </div>
         </motion.div>,
         document.body

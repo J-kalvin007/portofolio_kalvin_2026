@@ -4,36 +4,12 @@
 import FadeIn from "@/components/animations/FadeIn";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, ChevronLeft, ChevronRight, Github, Maximize2 } from "lucide-react";
-import { useLocale } from 'next-intl';
+import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import { useCallback, useState } from "react";
 import Image from "next/image";
 import ImageLightbox from "./ImageLightbox";
 import type { Project } from "@/lib/data/projects";
-import type { Translator } from "@/types/i18n.types";
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   ▌ CORRESPONDANCE SLUG → CLÉ DE TRADUCTION
-   ───────────────────────────────────────────────────────────────────────────
-   La même chaîne de six ternaires imbriqués était dupliquée pour la catégorie
-   et pour le résumé : toute évolution du catalogue exigeait deux modifications
-   parfaitement synchrones. La règle est extraite ici, déclarée une seule fois,
-   à portée de module (aucune réallocation par rendu).
-   Le comportement est strictement identique, repli `green` compris.
-   ═══════════════════════════════════════════════════════════════════════════ */
-const PROJECT_TRANSLATION_KEYS: Record<string, string> = {
-    'challenger-app': 'challenger',
-    'Sheem!': 'sheem',
-    'mboashop-ecommerce': 'mboashop',
-    'myriade-groupe': 'myriade',
-    'stock-manager': 'stock',
-};
-
-/** Clé de repli lorsqu'un slug n'est pas répertorié — comportement d'origine conservé. */
-const FALLBACK_TRANSLATION_KEY = 'green';
-
-const resolveProjectTranslationKey = (slug: string): string =>
-    PROJECT_TRANSLATION_KEYS[slug] ?? FALLBACK_TRANSLATION_KEY;
 
 /* ── Tokens de mouvement partagés par la carte ─────────────────────────────── */
 const EASE_OUT_EXPO = [0.16, 1, 0.3, 1] as const;
@@ -52,12 +28,15 @@ const PROJECT_IMAGE_SIZES = "(max-width: 1024px) 100vw, 60vw";
  * a été remplacé par cette matière unique — c'est la différence entre un objet
  * fabriqué et un effet appliqué.
  */
-const FeaturedProjectCard = ({ project, index, tProjects }: { project: Project, index: number, tProjects: Translator }) => {
+const FeaturedProjectCard = ({ project, index }: { project: Project, index: number }) => {
     const [currentImg, setCurrentImg] = useState(0);
     const [isLightboxOpen, setIsLightboxOpen] = useState(false);
     const images = project.images.length > 0 ? project.images : [project.coverImage];
 
-    const locale = useLocale();
+    const tProjects = useTranslations('projects_data');
+    const tCategories = useTranslations('projects_page.categories');
+    const tFeatured = useTranslations('featured');
+    const tGallery = useTranslations('gallery');
     const shouldReduceMotion = useReducedMotion();
 
     const nextImg = (e?: React.MouseEvent) => {
@@ -73,15 +52,16 @@ const FeaturedProjectCard = ({ project, index, tProjects }: { project: Project, 
     // Alterne l'affichage (Image à gauche, Texte à droite -> ou inversement) pour casser la monotonie visuelle
     const isEven = index % 2 === 0;
 
-    /** Clé i18n du projet, résolue une seule fois pour la catégorie et le résumé. */
-    const translationKey = resolveProjectTranslationKey(project.slug);
+    /*
+     * Clé de traduction portée par le projet lui-même, typée depuis le catalogue.
+     * Elle remplace une table slug → clé dont le repli (`'green'`) faisait
+     * afficher à LocaManager et Lotus la description de Green Challenger.
+     */
+    const translationKey = project.i18nKey;
 
-    /* ── Libellés hors catalogue i18n (aucune clé nouvelle n'est requise) ───── */
-    const isFrench = locale === 'fr';
-    const viewProjectLabel = isFrench ? 'Voir le projet' : 'View project';
-    const openGalleryLabel = isFrench
-        ? `Agrandir la galerie de ${project.title}`
-        : `Open ${project.title} gallery`;
+    /* ── Libellés (catalogue `featured` et `gallery`) ──────────────────────── */
+    const viewProjectLabel = tFeatured('viewProject');
+    const openGalleryLabel = tGallery('open', { title: project.title });
 
     /** Ouverture au clavier : la zone d'image doit être actionnable sans souris. */
     const handleImageKeyDown = useCallback((event: React.KeyboardEvent<HTMLDivElement>) => {
@@ -136,7 +116,7 @@ const FeaturedProjectCard = ({ project, index, tProjects }: { project: Project, 
                             >
                                 <Image
                                     src={images[currentImg]}
-                                    alt={`${project.title} screenshot`}
+                                    alt={tGallery('screenshotAlt', { title: project.title, position: currentImg + 1 })}
                                     fill
                                     sizes={PROJECT_IMAGE_SIZES}
                                     priority={index === 0}
@@ -158,7 +138,7 @@ const FeaturedProjectCard = ({ project, index, tProjects }: { project: Project, 
                             <>
                                 <button
                                     onClick={prevImg}
-                                    aria-label={isFrench ? 'Image précédente' : 'Previous image'}
+                                    aria-label={tGallery('previous')}
                                     className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 p-2 sm:p-2.5 rounded-full
                                                bg-black/35 hover:bg-black/65 backdrop-blur-md border border-white/15 text-white
                                                opacity-0 group-hover:opacity-100 focus-visible:opacity-100
@@ -172,7 +152,7 @@ const FeaturedProjectCard = ({ project, index, tProjects }: { project: Project, 
 
                                 <button
                                     onClick={nextImg}
-                                    aria-label={isFrench ? 'Image suivante' : 'Next image'}
+                                    aria-label={tGallery('next')}
                                     className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 p-2 sm:p-2.5 rounded-full
                                                bg-black/35 hover:bg-black/65 backdrop-blur-md border border-white/15 text-white
                                                opacity-0 group-hover:opacity-100 focus-visible:opacity-100
@@ -190,14 +170,14 @@ const FeaturedProjectCard = ({ project, index, tProjects }: { project: Project, 
                                 <div
                                     className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 w-[min(55%,220px)]"
                                     role="tablist"
-                                    aria-label={isFrench ? 'Images du projet' : 'Project images'}
+                                    aria-label={tGallery('imagesLabel')}
                                 >
                                     {images.map((_, i) => (
                                         <button
                                             key={i}
                                             role="tab"
                                             aria-selected={i === currentImg}
-                                            aria-label={isFrench ? `Image ${i + 1}` : `Image ${i + 1}`}
+                                            aria-label={tGallery('goTo', { position: i + 1 })}
                                             onClick={(e) => { e.stopPropagation(); setCurrentImg(i); }}
                                             className="group/seg flex-1 h-6 flex items-center cursor-pointer
                                                        focus-visible:outline-none"
@@ -238,7 +218,7 @@ const FeaturedProjectCard = ({ project, index, tProjects }: { project: Project, 
                         <div className="flex items-center gap-3 mb-6">
                             <span aria-hidden="true" className="h-px w-8 bg-primary/60" />
                             <span className="text-[11px] font-bold uppercase tracking-[0.28em] text-primary">
-                                {tProjects(`${translationKey}.category`)}
+                                {tCategories(project.category)}
                             </span>
                         </div>
 
@@ -291,7 +271,7 @@ const FeaturedProjectCard = ({ project, index, tProjects }: { project: Project, 
                                     href={project.githubUrl}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    aria-label={isFrench ? `Code source de ${project.title} sur GitHub` : `${project.title} source code on GitHub`}
+                                    aria-label={tFeatured('sourceCode', { title: project.title })}
                                     className="inline-flex p-3.5 rounded-full border border-base-content/[0.12]
                                                text-base-content/60 hover:text-base-content hover:border-base-content/30
                                                hover:bg-base-200/60 dark:hover:bg-white/[0.05]

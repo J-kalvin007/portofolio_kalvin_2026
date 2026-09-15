@@ -1,5 +1,10 @@
 {
   "seo": {
+    "site": {
+      "title": "Kalvin Takoudjou — Software Engineer & Web Architect",
+      "description": "Portfolio of Kalvin Takoudjou, full-stack software engineer: web and mobile applications, e-commerce platforms and high-performance architectures.",
+      "imageAlt": "Kalvin Takoudjou — Software Engineer"
+    },
     "home": {
       "title": "Home",
       "description": "Portfolio of Kalvin Takoudjou, Software Engineer & Web Architect specialized in premium digital experiences."
@@ -22,7 +27,11 @@
     "projects": "Projects",
     "about": "About",
     "contact": "Contact",
-    "contactBtn": "Contact me"
+    "contactBtn": "Contact me",
+    "mainNavigation": "Main navigation",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "switchLanguage": "Passer en français"
   },
   "hero": {
     "badge": "Available for remote missions",
@@ -34,11 +43,11 @@
       "architect": "Architect",
       "artisan": "Artisan"
     },
-    "titleLine1": "Software",
+    "titleWithRole": "Software <role></role>",
     "description": "I design <bold1>high-performance</bold1> and <bold2>elegant</bold2> digital solutions that turn ideas into exceptional products.",
     "ctaPrimary": "View my projects",
     "ctaSecondary": "Contact me",
-    "scrollHint": "Discover"
+    "scrollHint": "Scroll to content"
   },
   "about_teaser": {
     "eyebrow": "Philosophy",
@@ -75,7 +84,9 @@
     "eyebrow": "Achievements",
     "title": "Featured Projects",
     "description": "Digital solutions crafted with rigor to solve real-world problems.",
-    "viewAll": "All my projects"
+    "viewAll": "All my projects",
+    "viewProject": "View project",
+    "sourceCode": "{title} source code on GitHub"
   },
   "stats": {
     "years": "Years of experience",
@@ -101,7 +112,20 @@
     "closeModal": "Close window",
     "viewProject": "View project",
     "projectDetails": "Project details",
-    "technologies": "Technologies"
+    "technologies": "Technologies",
+    "filtersLabel": "Filter by category",
+    "projectCount": "{count, plural, =0 {No projects} one {# project} other {# projects}}",
+    "emptyTitle": "No projects in this category",
+    "emptyAction": "View all projects",
+    "categories": {
+      "desktop": "Windows software",
+      "mobile": "Mobile app",
+      "web": "Web app",
+      "saas": "SaaS",
+      "platform": "Mobile + Web + API"
+    },
+    "viewProjectNamed": "View project: {title}",
+    "projectDetailsNamed": "Project details: {title}"
   },
   "about_page": {
     "badge": "About me",
@@ -182,7 +206,10 @@
       "message": "Message",
       "messagePlaceholder": "Describe your project...",
       "submit": "Send my request",
-      "submitting": "Sending..."
+      "submitting": "Sending...",
+      "eyebrow": "Write",
+      "heading": "Send a message",
+      "promise": "Answered within 24 hours"
     },
     "validation": {
       "nameMin": "Name must be at least 2 characters",
@@ -196,7 +223,8 @@
       "error": "Error",
       "successMessage": "Message sent successfully!",
       "errorMessage": "Error sending message.",
-      "networkError": "Network error. Please try again."
+      "networkError": "Network error. Please try again.",
+      "dismiss": "Dismiss notification"
     }
   },
   "notfound": {
@@ -213,7 +241,8 @@
     "privacy": "Privacy",
     "terms": "Terms of use",
     "copyright": "All rights reserved.",
-    "bottomTerms": "Terms of use | Privacy."
+    "bottomTerms": "Terms of use | Privacy.",
+    "scrollTop": "Back to top"
   },
   "experience": {
     "job1_title": "Consultant - Full Stack Developer",
@@ -253,34 +282,36 @@
   },
   "projects_data": {
     "challenger": {
-      "category": "Windows Software",
       "short": "Windows software for calculating employee working hours.",
       "full": "Windows timekeeping and employee working hours calculation software."
     },
     "sheem": {
-      "category": "Mobile App",
       "short": "Event management mobile app with ticket sales, mobile payment, QR code generation and admin dashboard.",
       "full": "Event management mobile app with ticket sales, mobile payment, QR code generation and admin dashboard."
     },
     "mboashop": {
-      "category": "Web",
       "short": "Full e-commerce platform with dynamic cart, integrated payment and admin dashboard.",
       "full": "Full-stack e-commerce platform with rich catalog, dynamic cart, multi-channel payment and analytics dashboard."
     },
     "myriade": {
-      "category": "Web",
       "short": "Premium corporate showcase site for a multi-sector B2B & B2C services group.",
       "full": "Modern institutional platform with SSG architecture, cinematic animations, and SEO optimization."
     },
     "stock": {
-      "category": "SaaS",
       "short": "Real-time stock management with automatic alerts and advanced reporting.",
       "full": "Inventory management SaaS with real-time tracking, restocking alerts and barcodes."
     },
     "green": {
-      "category": "Mobile + Web + API",
       "short": "Complete plantation management and activity tracking platform.",
       "full": "Complete plantation management and activity tracking platform with data pipeline, RESTful API and interactive visualizations."
+    },
+    "locamanager": {
+      "short": "Android and iOS mobile app for managing rental properties end to end.",
+      "full": "Android and iOS mobile app for managing rental properties, with a data pipeline, RESTful API and interactive visualizations."
+    },
+    "lotus": {
+      "short": "Multi-tenant platform for end-to-end store and shop management.",
+      "full": "Multi-tenant platform for in-store promotion management, with a data pipeline, RESTful API and interactive visualizations."
     },
     "metrics": {
       "users": "Users",
@@ -288,5 +319,28 @@
       "products": "Products",
       "ordersMonth": "Orders/month"
     }
+  },
+  "a11y": {
+    "skipToContent": "Skip to main content"
+  },
+  "brand": {
+    "role": "Software Engineer",
+    "homeLabel": "Kalvin — back to home"
+  },
+  "theme": {
+    "toLight": "Switch to light mode",
+    "toDark": "Switch to dark mode"
+  },
+  "gallery": {
+    "label": "Project gallery",
+    "open": "Open the {title} gallery",
+    "previous": "Previous image",
+    "next": "Next image",
+    "close": "Close gallery",
+    "goTo": "Go to image {position}",
+    "position": "Image {position} of {total}",
+    "imagesLabel": "Project images",
+    "screenshotAlt": "{title} — screenshot {position}",
+    "keyboardHint": "←/→ to navigate, Esc to close"
   }
 }

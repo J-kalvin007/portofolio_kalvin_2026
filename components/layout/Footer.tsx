@@ -17,7 +17,7 @@ import React, { useCallback, useState } from 'react';
 import Image from 'next/image';
 import { motion, useReducedMotion } from 'framer-motion';
 import { ArrowUpRight, ArrowUp } from 'lucide-react';
-import { useLocale, useTranslations } from 'next-intl';
+import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import Logo from './Logo';
 import MagneticWrapper from '../animations/MagneticWrapper';
@@ -47,7 +47,6 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
   const t = useTranslations('footer');
   const tNav = useTranslations('nav');
-  const locale = useLocale();
   const shouldReduceMotion = useReducedMotion();
 
   const NAV_LINKS = [
@@ -85,9 +84,8 @@ export default function Footer() {
     card.style.setProperty('--spot-y', `${event.clientY - rect.top}px`);
   }, []);
 
-  /* ── Libellés hors catalogue i18n (aucune clé nouvelle n'est requise) ───── */
-  const isFrench = locale === 'fr';
-  const scrollTopLabel = isFrench ? 'Remonter en haut de page' : 'Back to top';
+  /* ── Libellés (catalogue `footer`) ─────────────────────────────────── */
+  const scrollTopLabel = t('scrollTop');
 
   /** Blocs de contact. `href` absent ⇒ information non actionnable (l'adresse postale). */
   const CONTACT_ITEMS = [

@@ -19,6 +19,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion, useMotionValueEvent, useReducedMotion, useScroll } from 'framer-motion';
 import { useLocale, useTranslations } from 'next-intl';
 import { Link, useRouter, usePathname } from '@/i18n/navigation';
+import { routing } from '@/i18n/routing';
 import Logo from './Logo';
 import ThemeToggle from './ThemeToggle';
 
@@ -62,16 +63,21 @@ export default function Navbar() {
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const menuTriggerRef = useRef<HTMLButtonElement>(null);
 
-  /* ── Libellés hors catalogue i18n (aucune clé nouvelle n'est requise) ───── */
-  const isFrench = locale === 'fr';
-  const menuLabel = menuOpen
-    ? (isFrench ? 'Fermer le menu' : 'Close menu')
-    : (isFrench ? 'Ouvrir le menu' : 'Open menu');
-  const languageLabel = isFrench ? 'Switch to English' : 'Passer en français';
-  const mobileNavLabel = isFrench ? 'Navigation principale' : 'Main navigation';
+  /* ── Libellés (catalogue `nav`) ─────────────────────────────────────── */
+  const menuLabel = menuOpen ? t('closeMenu') : t('openMenu');
+  const mobileNavLabel = t('mainNavigation');
+
+  /*
+   * Langue proposée : l'autre langue déclarée dans `routing`, et non un
+   * `'fr' ? 'en' : 'fr'` écrit en dur qui ignorerait toute langue ajoutée.
+   * Le libellé `switchLanguage` est rédigé dans la langue CIBLE (« Switch to
+   * English » sur la version française) : l'attribut `lang` posé sur le bouton
+   * permet aux lecteurs d'écran de le prononcer correctement.
+   */
+  const nextLocale = routing.locales.find((candidate) => candidate !== locale) ?? routing.defaultLocale;
+  const languageLabel = t('switchLanguage');
 
   const toggleLanguage = () => {
-    const nextLocale = locale === 'fr' ? 'en' : 'fr';
     router.replace(intlPathname, { locale: nextLocale });
   };
 
@@ -259,10 +265,11 @@ export default function Navbar() {
             <button
               onClick={toggleLanguage}
               aria-label={languageLabel}
+              lang={nextLocale}
               className="cursor-pointer relative px-3 py-1.5 rounded-lg text-xs font-bold tracking-widest uppercase text-base-content/50 hover:text-primary border border-transparent hover:border-primary/20 hover:bg-primary/5 transition-colors duration-300
                          focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-base-100"
             >
-              {locale === 'fr' ? 'EN' : 'FR'}
+              {nextLocale.toUpperCase()}
             </button>
 
             <ThemeToggle />
@@ -291,10 +298,11 @@ export default function Navbar() {
             <button
               onClick={toggleLanguage}
               aria-label={languageLabel}
+              lang={nextLocale}
               className="cursor-pointer px-2 py-1 rounded-md text-xs font-bold tracking-widest uppercase text-base-content/50 hover:text-primary transition-colors
                          focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
             >
-              {locale === 'fr' ? 'EN' : 'FR'}
+              {nextLocale.toUpperCase()}
             </button>
             <ThemeToggle />
 

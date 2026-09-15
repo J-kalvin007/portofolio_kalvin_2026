@@ -27,7 +27,7 @@ import React, { useMemo, useRef } from 'react';
 import Image from 'next/image';
 import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 import { ArrowRight, Code2, Rocket, Eye, Shield, Download } from 'lucide-react';
-import { useTranslations, useLocale } from 'next-intl';
+import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import FadeIn from '@/components/animations/FadeIn';
 import StaggerChildren, { StaggerItem } from '@/components/animations/StaggerChildren';
@@ -66,7 +66,6 @@ export default function HomePage() {
   const heroOpacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
 
   // Récupération des dictionnaires de traduction i18n
-  const locale = useLocale();
   const t = useTranslations('hero');
   const tTeaser = useTranslations('about_teaser');
   const tValues = useTranslations('values');
@@ -74,7 +73,6 @@ export default function HomePage() {
   const tFeatured = useTranslations('featured');
   const tStats = useTranslations('stats');
   const tCta = useTranslations('cta');
-  const tProjects = useTranslations('projects_data');
 
   // Mots pour l'effet "Machine à écrire"
   // Mémoïsé : le tableau alimente une dépendance d'effet dans `TypewriterText`.
@@ -104,8 +102,8 @@ export default function HomePage() {
     { value: 89, suffix: '%', label: tStats('engagement') },
   ];
 
-  /** Libellé hors catalogue i18n pour l'indicateur de défilement. */
-  const scrollHint = locale === 'fr' ? 'Faire défiler vers le contenu' : 'Scroll to content';
+  /** Libellé accessible de l'indicateur de défilement. */
+  const scrollHint = t('scrollHint');
 
   /** Le défilement programmatique respecte lui aussi la préférence système. */
   const handleScrollToContent = () =>
@@ -158,27 +156,16 @@ export default function HomePage() {
                     et `overflow-x-hidden` la coupait silencieusement. */}
                 <span className="inline-flex flex-wrap sm:flex-nowrap sm:whitespace-nowrap items-center gap-2 sm:gap-3 lg:gap-4 mt-1 sm:mt-2">
 
-                  {locale === 'fr' ? (
-
-                    <>
-
+                  {/* L'ordre des mots appartient à la langue (« Ingénieur Logiciel »,
+                      « Software Engineer ») : il est porté par la traduction
+                      `hero.titleWithRole`, où `<role>` marque la place du mot animé. */}
+                  {t.rich('titleWithRole', {
+                    role: () => (
                       <span className="text-gradient">
                         <TypewriterText words={typewriterWords} />
                       </span>
-                      <span>{t('titleLine1')}</span>
-
-                    </>
-
-                  ) : (
-
-                    <>
-                      <span>{t('titleLine1')}</span>
-                      <span className="text-gradient">
-                        <TypewriterText words={typewriterWords} />
-                      </span>
-                    </>
-
-                  )}
+                    ),
+                  })}
 
                 </span>
 
@@ -403,8 +390,8 @@ export default function HomePage() {
 
         {/* Lignes défilantes (Marquee) vers la gauche et vers la droite */}
         <div className="relative z-10 flex flex-col gap-8 sm:gap-12 w-full">
-          {frontendSkills.length > 0 && <MarqueeRow skills={frontendSkills} tSkills={tSkills} speed={45} />}
-          {backendSkills.length > 0 && <MarqueeRow skills={backendSkills} reverse={true} tSkills={tSkills} speed={55} />}
+          {frontendSkills.length > 0 && <MarqueeRow skills={frontendSkills} speed={45} />}
+          {backendSkills.length > 0 && <MarqueeRow skills={backendSkills} reverse={true} speed={55} />}
         </div>
 
       </section>
@@ -422,7 +409,7 @@ export default function HomePage() {
           <div className="flex flex-col gap-24 sm:gap-32 mt-16">
 
             {FEATURED_PROJECTS.map((project, index) => (
-              <FeaturedProjectCard key={project.slug} project={project} index={index} tProjects={tProjects} />
+              <FeaturedProjectCard key={project.slug} project={project} index={index} />
             ))}
 
           </div>

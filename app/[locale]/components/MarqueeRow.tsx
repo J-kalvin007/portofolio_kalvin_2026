@@ -5,7 +5,6 @@ import { useCallback, useRef } from "react";
 import { motion, useAnimationFrame, useMotionValue, useReducedMotion, useTransform } from "framer-motion";
 import SkillCard from "./SkillCard";
 import type { Skill } from "@/lib/data/skills";
-import type { Translator } from "@/types/i18n.types";
 
 /* ═══════════════════════════════════════════════════════════════════════════
    ▌ MÉCANIQUE DU RAIL
@@ -39,7 +38,7 @@ const wrapLoopPosition = (value: number): number =>
  * @description Ligne défilante à l'infini (Carrousel Marquee).
  * Duplique les éléments pour donner l'illusion d'une boucle infinie. Se met en pause au survol.
  */
-const MarqueeRow = ({ skills, reverse = false, speed = 40, tSkills }: { skills: Skill[], reverse?: boolean, speed?: number, tSkills: Translator }) => {
+const MarqueeRow = ({ skills, reverse = false, speed = 40 }: { skills: Skill[], reverse?: boolean, speed?: number }) => {
     const duplicatedSkills = [...skills, ...skills, ...skills, ...skills]; // x4 pour s'assurer de couvrir tout l'écran
 
     const shouldReduceMotion = useReducedMotion();
@@ -87,7 +86,7 @@ const MarqueeRow = ({ skills, reverse = false, speed = 40, tSkills }: { skills: 
                 <div className="flex w-max gap-4 sm:gap-6 px-4 sm:px-6 snap-x snap-mandatory">
                     {skills.map((skill, index) => (
                         <div key={`${skill.name}-${index}`} className="snap-center">
-                            <SkillCard skill={skill} tSkills={tSkills} />
+                            <SkillCard skill={skill} />
                         </div>
                     ))}
                 </div>
@@ -116,7 +115,7 @@ const MarqueeRow = ({ skills, reverse = false, speed = 40, tSkills }: { skills: 
                 className="flex flex-shrink-0 w-max gap-4 sm:gap-6 px-2 sm:px-3 will-change-transform"
             >
                 {duplicatedSkills.map((skill, index) => (
-                    <SkillCard key={`${skill.name}-${index}`} skill={skill} tSkills={tSkills} />
+                    <SkillCard key={`${skill.name}-${index}`} skill={skill} />
                 ))}
             </motion.div>
 

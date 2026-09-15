@@ -28,10 +28,10 @@
 import React, { useState, useMemo, useRef } from 'react';
 import { AnimatePresence, motion, useMotionValue, useReducedMotion, useSpring } from 'framer-motion';
 import { SlidersHorizontal } from 'lucide-react';
-import { useLocale, useTranslations } from 'next-intl';
+import { useTranslations } from 'next-intl';
 import FadeIn from '@/components/animations/FadeIn';
 import StardustCursor from '@/components/animations/StardustCursor';
-import { PROJECTS, PROJECT_CATEGORIES } from '@/lib/data/projects';
+import { PROJECTS, PROJECT_CATEGORIES, type ProjectCategory } from '@/lib/data/projects';
 import { useProjectModal } from '@/hooks/useProjectModal';
 import { ProjectsGrid, ProjectModal } from '@/app/[locale]/projets/components';
 
@@ -41,6 +41,9 @@ import { ProjectsGrid, ProjectModal } from '@/app/[locale]/projets/components';
 
 /** Clé du filtre « tous les projets ». Extraite : elle apparaissait trois fois en littéral. */
 const ALL_FILTER_KEY = '__all__';
+
+/** Valeur d'un filtre : une catégorie de projet, ou tous les projets. */
+type FilterKey = ProjectCategory | typeof ALL_FILTER_KEY;
 
 /**
  * Force de l'attraction magnétique, en fraction du déplacement du curseur.
@@ -59,19 +62,22 @@ const EASE_OUT_EXPO = [0.16, 1, 0.3, 1] as const;
 
 export default function ProjetsPage() {
   /* ── État local : filtre de catégorie ── */
-  const [activeFilter, setActiveFilter] = useState<string>(ALL_FILTER_KEY);
+  const [activeFilter, setActiveFilter] = useState<FilterKey>(ALL_FILTER_KEY);
 
   /* ── Hooks personnalisés ── */
   const { modalState, openModal, closeModal } = useProjectModal();
 
   /* ── Dictionnaires i18n ── */
   const t = useTranslations('projects_page');
-  const locale = useLocale();
-  const isFrench = locale === 'fr';
 
   /* ── Filtres dynamiques ── */
   const filters = useMemo(
-    () => [{ key: ALL_FILTER_KEY, label: t('filterAll') }, ...PROJECT_CATEGORIES.map((c) => ({ key: c, label: c }))],
+    // Les libellés viennent du catalogue : ils étaient auparavant les valeurs
+    // françaises brutes des données, y compris sur la version anglaise.
+    (): { key: FilterKey; label: string }[] => [
+      { key: ALL_FILTER_KEY, label: t('filterAll') },
+      ...PROJECT_CATEGORIES.map((category) => ({ key: category, label: t(`categories.${category}`) })),
+    ],
     [t]
   );
 
@@ -81,14 +87,13 @@ export default function ProjetsPage() {
     [activeFilter]
   );
 
-  /* ── Libellés hors catalogue i18n (aucune clé nouvelle n'est requise) ───── */
-  const projectCountLabel = isFrench
-    ? `${filteredProjects.length} projet${filteredProjects.length > 1 ? 's' : ''}`
-    : `${filteredProjects.length} project${filteredProjects.length > 1 ? 's' : ''}`;
-
-  const emptyTitle = isFrench ? 'Aucun projet dans cette catégorie' : 'No projects in this category';
-  const emptyAction = isFrench ? 'Voir tous les projets' : 'View all projects';
-  const filtersLabel = isFrench ? 'Filtrer par catégorie' : 'Filter by category';
+  /* ── Libellés ──────────────────────────────────────────────────────────
+     Le pluriel passe par ICU (`{count, plural, …}`) : la règle maison
+     « > 1 → s » était juste en français et fausse pour « 0 project » en anglais. */
+  const projectCountLabel = t('projectCount', { count: filteredProjects.length });
+  const emptyTitle = t('emptyTitle');
+  const emptyAction = t('emptyAction');
+  const filtersLabel = t('filtersLabel');
 
   return (
     <div className="min-h-screen bg-base-100 text-base-content pt-28 sm:pt-36 relative">

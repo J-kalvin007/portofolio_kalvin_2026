@@ -2,12 +2,38 @@
    PROJECTS DATA
    ═══════════════════════════════════════════════ */
 
+import type fr from '@/messages/fr.json';
+
+/**
+ * Clé du projet dans `messages/*.json → projects_data`.
+ *
+ * Le type est **dérivé du catalogue de traductions** : déclarer un projet avec
+ * une clé qui n'y figure pas est une erreur de compilation.
+ *
+ * @remarks Pourquoi ce champ existe. La correspondance projet → traduction était
+ * reconstituée à partir du `slug` dans trois tables distinctes, avec deux replis
+ * différents (`'green'` sur l'accueil, `'challenger'` sur la page Projets).
+ * LocaManager et Lotus, absents des tables et du catalogue, affichaient donc
+ * silencieusement la description d'un autre projet — une autre selon la page.
+ */
+export type ProjectI18nKey = Exclude<keyof (typeof fr)['projects_data'], 'metrics'>;
+
+/**
+ * Catégorie de filtre, clé de `messages/*.json → projects_page.categories`.
+ *
+ * @remarks Les catégories étaient des libellés français (`'Application Web'`) :
+ * les filtres restaient en français sur la version anglaise, et ne
+ * correspondaient pas au libellé affiché sur les cartes (`'Web'`). Une clé
+ * unique sert désormais au filtrage **et** à l'affichage, dans les deux langues.
+ */
+export type ProjectCategory = keyof (typeof fr)['projects_page']['categories'];
+
 export interface Project {
+  /** Identifiant stable, utilisé comme clé de rendu React. */
   slug: string;
+  i18nKey: ProjectI18nKey;
   title: string;
-  category: string;
-  shortDescription: string;
-  fullDescription: string;
+  category: ProjectCategory;
   coverImage: string;
   images: string[];
   techStack: string[];
@@ -18,15 +44,20 @@ export interface Project {
   year: string;
 }
 
+/*
+ * Les descriptions (`shortDescription`, `fullDescription`) ont été retirées de
+ * ces données : aucun composant ne les lisait, l'affichage passe par les
+ * traductions. Garder une seconde version française ici, c'était garantir
+ * qu'elle diverge un jour de celle que les visiteurs lisent.
+ */
 export const PROJECTS: Project[] = [
   {
     slug: 'challenger-app',
+    i18nKey: 'challenger',
     title: 'Challenger App',
-    category: 'Logiciel Windows',
-    shortDescription: 'Logiciel Windows de calcul du temps de travail des employés.',
-    fullDescription: 'Logiciel Windows de pointage et de calcul du temps de travail des employés.',
+    category: 'desktop',
     coverImage: '/images_projets/challenger00.webp',
-    images: ['/images_projets/challenger00.webp', '/images_projets/challenger_04.webp', '/images_projets/challenger_01.webp', '/images_projets/challenger_02.webp', '/images_projets/challenger_03.webp',],
+    images: ['/images_projets/challenger00.webp', '/images_projets/challenger_04.webp', '/images_projets/challenger_01.webp', '/images_projets/challenger_02.webp', '/images_projets/challenger_03.webp'],
     techStack: ['Dart', 'Flutter'],
     githubUrl: 'https://github.com/J-kalvin007',
     metrics: [{ label: 'Utilisateurs', value: '20+' }, { label: 'Événements', value: '20+' }],
@@ -35,12 +66,11 @@ export const PROJECTS: Project[] = [
   },
   {
     slug: 'Sheem!',
+    i18nKey: 'sheem',
     title: 'Sheem!',
-    category: 'Application Mobile',
-    shortDescription: 'Application mobile Android et IOS de gestion événementielle avec vente de billets, paiement mobile, génération de QR codes et tableau de bord administrateur.',
-    fullDescription: 'Application mobile Android et IOS de gestion événementielle avec vente de billets, paiement mobile, génération de QR codes et tableau de bord administrateur.',
+    category: 'mobile',
     coverImage: '/images_projets/event_09.webp',
-    images: ['/images_projets/event_04.webp', '/images_projets/event_13.webp', '/images_projets/event_12.webp', '/images_projets/event_02.webp', '/images_projets/event_05.webp',],
+    images: ['/images_projets/event_04.webp', '/images_projets/event_13.webp', '/images_projets/event_12.webp', '/images_projets/event_02.webp', '/images_projets/event_05.webp'],
     techStack: ['Flutter', 'Django', 'PostgreSQL', 'QR Code', 'Mobile Money', 'Docker'],
     githubUrl: 'https://github.com/J-kalvin007',
     metrics: [{ label: 'Utilisateurs', value: '100+' }, { label: 'Événements', value: '50+' }],
@@ -49,13 +79,12 @@ export const PROJECTS: Project[] = [
   },
   {
     slug: 'mboashop-ecommerce',
+    i18nKey: 'mboashop',
     title: 'MboaShop & Dashboard',
-    category: 'Application Web',
-    shortDescription: 'E-commerce complet avec panier dynamique, paiement intégré et dashboard admin.',
-    fullDescription: 'Plateforme e-commerce full-stack avec catalogue riche, panier dynamique, paiement multi-canal et dashboard analytics.',
+    category: 'web',
     coverImage: '/images_projets/shop_04.webp',
-    images: ['/images_projets/shop_04.webp', '/images_projets/shop_01.webp', '/images_projets/shop_02.webp', '/images_projets/shop_03.webp',],
-    techStack: ['Django', "HTML/CSS", 'PostgreSQL', 'Stripe', 'Docker', "Next.js", "Tailwind CSS"],
+    images: ['/images_projets/shop_04.webp', '/images_projets/shop_01.webp', '/images_projets/shop_02.webp', '/images_projets/shop_03.webp'],
+    techStack: ['Django', 'HTML/CSS', 'PostgreSQL', 'Stripe', 'Docker', 'Next.js', 'Tailwind CSS'],
     githubUrl: 'https://github.com/J-kalvin007',
     metrics: [{ label: 'Produits', value: '2000+' }, { label: 'Commandes/mois', value: '300+' }],
     featured: true,
@@ -63,10 +92,9 @@ export const PROJECTS: Project[] = [
   },
   {
     slug: 'myriade-groupe',
+    i18nKey: 'myriade',
     title: 'Myriade Groupe',
-    category: 'Application Web',
-    shortDescription: 'Site vitrine corporate premium pour un groupe de services B2B & B2C multi-secteurs.',
-    fullDescription: 'Plateforme institutionnelle moderne avec architecture SSG, animations cinématiques, spatial et optimisation SEO.',
+    category: 'web',
     coverImage: '/images_projets/site_05.webp',
     images: ['/images_projets/site_01.webp', '/images_projets/site_02.webp', '/images_projets/site_03.webp', '/images_projets/site_06.webp', '/images_projets/site_04.webp'],
     techStack: ['Next.js', 'Tailwind CSS', 'Framer Motion', 'SEO', 'Vercel'],
@@ -77,10 +105,9 @@ export const PROJECTS: Project[] = [
   },
   {
     slug: 'stock-manager',
+    i18nKey: 'stock',
     title: 'Stock Manager Pro',
-    category: 'SaaS',
-    shortDescription: 'Gestion de stock en temps réel avec alertes automatiques et reporting avancé.',
-    fullDescription: 'SaaS de gestion d\'inventaire avec suivi temps réel, alertes de réapprovisionnement et codes-barres.',
+    category: 'saas',
     coverImage: '/images_projets/stockManager_02.webp',
     images: ['/images_projets/stockManager_01.webp', '/images_projets/stockManager_02.webp', '/images_projets/stockManager_03.webp'],
     techStack: ['React.js', 'Node.js', 'Prisma ORM', 'WebSocket', 'Chart.js'],
@@ -90,39 +117,36 @@ export const PROJECTS: Project[] = [
   },
   {
     slug: 'green-Challenger',
+    i18nKey: 'green',
     title: 'Challenger App',
-    category: 'Mobile + Web + API',
-    shortDescription: 'Plateforme de gestion complète de plantation et suivi des activités.',
-    fullDescription: 'Plateforme complète de gestion de plantation et suivi des activités avec pipeline de données, API RESTful et visualisations interactives.',
+    category: 'platform',
     coverImage: '/images_projets/greenChallenger00.webp',
     images: ['/images_projets/greenChallenger00.webp', '/images_projets/greenChallenger_08.webp', '/images_projets/greenChallenger_02.webp', '/images_projets/greenChallenger_06.webp', '/images_projets/greenChallenger_07.webp', '/images_projets/greenChallenger_03.webp'],
-    techStack: ['Python', 'Django', 'PostgreSQL', 'D3.js', 'Docker', "Next.js", "Tailwind CSS", "Flutter"],
+    techStack: ['Python', 'Django', 'PostgreSQL', 'D3.js', 'Docker', 'Next.js', 'Tailwind CSS', 'Flutter'],
     githubUrl: 'https://github.com/J-kalvin007',
     featured: false,
     year: '2025',
   },
   {
     slug: 'locamanager',
+    i18nKey: 'locamanager',
     title: 'LocaManager',
-    category: 'Application Mobile',
-    shortDescription: 'Application mobile Android et IOS de gestion complète de biens immobiliers mis en location.',
-    fullDescription: 'Application mobile Android et IOS complète de gestion de biens immobiliers mis en location avec pipeline de données, API RESTful et visualisations interactives.',
+    category: 'mobile',
     coverImage: '/images_projets/locaManger_02.webp',
     images: ['/images_projets/locaManger_02.webp', '/images_projets/locaManger_03.webp', '/images_projets/locaManger_01.webp'],
-    techStack: ["Flutter", "Dart", 'Django', 'PostgreSQL', 'Docker'],
+    techStack: ['Flutter', 'Dart', 'Django', 'PostgreSQL', 'Docker'],
     githubUrl: 'https://github.com/J-kalvin007',
     featured: false,
     year: '2025',
   },
   {
     slug: 'Lotus',
+    i18nKey: 'lotus',
     title: 'Lotus pro',
-    category: 'Application Web',
-    shortDescription: 'Plateforme multi-tenant de gestion complète de gestion complete de magasins et boutiques.',
-    fullDescription: 'Plateforme multi-tenant complète de gestion de promotion maganisiniere avec pipeline de données, API RESTful et visualisations interactives.',
+    category: 'web',
     coverImage: '/images_projets/lotus_01.webp',
     images: ['/images_projets/lotus_01.webp', '/images_projets/lotus_04.webp', '/images_projets/lotus_03.webp', '/images_projets/lotus_05.webp', '/images_projets/lotus_06.webp'],
-    techStack: ["Next.js", 'Prisma ORM', 'Docker', "Chart.js", "Tailwind CSS"],
+    techStack: ['Next.js', 'Prisma ORM', 'Docker', 'Chart.js', 'Tailwind CSS'],
     githubUrl: 'https://github.com/J-kalvin007',
     featured: false,
     year: '2026',
@@ -130,4 +154,6 @@ export const PROJECTS: Project[] = [
 ];
 
 export const FEATURED_PROJECTS = PROJECTS.filter((p) => p.featured);
-export const PROJECT_CATEGORIES = [...new Set(PROJECTS.map((p) => p.category))];
+
+/** Catégories effectivement représentées, dans l'ordre de première apparition. */
+export const PROJECT_CATEGORIES: ProjectCategory[] = [...new Set(PROJECTS.map((p) => p.category))];

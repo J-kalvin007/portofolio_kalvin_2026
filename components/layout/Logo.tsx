@@ -23,7 +23,7 @@
 import { motion, useReducedMotion } from 'framer-motion';
 import { Link } from '@/i18n/navigation';
 import { useId } from 'react';
-import { useLocale } from 'next-intl';
+import { useTranslations } from 'next-intl';
 
 interface LogoProps {
   size?: number; // Permet de redimensionner dynamiquement le logo SVG
@@ -32,8 +32,8 @@ interface LogoProps {
 }
 
 export default function Logo({ size = 44, showText = true, className = '' }: LogoProps) {
-  // Récupère la locale active (ex: 'fr' ou 'en')
-  const locale = useLocale();
+  // Libellés d'identité (catalogue `brand`)
+  const tBrand = useTranslations('brand');
   const shouldReduceMotion = useReducedMotion();
 
   /**
@@ -49,8 +49,8 @@ export default function Logo({ size = 44, showText = true, className = '' }: Log
   const strokeGradientId = `logo-stroke-${uid}`;
   const kGradientId = `logo-k-${uid}`;
 
-  const roleLabel = locale === 'fr' ? 'Ingénieur Logiciel' : 'Software Engineer';
-  const homeLabel = locale === 'fr' ? "Kalvin — retour à l'accueil" : 'Kalvin — back to home';
+  const roleLabel = tBrand('role');
+  const homeLabel = tBrand('homeLabel');
 
   return (
     // <Link> de next-intl pour rediriger vers la page d'accueil de la langue courante
