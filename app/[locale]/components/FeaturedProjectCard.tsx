@@ -4,11 +4,13 @@
 import FadeIn from "@/components/animations/FadeIn";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, ChevronLeft, ChevronRight, Github, Maximize2 } from "lucide-react";
-import { useTranslations, useLocale } from 'next-intl';
+import { useLocale } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import { useCallback, useState } from "react";
 import Image from "next/image";
 import ImageLightbox from "./ImageLightbox";
+import type { Project } from "@/lib/data/projects";
+import type { Translator } from "@/types/i18n.types";
 
 /* ═══════════════════════════════════════════════════════════════════════════
    ▌ CORRESPONDANCE SLUG → CLÉ DE TRADUCTION
@@ -50,10 +52,10 @@ const PROJECT_IMAGE_SIZES = "(max-width: 1024px) 100vw, 60vw";
  * a été remplacé par cette matière unique — c'est la différence entre un objet
  * fabriqué et un effet appliqué.
  */
-const FeaturedProjectCard = ({ project, index, tProjects }: { project: any, index: number, tProjects: any }) => {
+const FeaturedProjectCard = ({ project, index, tProjects }: { project: Project, index: number, tProjects: Translator }) => {
     const [currentImg, setCurrentImg] = useState(0);
     const [isLightboxOpen, setIsLightboxOpen] = useState(false);
-    const images = project.images && project.images.length > 0 ? project.images : [project.coverImage];
+    const images = project.images.length > 0 ? project.images : [project.coverImage];
 
     const locale = useLocale();
     const shouldReduceMotion = useReducedMotion();
@@ -190,7 +192,7 @@ const FeaturedProjectCard = ({ project, index, tProjects }: { project: any, inde
                                     role="tablist"
                                     aria-label={isFrench ? 'Images du projet' : 'Project images'}
                                 >
-                                    {images.map((_: any, i: number) => (
+                                    {images.map((_, i) => (
                                         <button
                                             key={i}
                                             role="tab"
