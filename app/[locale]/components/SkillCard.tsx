@@ -6,6 +6,8 @@ import { Code2 } from "lucide-react";
 import Image from "next/image";
 import { useCallback, useRef } from "react";
 import { useReducedMotion } from "framer-motion";
+import type { Skill } from "@/lib/data/skills";
+import type { Translator } from "@/types/i18n.types";
 
 /* ═══════════════════════════════════════════════════════════════════════════
    ▌ PHYSIQUE DE LA CARTE
@@ -32,7 +34,7 @@ const LEVEL_SEGMENTS = [1, 2, 3, 4, 5] as const;
  * lisible d'un coup d'œil grâce à une jauge à 5 segments — l'information est
  * quantitative, elle mérite une forme quantitative.
  */
-const SkillCard = ({ skill, tSkills }: { skill: any; tSkills: any }) => {
+const SkillCard = ({ skill, tSkills }: { skill: Skill; tSkills: Translator }) => {
     const cardRef = useRef<HTMLDivElement>(null);
     const shouldReduceMotion = useReducedMotion();
 

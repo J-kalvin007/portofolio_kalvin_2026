@@ -38,10 +38,7 @@ import { SKILLS } from '@/lib/data/skills';
 import StardustCursor from '@/components/animations/StardustCursor';
 import TypewriterText from './components/TypewriterText';
 import MarqueeRow from './components/MarqueeRow';
-// ⚠️ L'espace avant l'extension est intentionnellement conservé : le fichier
-// s'appelle littéralement « FeaturedProjectCard .tsx ». Renommer les deux
-// (fichier + import) est vivement recommandé — voir la note de livraison.
-import FeaturedProjectCard from './components/FeaturedProjectCard ';
+import FeaturedProjectCard from './components/FeaturedProjectCard';
 
 /* ═══════════════════════════════════════════════
    TOKENS DE LA PAGE D'ACCUEIL

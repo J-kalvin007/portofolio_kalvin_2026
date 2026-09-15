@@ -4,6 +4,8 @@
 import { useCallback, useRef } from "react";
 import { motion, useAnimationFrame, useMotionValue, useReducedMotion, useTransform } from "framer-motion";
 import SkillCard from "./SkillCard";
+import type { Skill } from "@/lib/data/skills";
+import type { Translator } from "@/types/i18n.types";
 
 /* ═══════════════════════════════════════════════════════════════════════════
    ▌ MÉCANIQUE DU RAIL
@@ -37,7 +39,7 @@ const wrapLoopPosition = (value: number): number =>
  * @description Ligne défilante à l'infini (Carrousel Marquee).
  * Duplique les éléments pour donner l'illusion d'une boucle infinie. Se met en pause au survol.
  */
-const MarqueeRow = ({ skills, reverse = false, speed = 40, tSkills }: { skills: any[], reverse?: boolean, speed?: number, tSkills: any }) => {
+const MarqueeRow = ({ skills, reverse = false, speed = 40, tSkills }: { skills: Skill[], reverse?: boolean, speed?: number, tSkills: Translator }) => {
     const duplicatedSkills = [...skills, ...skills, ...skills, ...skills]; // x4 pour s'assurer de couvrir tout l'écran
 
     const shouldReduceMotion = useReducedMotion();
