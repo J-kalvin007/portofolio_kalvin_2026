@@ -1,0 +1,126 @@
+/**
+ * @file about.css
+ * @description Fiche d'identité de la page À propos : un badge de papier,
+ * accroché par une attache, avec le portrait, les informations clés et le
+ * tampon « Disponible ».
+ *
+ * Même vocabulaire que le reçu de l'accueil (papier, pointillés, tampon),
+ * avec un objet différent. Toutes les valeurs viennent du système de design.
+ */
+
+.idc {
+  position: relative;
+  justify-self: center;
+  width: min(100%, 25rem);
+  margin: 0;
+  padding-top: 1.25rem;
+  transform: rotate(-1.2deg);
+  filter: drop-shadow(0 1px 1px hsl(var(--ds-shadow-color) / 0.1)) drop-shadow(0 18px 24px hsl(var(--ds-shadow-color) / 0.18));
+}
+.dark .idc {
+  filter: drop-shadow(0 1px 1px hsl(var(--ds-shadow-color) / 0.6)) drop-shadow(0 20px 28px hsl(var(--ds-shadow-color) / 0.7));
+}
+
+/* Attache du badge */
+.idc-clip {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  z-index: 2;
+  width: 3.25rem;
+  height: 1.9rem;
+  border-radius: 0.45rem 0.45rem 0.3rem 0.3rem;
+  background: #1b2028;
+  transform: translateX(-50%);
+  box-shadow: inset 0 -3px 0 rgb(255 255 255 / 0.08);
+}
+.dark .idc-clip {
+  background: #05070a;
+  box-shadow: inset 0 0 0 1px var(--ds-line);
+}
+
+.idc-paper {
+  position: relative;
+  display: grid;
+  gap: 1rem;
+  padding: 1.75rem 1.4rem 1.5rem;
+  border-radius: 0.9rem;
+  background: var(--ds-paper);
+  color: var(--ds-paper-ink);
+  font-size: 0.8125rem;
+  line-height: 1.55;
+}
+/* Fente de l'attache, percée dans le papier */
+.idc-paper::before {
+  content: '';
+  position: absolute;
+  top: 0.55rem;
+  left: 50%;
+  width: 2.2rem;
+  height: 0.4rem;
+  border-radius: 999px;
+  background: var(--ds-canvas);
+  transform: translateX(-50%);
+}
+
+.idc-head {
+  display: grid;
+  grid-template-columns: 7.5rem minmax(0, 1fr);
+  align-items: end;
+  gap: 1rem;
+}
+.idc-photo {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  border-radius: 0.4rem;
+  background: var(--ds-surface-sunken);
+}
+.idc-photo img {
+  object-fit: cover;
+  object-position: 50% 18%;
+}
+.idc-name {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+}
+.idc-role {
+  margin: 0.4rem 0 0;
+  color: var(--ds-paper-muted);
+}
+.idc-rule {
+  margin: 0;
+  border: 0;
+  border-top: 1px dashed var(--ds-paper-line);
+}
+
+/* Tampon, posé en travers du coin de la photo */
+.idc-stamp {
+  position: absolute;
+  top: 8.4rem;
+  left: 3.1rem;
+  margin: 0;
+  padding: 0.3rem 0.5rem 0.25rem 0.7rem;
+  border: 3px double var(--ds-stamp);
+  border-radius: 0.3rem;
+  background: color-mix(in srgb, var(--ds-paper) 55%, transparent);
+  color: var(--ds-stamp);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  transform: rotate(-9deg);
+}
+
+@media (max-width: 380px) {
+  .idc-head {
+    grid-template-columns: 6rem minmax(0, 1fr);
+  }
+  .idc-stamp {
+    top: 6.6rem;
+    left: 1.6rem;
+  }
+}

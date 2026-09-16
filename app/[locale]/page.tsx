@@ -14,30 +14,25 @@
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { resolveLocale, type LocaleParams } from '@/i18n/params';
-import {
-  CareerSection,
-  ContactSection,
-  HeroSection,
-  ProjectsSection,
-  StackSection,
-} from './components/HomeSections';
+import { pageMetadata } from '@/lib/seo';
+import ContactCta from '@/components/sections/ContactCta';
+import { CareerSection, HeroSection, ProjectsSection, StackSection } from './components/HomeSections';
 import './components/home.css';
 
 export async function generateMetadata({ params }: LocaleParams): Promise<Metadata> {
   const locale = await resolveLocale(params);
-  const t = await getTranslations({ locale, namespace: 'seo.home' });
+  const t = await getTranslations({ locale, namespace: 'seo' });
 
-  return {
-    // Titre complet : le modèle « %s | Kalvin Takoudjou » du layout produisait
-    // « Accueil | Kalvin Takoudjou », qui ne dit rien du métier.
-    title: { absolute: t('title') },
-    description: t('description'),
-    openGraph: {
-      title: t('title'),
-      description: t('description'),
-      url: `/${locale}`,
-    },
-  };
+  // Titre complet : le modèle « %s | Kalvin Takoudjou » du layout produirait
+  // « Accueil | Kalvin Takoudjou », qui ne dit rien du métier.
+  return pageMetadata({
+    locale,
+    path: '',
+    title: t('home.title'),
+    description: t('home.description'),
+    imageAlt: t('site.imageAlt'),
+    absoluteTitle: true,
+  });
 }
 
 export default async function HomePage({ params }: LocaleParams) {
@@ -51,7 +46,7 @@ export default async function HomePage({ params }: LocaleParams) {
       <ProjectsSection />
       <StackSection />
       <CareerSection />
-      <ContactSection />
+      <ContactCta />
     </>
   );
 }

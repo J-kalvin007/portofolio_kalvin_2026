@@ -1,8 +1,8 @@
 {
   "seo": {
     "site": {
-      "title": "Kalvin Takoudjou — Software Engineer & Web Architect",
-      "description": "Portfolio of Kalvin Takoudjou, full-stack software engineer: web and mobile applications, e-commerce platforms and high-performance architectures.",
+      "title": "Kalvin Takoudjou — Full-stack & mobile software engineer",
+      "description": "Portfolio of Kalvin Takoudjou, full-stack and mobile software engineer in Lomé: web and mobile applications shipped, each one presented with its architecture.",
       "imageAlt": "Kalvin Takoudjou — Software Engineer"
     },
     "home": {
@@ -10,16 +10,16 @@
       "description": "Web and mobile applications shipped to production: ticketing paid with Mobile Money, e-commerce, inventory and rental management. Every project comes with its architecture."
     },
     "projects": {
-      "title": "My Projects",
-      "description": "Discover my creations: web applications, SaaS, and high-impact e-commerce platforms."
+      "title": "Projects",
+      "description": "Kalvin Takoudjou's projects, one by one: screenshots, stack and architecture diagram of each web and mobile application."
     },
     "about": {
-      "title": "About Me",
-      "description": "Discover my journey, my degrees, and the core values that guide my work as an engineer."
+      "title": "About",
+      "description": "Background of Kalvin Takoudjou, software engineer in Lomé: experience, education, way of working and recommendations."
     },
     "contact": {
       "title": "Contact",
-      "description": "Ready to launch your next project? Contact me to discuss your web development needs."
+      "description": "Write to Kalvin Takoudjou about a project, a position or a question. Reply within 24 hours."
     }
   },
   "nav": {
@@ -33,22 +33,7 @@
     "closeMenu": "Close menu",
     "switchLanguage": "Passer en français"
   },
-  "projects_page": {
-    "badge": "Technical Portfolio",
-    "title1": "Projects that ",
-    "title2": "transform",
-    "description": "Digital solutions crafted with rigor to solve real-world problems and generate measurable impact.",
-    "filterAll": "All",
-    "viewSite": "View site",
-    "sourceCode": "Source code",
-    "closeModal": "Close window",
-    "viewProject": "View project",
-    "projectDetails": "Project details",
-    "technologies": "Technologies",
-    "filtersLabel": "Filter by category",
-    "projectCount": "{count, plural, =0 {No projects} one {# project} other {# projects}}",
-    "emptyTitle": "No projects in this category",
-    "emptyAction": "View all projects",
+  "project": {
     "categories": {
       "desktop": "Windows software",
       "mobile": "Mobile app",
@@ -56,110 +41,134 @@
       "saas": "SaaS",
       "platform": "Mobile + Web + API"
     },
-    "viewProjectNamed": "View project: {title}",
-    "projectDetailsNamed": "Project details: {title}"
+    "ticket": "Ticket no.",
+    "stack": "Stack",
+    "technologies": "Technologies",
+    "liveSite": "Visit the site",
+    "sourceCode": "Source code",
+    "details": "Project details",
+    "newTab": "(opens in a new tab)"
+  },
+  "projects_page": {
+    "overline": "Shipped projects",
+    "title": "The projects, one by one.",
+    "lead": "{count} projects. For each one: what it does, what it looks like and how it is built.",
+    "filtersLabel": "Filter by category",
+    "filterAll": "All",
+    "shown": "{count, plural, =0 {No project shown} one {# project shown} other {# projects shown}}",
+    "index": "Contents",
+    "indexLabel": "Project contents"
   },
   "about_page": {
-    "badge": "About me",
-    "titleLine1": "Architect",
-    "titleLine2": "of Digital",
-    "titleLine3": "Experience",
-    "description": "I design digital ecosystems where <bold1>technical precision</bold1> meets <bold2>aesthetic emotion</bold2>.",
-    "subtitle": "Full Stack Developer",
-    "stats": {
-      "years": "Years of Experience",
-      "projects": "Projects Delivered",
-      "engagement": "Client Commitment",
-      "passion": "Passion"
+    "overline": "About",
+    "title": "Software engineer in Lomé, from business need to production.",
+    "lead": "I'm Kalvin Takoudjou. A full-stack developer and consultant at Myriade Groupe since 2024, I design web and mobile applications, from the database to the screen. I am also working towards an MBA in Big Data and Artificial Intelligence.",
+    "ctaCv": "Download the CV (PDF)",
+    "ctaContact": "Get in touch",
+    "card": {
+      "label": "Kalvin Takoudjou profile card",
+      "portraitAlt": "Portrait of Kalvin Takoudjou",
+      "role": "Full-stack & mobile software engineer",
+      "position": "Position",
+      "positionValue": "Consultant · Myriade Groupe",
+      "education": "Education",
+      "educationValue": "MBA Big Data & AI, ongoing",
+      "based": "Based in",
+      "basedValue": "Lomé, Togo · UTC+0",
+      "missions": "Engagements",
+      "missionsValue": "Remote",
+      "stamp": "Available"
     },
-    "vision": {
-      "eyebrow": "Philosophy",
-      "title": "Beyond code, a vision",
-      "sidebarMantra": "Mantra",
-      "sidebarApproach": "Approach",
-      "sidebarStandard": "Standard",
-      "p1": "In a world saturated with digital noise, <bold>quality</bold> is the only differentiator.",
-      "p2": "Every pixel, every interaction, every transition is designed to <bold>elevate your message</bold> and turn your visitors into ambassadors.",
-      "quote": "\"Simplicity is the ultimate sophistication.\"",
-      "p3": "I work with demanding clients who understand that their digital presence is their most valuable asset."
-    },
-    "values_section": {
-      "eyebrow": "Values",
-      "title": "What guides me"
-    },
-    "values": {
-      "excellence": "Technical Excellence",
-      "excellence_desc": "Clean, maintainable, high-performance code is the norm, not the exception.",
-      "vision": "Strategic Vision",
-      "vision_desc": "Every line of code serves a clear, measurable business objective.",
-      "innovation": "Continuous Innovation",
-      "innovation_desc": "Constant technology watch to anticipate tomorrow's standards.",
-      "reliability": "Absolute Reliability",
-      "reliability_desc": "Robust architectures designed for scalability and security."
-    },
-    "timeline": {
-      "eyebrow": "Journey",
-      "title": "Professional Experience",
+    "career": {
+      "overline": "Background",
+      "title": "Experience and education.",
       "experience": "Experience",
       "education": "Education"
     },
-    "testimonials": {
-      "title": "\"They trusted me.\""
+    "method": {
+      "overline": "Method",
+      "title": "How I work.",
+      "business": {
+        "title": "Start from the business",
+        "text": "Employee time tracking, ticket sales, inventory, rentals: every project starts from the real process it has to serve, before any choice of tools."
+      },
+      "system": {
+        "title": "One system, several screens",
+        "text": "A mobile app in the field, a dashboard on the web, an API at the centre: the same data serves every screen."
+      },
+      "delivery": {
+        "title": "Ship, not just build",
+        "text": "Docker containers and deployment are part of the job: software is finished when it runs for the people who use it."
+      },
+      "architecture": {
+        "title": "Make the architecture readable",
+        "text": "Every project in this portfolio comes with its diagram — components, exchanges, stack — so that a client and a developer alike can see what was built."
+      }
     },
-    "cta": {
-      "title1": "Ready to elevate your",
-      "title2": "Standard?",
-      "description": "Let's discuss your project. No hard sell, just a strategic conversation.",
-      "ctaPrimary": "Start a conversation",
-      "ctaSecondary": "My CV"
+    "recommendations": {
+      "overline": "Recommendations",
+      "title": "What people who worked with me say."
     }
   },
   "contact_page": {
-    "badge": "Available for new projects",
-    "title1": "Let's start a ",
-    "title2": "project",
-    "title3": " together",
-    "description": "Have an ambitious digital project? I'm available for consulting, architecture, or development missions.",
-    "stayInTouch": "Let's stay in touch",
-    "basedIn": "Based in Lomé, Togo, I work with clients worldwide.",
+    "overline": "Contact",
+    "title": "Write to me.",
+    "lead": "A project, a position, a question: through the form, by email or on WhatsApp. Reply within 24 hours.",
     "labels": {
       "email": "Email",
       "phone": "Phone",
       "location": "Location"
     },
-    "social": "Social media",
+    "details": {
+      "title": "Contact details",
+      "whatsapp": "WhatsApp",
+      "whatsappValue": "Message on WhatsApp",
+      "github": "GitHub",
+      "localTime": "Local time",
+      "status": "Status",
+      "statusValue": "Available · remote",
+      "cv": "Download the CV (PDF)"
+    },
     "form": {
-      "name": "Full Name",
+      "title": "Send a message",
+      "note": "All fields are required.",
+      "name": "Full name",
       "namePlaceholder": "Your name",
       "email": "Email",
-      "emailPlaceholder": "your@email.com",
+      "emailPlaceholder": "you@example.com",
       "subject": "Subject",
-      "subjectPlaceholder": "What is this about?",
+      "subjectPlaceholder": "Project, position, question…",
       "message": "Message",
-      "messagePlaceholder": "Describe your project...",
-      "submit": "Send my request",
-      "submitting": "Sending...",
-      "eyebrow": "Write",
-      "heading": "Send a message",
-      "promise": "Answered within 24 hours"
+      "messagePlaceholder": "Your need, your timeline, your context…",
+      "counter": "{count} / {max} characters",
+      "submit": "Send the message",
+      "submitting": "Sending…"
     },
     "validation": {
       "nameMin": "Name must be at least 2 characters",
       "nameMax": "Name must be at most {max} characters",
-      "emailInvalid": "Invalid email",
+      "emailInvalid": "Invalid email address",
       "subjectMin": "Subject must be at least 3 characters",
       "subjectMax": "Subject must be at most {max} characters",
       "messageMin": "Message must be at least 10 characters",
       "messageMax": "Message too long"
     },
     "notification": {
-      "success": "Sent!",
-      "error": "Error",
+      "success": "Message sent",
+      "error": "Could not send",
       "successMessage": "Message sent successfully!",
       "errorMessage": "Error sending message.",
       "networkError": "Network error. Please try again.",
       "dismiss": "Dismiss notification"
     }
+  },
+  "contact_cta": {
+    "overline": "Contact",
+    "title": "A project, a position, a question?",
+    "description": "Answered within 24 hours.",
+    "email": "Send an email",
+    "form": "Use the contact form",
+    "cv": "Download the CV"
   },
   "notfound": {
     "code": "404",
@@ -176,40 +185,40 @@
     "madeIn": "Designed and built in Lomé."
   },
   "experience": {
-    "job1_title": "Consultant - Full Stack Developer",
+    "job1_title": "Consultant — Full-stack developer",
     "job1_subtitle": "Myriade Groupe",
     "job1_period": "2024 — Present",
-    "job1_description": "Leading complex architectural overhauls. Technical leadership on Next.js/Node.js stacks. Design and deployment of SaaS solutions.",
-    "job1_location": "Paris, France",
-    "job2_title": "Freelance Full-Stack Developer",
-    "job2_subtitle": "Independent Projects",
-    "job2_period": "2022 — 2024",
-    "job2_description": "Development of custom solutions for startups and SMBs. Focus on premium UX/UI and performance optimization.",
-    "job2_location": "Remote",
-    "edu1_title": "MBA Big Data & Artificial Intelligence",
+    "job1_description": "Leading complex architecture overhauls. Technical leadership on Next.js/Node.js stacks. Design of SaaS solutions and Android and iOS mobile applications.",
+    "job1_location": "Lomé, Togo",
+    "job2_title": "IT manager",
+    "job2_subtitle": "LaRegale 228",
+    "job2_period": "2023 — 2024",
+    "job2_description": "Development and maintenance of the company's user and order management tools.",
+    "job2_location": "Lomé, Togo",
+    "edu1_title": "MBA in Big Data and Artificial Intelligence",
     "edu1_subtitle": "STUDI France",
     "edu1_period": "2026 — Ongoing",
-    "edu1_description": "Specialization in massive data architectures, machine learning, and AI integration into business processes.",
+    "edu1_description": "Specialisation in large-scale data architectures, machine learning and the integration of AI into business processes.",
     "edu1_location": "Online",
-    "edu2_title": "Bachelor's Degree in Computer Systems & Software",
-    "edu2_subtitle": "Lucas University College",
-    "edu2_period": "2020 — 2024",
-    "edu2_description": "Solid training in software engineering, algorithms, databases, network architectures, and cybersecurity.",
-    "edu2_location": "Accra, Ghana"
+    "edu2_title": "Bachelor's degree in Computer Systems and Software",
+    "edu2_subtitle": "IAEC Togo",
+    "edu2_period": "2020 — 2023",
+    "edu2_description": "Design and development of websites and mobile applications, with databases and management tools.",
+    "edu2_location": "Lomé, Togo"
   },
   "testimonials": {
-    "t1_quote": "Kalvin transformed our vague vision into an exceptional digital platform. His technical expertise is matched only by his product sensitivity.",
-    "t1_author": "Thomas D.",
+    "t1_quote": "Kalvin is a rigorous and creative professional. He came up with considerate and innovative solutions.",
+    "t1_author": "Justine A.",
     "t1_role": "CEO",
-    "t1_company": "TechStart",
-    "t2_quote": "Rarely seen a developer with such attention to detail. The result exceeds our most optimistic expectations, in both performance and design.",
-    "t2_author": "Sophie M.",
-    "t2_role": "Art Director",
-    "t2_company": "Creative Studio",
-    "t3_quote": "A rigorous and creative professional. Kalvin proposed innovative architectural solutions that significantly improved our product.",
-    "t3_author": "Marc L.",
-    "t3_role": "CTO",
-    "t3_company": "DataFlow"
+    "t1_company": "LaRegale 228",
+    "t2_quote": "He has a clear vision of what he wants and knows how to get there.",
+    "t2_author": "Kahar I.",
+    "t2_role": "Senior software engineer",
+    "t2_company": "Myriade Groupe",
+    "t3_quote": "A very good team member who brings good spirits and seriousness to the team while contributing significantly to the success of our projects.",
+    "t3_author": "Jonas K.",
+    "t3_role": "Managing Director",
+    "t3_company": "Myriade Groupe"
   },
   "projects_data": {
     "challenger": {
@@ -243,12 +252,6 @@
     "lotus": {
       "short": "Multi-tenant platform for end-to-end store and shop management.",
       "full": "Multi-tenant platform for in-store promotion management, with a data pipeline, RESTful API and interactive visualizations."
-    },
-    "metrics": {
-      "users": "Users",
-      "events": "Events",
-      "products": "Products",
-      "ordersMonth": "Orders/month"
     }
   },
   "a11y": {
@@ -289,13 +292,6 @@
       "overline": "Shipped projects",
       "title": "Every project, with its architecture.",
       "description": "What was shipped, what it is for, and how it is built.",
-      "ticket": "Ticket no.",
-      "ticketOf": "Ticket {number} of {total}",
-      "year": "Year",
-      "stack": "Stack",
-      "images": "{count, plural, one {# screenshot} other {# screenshots}}",
-      "liveSite": "Visit the site",
-      "details": "Project details",
       "others": "Other projects",
       "othersHint": "Expand a line to see the ticket and its architecture.",
       "viewAll": "All projects"
@@ -318,14 +314,6 @@
       "experience": "Experience",
       "education": "Education",
       "cta": "Full career"
-    },
-    "contact": {
-      "overline": "Contact",
-      "title": "A project, a position, a question?",
-      "description": "Answered within 24 hours.",
-      "email": "Send an email",
-      "form": "Use the contact form",
-      "cv": "Download the CV"
     }
   },
   "architecture": {
@@ -392,9 +380,10 @@
     "next": "Next image",
     "close": "Close gallery",
     "goTo": "Go to image {position}",
-    "position": "Image {position} of {total}",
     "imagesLabel": "Project images",
     "screenshotAlt": "{title} — screenshot {position}",
-    "keyboardHint": "Left and right arrow keys to navigate, Esc to close"
+    "keyboardHint": "Left and right arrow keys to navigate, Esc to close",
+    "count": "{count, plural, one {# screenshot} other {# screenshots}}",
+    "openAt": "Enlarge screenshot {position} of {title}"
   }
 }

@@ -29,7 +29,7 @@ const BOX_RADIUS = 6;
 
 export default function ArchitectureDiagram({ project }: { project: Project }) {
   const t = useTranslations('architecture');
-  const tCategories = useTranslations('projects_page.categories');
+  const tCategories = useTranslations('project.categories');
 
   const architecture = ARCHITECTURES[project.i18nKey];
   const layout = layoutArchitecture(architecture);

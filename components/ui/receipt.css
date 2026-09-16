@@ -1,0 +1,91 @@
+/**
+ * @file receipt.css
+ * @description Ligne de reçu — libellé · pointillés · valeur.
+ *
+ * Primitive partagée par le reçu du profil, les billets de projet, la fiche
+ * de la page À propos et les coordonnées de la page Contact. Importée par
+ * chaque composant qui l'emploie : Next.js ne la charge que sur les pages
+ * concernées. Couleurs prévues pour un fond « papier » (`--ds-paper`).
+ */
+
+/* Pas de `margin` ici : la remise à zéro de Tailwind couvre déjà `dl`, et une
+   règle hors couche l'emporterait sur les utilitaires (`mt-5`) des pages. */
+.rc-lines {
+  display: grid;
+  gap: 0.2rem;
+}
+.rc-line {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+}
+.rc-line dt {
+  display: flex;
+  flex: 1;
+  align-items: baseline;
+  gap: 0.4rem;
+  min-width: 0;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ds-paper-muted);
+  white-space: nowrap;
+}
+.rc-line dt::after {
+  content: '';
+  flex: 1;
+  min-width: 0.75rem;
+  border-bottom: 1px dotted var(--ds-paper-line);
+  transform: translateY(-0.25rem);
+}
+.rc-line dd {
+  margin: 0;
+  font-weight: 600;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.rc-total dt,
+.rc-total dd {
+  color: var(--ds-paper-ink);
+  font-weight: 700;
+}
+.rc-total dd {
+  font-size: 0.875rem;
+}
+
+/* Variante « repliable » : une valeur longue passe sous son libellé au lieu
+   de le recouvrir. Le libellé garde sa largeur ; la valeur prend une ligne
+   entière si nécessaire. */
+.rc-lines--wrap .rc-line {
+  flex-wrap: wrap;
+  row-gap: 0.15rem;
+}
+.rc-lines--wrap .rc-line dt {
+  flex: 1 0 auto;
+}
+.rc-lines--wrap .rc-line dd {
+  max-width: 100%;
+  margin-left: auto;
+  white-space: normal;
+}
+
+/* Variante « aérée » : lignes plus espacées, pour une liste de coordonnées. */
+.rc-lines--airy {
+  gap: 0.65rem;
+}
+
+/* Lien dans une ligne de reçu */
+.rc-line dd a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--ds-paper-line);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.25em;
+  overflow-wrap: anywhere;
+  transition: color var(--motion-fast) ease, text-decoration-color var(--motion-fast) ease;
+}
+.rc-line dd a:hover {
+  color: var(--ds-stamp);
+  text-decoration-color: currentColor;
+}

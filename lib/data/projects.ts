@@ -16,17 +16,17 @@ import type fr from '@/messages/fr.json';
  * LocaManager et Lotus, absents des tables et du catalogue, affichaient donc
  * silencieusement la description d'un autre projet — une autre selon la page.
  */
-export type ProjectI18nKey = Exclude<keyof (typeof fr)['projects_data'], 'metrics'>;
+export type ProjectI18nKey = keyof (typeof fr)['projects_data'];
 
 /**
- * Catégorie de filtre, clé de `messages/*.json → projects_page.categories`.
+ * Catégorie de filtre, clé de `messages/*.json → project.categories`.
  *
  * @remarks Les catégories étaient des libellés français (`'Application Web'`) :
  * les filtres restaient en français sur la version anglaise, et ne
  * correspondaient pas au libellé affiché sur les cartes (`'Web'`). Une clé
  * unique sert désormais au filtrage **et** à l'affichage, dans les deux langues.
  */
-export type ProjectCategory = keyof (typeof fr)['projects_page']['categories'];
+export type ProjectCategory = keyof (typeof fr)['project']['categories'];
 
 export interface Project {
   /** Identifiant stable, utilisé comme clé de rendu React. */
@@ -38,13 +38,21 @@ export interface Project {
   images: string[];
   techStack: string[];
   liveUrl?: string;
+  /**
+   * Lien GitHub. Affiché comme « Code source » uniquement s'il désigne un
+   * dépôt (`github.com/compte/dépôt`) — voir `repositoryUrl`.
+   */
   githubUrl?: string;
-  metrics?: { label: string; value: string }[];
   featured: boolean;
   year: string;
 }
 
 /*
+ * Les chiffres par projet (« 2000+ produits », « Lighthouse 98 »…) ont été
+ * retirés : aucun écran ne les affichait, leurs libellés étaient écrits en
+ * français dans le code, et aucun n'était sourcé. Un chiffre revient ici le
+ * jour où il peut être vérifié.
+ *
  * Les descriptions (`shortDescription`, `fullDescription`) ont été retirées de
  * ces données : aucun composant ne les lisait, l'affichage passe par les
  * traductions. Garder une seconde version française ici, c'était garantir
@@ -60,7 +68,6 @@ export const PROJECTS: Project[] = [
     images: ['/images_projets/challenger00.webp', '/images_projets/challenger_04.webp', '/images_projets/challenger_01.webp', '/images_projets/challenger_02.webp', '/images_projets/challenger_03.webp'],
     techStack: ['Dart', 'Flutter'],
     githubUrl: 'https://github.com/J-kalvin007',
-    metrics: [{ label: 'Utilisateurs', value: '20+' }, { label: 'Événements', value: '20+' }],
     featured: true,
     year: '2024',
   },
@@ -73,7 +80,6 @@ export const PROJECTS: Project[] = [
     images: ['/images_projets/event_04.webp', '/images_projets/event_13.webp', '/images_projets/event_12.webp', '/images_projets/event_02.webp', '/images_projets/event_05.webp'],
     techStack: ['Flutter', 'Django', 'PostgreSQL', 'QR Code', 'Mobile Money', 'Docker'],
     githubUrl: 'https://github.com/J-kalvin007',
-    metrics: [{ label: 'Utilisateurs', value: '100+' }, { label: 'Événements', value: '50+' }],
     featured: true,
     year: '2026',
   },
@@ -86,7 +92,6 @@ export const PROJECTS: Project[] = [
     images: ['/images_projets/shop_04.webp', '/images_projets/shop_01.webp', '/images_projets/shop_02.webp', '/images_projets/shop_03.webp'],
     techStack: ['Django', 'HTML/CSS', 'PostgreSQL', 'Stripe', 'Docker', 'Next.js', 'Tailwind CSS'],
     githubUrl: 'https://github.com/J-kalvin007',
-    metrics: [{ label: 'Produits', value: '2000+' }, { label: 'Commandes/mois', value: '300+' }],
     featured: true,
     year: '2024',
   },
@@ -99,7 +104,6 @@ export const PROJECTS: Project[] = [
     images: ['/images_projets/site_01.webp', '/images_projets/site_02.webp', '/images_projets/site_03.webp', '/images_projets/site_06.webp', '/images_projets/site_04.webp'],
     techStack: ['Next.js', 'Tailwind CSS', 'Framer Motion', 'SEO', 'Vercel'],
     liveUrl: 'https://myriade-groupe.com',
-    metrics: [{ label: 'Lighthouse', value: '98' }, { label: 'Load Time', value: '1.2s' }],
     featured: true,
     year: '2025',
   },
@@ -154,6 +158,29 @@ export const PROJECTS: Project[] = [
 ];
 
 export const FEATURED_PROJECTS = PROJECTS.filter((p) => p.featured);
+
+/** Ancre d'un projet sur la page Projets : `/projets#projet-sheem`. */
+export const projectAnchor = (project: Project): string => `projet-${project.i18nKey}`;
+
+/**
+ * Adresse du dépôt de code, si `githubUrl` en désigne un.
+ *
+ * @remarks Tous les projets pointaient vers la racine du profil
+ * (`github.com/J-kalvin007`), présentée comme « Code source » : un visiteur
+ * qui voulait lire le code d'un projet arrivait sur la liste des dépôts. Le
+ * profil reste accessible depuis le pied de page ; un lien « Code source »
+ * n'apparaît que pour une adresse de dépôt réelle.
+ */
+export function repositoryUrl(project: Project): string | undefined {
+  if (!project.githubUrl) return undefined;
+  try {
+    const { hostname, pathname } = new URL(project.githubUrl);
+    const segments = pathname.split('/').filter(Boolean);
+    return hostname === 'github.com' && segments.length >= 2 ? project.githubUrl : undefined;
+  } catch {
+    return undefined;
+  }
+}
 
 /** Catégories effectivement représentées, dans l'ordre de première apparition. */
 export const PROJECT_CATEGORIES: ProjectCategory[] = [...new Set(PROJECTS.map((p) => p.category))];
