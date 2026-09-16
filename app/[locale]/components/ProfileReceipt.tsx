@@ -15,7 +15,9 @@
 import { useLocale, useTranslations } from 'next-intl';
 import { PROJECTS, PROJECT_COUNT_BY_CATEGORY, mostUsedTechnologies } from '@/lib/data/projects';
 import { CONTACT } from '@/lib/site';
-import LocalTime from './LocalTime';
+import { padNumber } from '@/lib/format';
+import LocalTime from '@/components/ui/LocalTime';
+import '@/components/ui/receipt.css';
 
 /** Nombre de technologies citées sur la ligne « Stack ». */
 const STACK_LINE_LENGTH = 5;
@@ -30,13 +32,10 @@ function ReceiptLine({ label, children, total = false }: { label: string; childr
   );
 }
 
-/** Nombre sur deux chiffres, comme sur un ticket de caisse. */
-const pad = (value: number) => String(value).padStart(2, '0');
-
 export default function ProfileReceipt() {
   const locale = useLocale();
   const t = useTranslations('home.receipt');
-  const tCategories = useTranslations('projects_page.categories');
+  const tCategories = useTranslations('project.categories');
 
   return (
     <figure className="rc" aria-label={t('label')}>
@@ -63,9 +62,9 @@ export default function ProfileReceipt() {
         <hr className="rc-rule" />
         <dl className="rc-lines">
           {PROJECT_COUNT_BY_CATEGORY.map(({ category, count }) => (
-            <ReceiptLine key={category} label={tCategories(category)}>{pad(count)}</ReceiptLine>
+            <ReceiptLine key={category} label={tCategories(category)}>{padNumber(count)}</ReceiptLine>
           ))}
-          <ReceiptLine label={t('total')} total>{pad(PROJECTS.length)}</ReceiptLine>
+          <ReceiptLine label={t('total')} total>{padNumber(PROJECTS.length)}</ReceiptLine>
         </dl>
 
         <hr className="rc-rule" />

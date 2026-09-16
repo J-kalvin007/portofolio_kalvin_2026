@@ -48,14 +48,18 @@ const slideVariants = {
  *     implémentés (ils ne l'étaient pas).
  */
 interface ImageLightboxProps {
+    /** Nom du projet : il figure dans le texte alternatif de chaque capture. */
+    title: string;
     images: string[];
     currentIndex: number;
     onClose: () => void;
     onNext: (e?: React.MouseEvent) => void;
     onPrev: (e?: React.MouseEvent) => void;
+    /** Accès direct à une capture (rail de vignettes). */
+    onGoTo: (index: number) => void;
 }
 
-const ImageLightbox = ({ images, currentIndex, onClose, onNext, onPrev }: ImageLightboxProps) => {
+const ImageLightbox = ({ title, images, currentIndex, onClose, onNext, onPrev, onGoTo }: ImageLightboxProps) => {
     /*
      * Namespace `gallery` : l'ancien namespace `lightbox` n'existait dans aucun
      * catalogue. Les boutons Précédent / Suivant / Fermer étaient annoncés aux
@@ -247,7 +251,7 @@ const ImageLightbox = ({ images, currentIndex, onClose, onNext, onPrev }: ImageL
                         key={currentIndex}
                         custom={direction}
                         src={images[currentIndex]}
-                        alt={tGallery('position', { position: currentIndex + 1, total: images.length })}
+                        alt={tGallery('screenshotAlt', { title, position: currentIndex + 1 })}
                         draggable={false}
                         variants={shouldReduceMotion ? undefined : slideVariants}
                         initial={shouldReduceMotion ? { opacity: 0 } : "enter"}
@@ -368,13 +372,9 @@ const ImageLightbox = ({ images, currentIndex, onClose, onNext, onPrev }: ImageL
                     {images.map((source, position) => (
                         <button
                             key={`${source}-${position}`}
-                            onClick={() => {
-                                // Navigation par pas successifs : l'état d'index reste piloté
-                                // par le parent, aucun nouveau contrat de props n'est introduit.
-                                const distance = position - currentIndex;
-                                const step = distance > 0 ? onNext : onPrev;
-                                for (let i = 0; i < Math.abs(distance); i += 1) step();
-                            }}
+                            // Accès direct : les vignettes simulaient auparavant autant de
+                            // « suivant » ou « précédent » que d'images d'écart.
+                            onClick={() => onGoTo(position)}
                             aria-label={thumbnailLabel(position + 1)}
                             aria-current={position === currentIndex}
                             className={`relative shrink-0 h-12 w-16 rounded-lg overflow-hidden
@@ -392,8 +392,9 @@ const ImageLightbox = ({ images, currentIndex, onClose, onNext, onPrev }: ImageL
                 </div>
             )}
 
-            {/* Message d'indication pour les utilisateurs de clavier */}
-            <div className="absolute bottom-8 md:bottom-[5.5rem] left-1/2 -translate-x-1/2 pointer-events-none
+            {/* Aide clavier, affichée à partir de la largeur tablette : sur téléphone,
+                elle ne sert à rien et débordait de l'écran (une ligne insécable). */}
+            <div className="absolute bottom-[5.5rem] left-1/2 -translate-x-1/2 pointer-events-none hidden md:block
                             text-white/60 text-[11px] tracking-[0.14em] uppercase font-medium whitespace-nowrap">
                 {tGallery('keyboardHint')}
             </div>

@@ -1,46 +1,33 @@
-
-"use client";
+'use client';
 
 /**
  * @file pageErreur.tsx
- * @description Composant global d'affichage des erreurs système (404, 500, etc.).
- * 
- * @architecture
- * - Utilisé par `app/[locale]/not-found.tsx` (Mauvaise URL / 404).
- * - Utilisé par `app/[locale]/error.tsx` (Bugs d'exécution de l'App).
- * - Utilisé par `app/global-error.tsx` (Crash complet du Layout Racine).
- * - Intègre une redirection automatique au bout de 5 secondes basée sur `setInterval`.
- * - Utilise `lottie-react` pour rendre un robot d'erreur vivant et premium.
- */
-
-import React, { useCallback, useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import dynamic from 'next/dynamic';
-import { Home, ArrowLeft, RefreshCw, ShieldAlert, X } from 'lucide-react';
-
-/**
- * `lottie-react` et son animation JSON sont chargés à la demande.
- * Ils étaient importés statiquement : la totalité du fichier d'animation entrait
- * dans le lot livré à un visiteur qui, par définition, est déjà en difficulté.
- * L'interface s'affiche immédiatement ; le robot arrive quand il est prêt.
- */
-const Lottie = dynamic(() => import('lottie-react'), { ssr: false });
-
-/**
- * Fond étoilé, chargé lui aussi à la demande.
+ * @description Page d'erreur commune (404 et erreurs d'exécution) — direction « Reçu ».
  *
- * Next.js intègre les écrans d'erreur (`error.tsx`, `not-found.tsx`) à chaque
- * page de leur segment : tout ce que ce fichier importe statiquement est
- * téléchargé sur **toutes** les pages. Le champ d'étoiles (et framer-motion,
- * qu'il utilise) n'est donc chargé que lorsqu'une erreur s'affiche réellement.
- * Il était auparavant importé via le fichier-baril `projets/components`, qui
- * embarquait en plus la grille, les cartes et la modale de la page Projets.
- * Les animations d'entrée, elles, sont en CSS (`.err-rise`, dans `app/globals.css`).
+ * @architecture
+ * - Utilisé par `app/[locale]/not-found.tsx` (adresse inconnue, dans le layout).
+ * - Utilisé par `app/[locale]/error.tsx` (erreur d'affichage, dans le layout).
+ * - Utilisé par `app/not-found.tsx` et `app/global-error.tsx` (hors layout).
+ *
+ * Présentée comme un billet refusé : code, tampon, explication, actions.
+ * Les couleurs suivent le thème du visiteur (l'ancienne version imposait un
+ * fond noir et un or codé en dur, un robot animé Lottie et un champ
+ * d'étoiles). Tous les styles propres à cette page sont dans `globals.css`
+ * (`.err-*`) : Next.js intègre les écrans d'erreur à chaque page, une feuille
+ * dédiée serait préchargée partout sans être utilisée.
+ *
+ * Aucun hook de traduction, volontairement : ce composant sert aussi
+ * `global-error.tsx`, qui s'affiche précisément quand le fournisseur i18n a
+ * échoué. La langue est lue sur l'attribut `lang` du document.
  */
-const StarField = dynamic(() => import('@/app/[locale]/projets/components/modal/StarField'), { ssr: false });
+
+import { useCallback, useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { X } from 'lucide-react';
+import { useClientSnapshot } from '@/hooks/useClientSnapshot';
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   ▌ MINUTERIE DE REDIRECTION
+   ▌ MINUTERIE DE REDIRECTION (page 404 uniquement)
    ═══════════════════════════════════════════════════════════════════════════ */
 
 /** Durée du compte à rebours, en secondes. */
@@ -51,330 +38,176 @@ const RING_CIRCUMFERENCE = 62.83;
 
 /* ═══════════════════════════════════════════════════════════════════════════
    ▌ LIBELLÉS
-   ───────────────────────────────────────────────────────────────────────────
-   Toute l'interface était figée en français. Aucun hook de traduction n'est
-   utilisé ici, volontairement : ce composant sert notamment `global-error.tsx`,
-   qui se déclenche précisément quand le fournisseur i18n a échoué. Y appeler
-   `useTranslations` provoquerait une seconde exception à l'intérieur du
-   gestionnaire d'erreur.
-
-   La langue est lue sur l'attribut `lang` du document, que les trois fichiers
-   appelants posent désormais correctement.
    ═══════════════════════════════════════════════════════════════════════════ */
 const UI_STRINGS = {
-    fr: {
-        defaultTitle: 'Page introuvable',
-        defaultMessage: "Cette adresse ne correspond à aucune page du site. Elle a peut-être été déplacée, ou l'adresse comporte une erreur de frappe.",
-        home: "Retour à l'accueil",
-        retry: 'Réessayer',
-        previous: 'Page précédente',
-        redirectIn: (s: number) => `Redirection dans ${s} s`,
-        cancel: 'Annuler la redirection',
-        signature: 'Système de sécurité',
-    },
-    en: {
-        defaultTitle: 'Page not found',
-        defaultMessage: 'This address does not match any page on the site. It may have moved, or the address contains a typo.',
-        home: 'Back to home',
-        retry: 'Try again',
-        previous: 'Previous page',
-        redirectIn: (s: number) => `Redirecting in ${s}s`,
-        cancel: 'Cancel redirect',
-        signature: 'Security system',
-    },
+  fr: {
+    defaultTitle: 'Page introuvable',
+    defaultMessage: "Cette adresse ne correspond à aucune page du site. Elle a peut-être été déplacée, ou l'adresse comporte une erreur de frappe.",
+    stampNotFound: 'Introuvable',
+    stampError: 'Erreur',
+    home: "Retour à l'accueil",
+    retry: 'Réessayer',
+    previous: 'Page précédente',
+    redirectIn: (s: number) => `Redirection vers l'accueil dans ${s} s`,
+    cancel: 'Annuler la redirection',
+  },
+  en: {
+    defaultTitle: 'Page not found',
+    defaultMessage: 'This address does not match any page on the site. It may have moved, or the address contains a typo.',
+    stampNotFound: 'Not found',
+    stampError: 'Error',
+    home: 'Back to home',
+    retry: 'Try again',
+    previous: 'Previous page',
+    redirectIn: (s: number) => `Redirecting to the home page in ${s}s`,
+    cancel: 'Cancel redirect',
+  },
 } as const;
 
 type ErrorLocale = keyof typeof UI_STRINGS;
 const FALLBACK_LOCALE: ErrorLocale = 'fr';
 
-/** Réglages d'une animation d'entrée (`.err-rise`, voir `app/globals.css`). */
-const rise = (delay: number, shift = '0px', scale = 1, duration = 0.6) =>
-    ({ '--err-delay': `${delay}s`, '--err-shift': shift, '--err-scale': scale, '--err-duration': `${duration}s` }) as React.CSSProperties;
-
-interface PageErreurProps {
-    statusCode?: number | string; // Code d'erreur optionnel (404, 500)
-    title?: string; // Titre dynamique de l'erreur
-    message?: string; // Description de l'erreur
-    reset?: () => void; // Fonction passée par Next.js (Error Boundary) pour retenter le chargement
-}
-
-const PageErreur: React.FC<PageErreurProps> = ({
-    title,
-    message,
-    reset
-}) => {
-    // Hooks de Next.js et de React
-    const router = useRouter(); // Permet la navigation programmatique (ex: rediriger l'utilisateur)
-    const [countdown, setCountdown] = useState(REDIRECT_DELAY); // Le compteur de secondes avant la redirection
-    const [isPaused, setIsPaused] = useState(false);
-    const [isCancelled, setIsCancelled] = useState(false);
-    const [locale, setLocale] = useState<ErrorLocale>(FALLBACK_LOCALE);
-    const [animationData, setAnimationData] = useState<unknown>(null);
-
-    // Constante qui définit l'URL de retour en cas de crash
-    const homeUrl = '/';
-
-    const strings = UI_STRINGS[locale];
-    const resolvedTitle = title ?? strings.defaultTitle;
-    const resolvedMessage = message ?? strings.defaultMessage;
-
-    /**
-     * La présence de `reset` signifie que l'appelant est un périmètre de sécurité
-     * (`error.tsx`, `global-error.tsx`) : l'utilisateur a une action à sa
-     * disposition — réessayer — et l'emmener ailleurs de force la lui retire au
-     * milieu de sa lecture. La redirection automatique ne concerne donc que la
-     * page 404, où il n'y a rien à retenter.
-     */
-    const shouldAutoRedirect = !reset;
-
-    /* ── Langue et animation, résolues après montage ────────────────────────── */
-    useEffect(() => {
-        const documentLocale = document.documentElement.lang;
-        if (documentLocale in UI_STRINGS) setLocale(documentLocale as ErrorLocale);
-    }, []);
-
-    useEffect(() => {
-        let cancelled = false;
-
-        import('../../public/lottis/sp_05.json')
-            .then((module) => { if (!cancelled) setAnimationData(module.default); })
-            .catch(() => { /* Animation indisponible : l'icône de repli suffit. */ });
-
-        return () => { cancelled = true; };
-    }, []);
-
-    /**
-     * @effect Décrémente le compte à rebours, seconde par seconde.
-     *
-     * Un `setTimeout` par tic remplace l'ancien `setInterval` : la minuterie
-     * s'arrête d'elle-même à zéro — l'intervalle précédent continuait de tourner
-     * indéfiniment en écrivant 0 sur 0 — et la mise en pause devient triviale.
-     */
-    useEffect(() => {
-        if (!shouldAutoRedirect || isCancelled || isPaused || countdown <= 0) return;
-
-        const timeout = setTimeout(() => setCountdown((prev) => prev - 1), 1000);
-        return () => clearTimeout(timeout);
-    }, [countdown, isPaused, isCancelled, shouldAutoRedirect]);
-
-    /**
-     * @effect Déclenche la redirection quand le compte atteint zéro.
-     *
-     * `router.replace` remplace `router.push`. C'était un piège : `push` ajoutait
-     * une entrée d'historique, si bien qu'un utilisateur revenant en arrière
-     * depuis l'accueil retombait sur la page d'erreur, où le compte à rebours
-     * repartait pour le renvoyer à l'accueil. Le bouton « Précédent » devenait
-     * inutilisable — une boucle dont on ne sort qu'en fermant l'onglet.
-     */
-    useEffect(() => {
-        if (!shouldAutoRedirect || isCancelled || countdown > 0) return;
-        router.replace(homeUrl);
-    }, [countdown, isCancelled, shouldAutoRedirect, homeUrl, router]);
-
-    /**
-     * @function handleManualReturn
-     * S'exécute quand l'utilisateur clique manuellement sur le bouton de retour à l'accueil.
-     */
-    const handleManualReturn = () => {
-        setIsCancelled(true);
-        router.replace(homeUrl);
-    };
-
-    /** Suspend le décompte dès que l'utilisateur interagit avec la carte. */
-    const pauseCountdown = useCallback(() => setIsPaused(true), []);
-    const resumeCountdown = useCallback(() => setIsPaused(false), []);
-
-    const showCountdown = shouldAutoRedirect && !isCancelled;
-
-    return (
-        // Le traitement sombre est un choix assumé, pas un oubli : le champ
-        // stellaire et l'aura dorée n'existent que sur fond de Void. La page
-        // d'erreur est délibérément un lieu à part.
-        <div className="min-h-screen flex items-center justify-center p-6 bg-[#030208] text-white overflow-hidden relative">
-            {/* 
-              Background Premium (Nébuleuses dorées "Void & Or")
-            */}
-            <div aria-hidden="true" className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-[#F0A500]/10 rounded-full blur-[150px] pointer-events-none animate-pulse motion-reduce:animate-none" />
-            <div aria-hidden="true" className="absolute bottom-1/4 right-1/4 w-[600px] h-[600px] bg-[#F0A500]/5 rounded-full blur-[150px] pointer-events-none" />
-
-            {/* ── Fond Spatial Étoilé ── */}
-            <StarField />
-
-            {/* Conteneur principal animé de la page d'erreur */}
-            <div
-                style={rise(0, '24px', 1, 0.8)}
-                className="err-rise relative z-10 max-w-2xl w-full text-center"
-                // Toute interaction avec la carte suspend le décompte : lire,
-                // cliquer ou tabuler ne doit pas se faire contre la montre.
-                onPointerEnter={pauseCountdown}
-                onPointerLeave={resumeCountdown}
-                onFocusCapture={pauseCountdown}
-            >
-                {/* 
-                  Boîte Glassmorphism : L'esthétique premium de la Fintech.
-                  (`shadow-2xl` a été retiré : la classe arbitraire qui suivait
-                  écrasait entièrement sa propriété `box-shadow`, l'ombre portée
-                  n'était donc jamais rendue. Les deux ombres sont fusionnées.)
-                */}
-                <div className="relative bg-white/[0.03] backdrop-blur-3xl rounded-[2.5rem] p-10 sm:p-16 border border-white/10 overflow-hidden
-                                shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_40px_90px_-40px_rgba(0,0,0,0.9)]">
-
-                    {/* Trait de lumière horizontal au sommet de la carte */}
-                    <div aria-hidden="true" className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#F0A500]/50 to-transparent" />
-
-                    {/* Conteneur pour le Robot (Animation Lottie) */}
-                    <div
-                        style={rise(0.2, '0px', 0.9, 0.5)}
-                        className="err-rise w-[8.5rem] h-[8.5rem] sm:w-64 sm:h-44 mx-auto mb-4 relative"
-                        aria-hidden="true"
-                    >
-                        {/* Aura lumineuse circulaire derrière le robot pour le détacher du fond sombre */}
-                        <div className="absolute inset-0 bg-[#F0A500]/10 rounded-full blur-3xl pointer-events-none" />
-
-                        {animationData ? (
-                            <Lottie
-                                animationData={animationData}
-                                loop={true}
-                                className="w-full h-full relative z-10"
-                            />
-                        ) : (
-                            // Repli pendant le chargement — même encombrement,
-                            // donc aucun décalage de mise en page.
-                            <div className="w-full h-full flex items-center justify-center relative z-10">
-                                <ShieldAlert className="w-14 h-14 text-[#F0A500]/40" />
-                            </div>
-                        )}
-                    </div>
-
-                    <div className="space-y-6">
-                        {/* Titre dynamique (ex: "Page Introuvable" ou "Erreur Système") */}
-                        <h1
-                            style={rise(0.3, '10px')}
-                            className="err-rise text-4xl sm:text-5xl font-extrabold tracking-[-0.035em] text-[#F0A500]"
-                        >
-                            {resolvedTitle}
-                        </h1>
-
-                        {/* Description dynamique de l'erreur */}
-                        <p
-                            style={rise(0.4)}
-                            className="err-rise text-base text-gray-300 max-w-md mx-auto leading-[1.7] font-light text-pretty"
-                        >
-                            {resolvedMessage}
-                        </p>
-
-                        {/* 
-                          Indicateur Circulaire du Compte à rebours.
-
-                          Le décompte est désormais **annulable**. Une limite de temps
-                          imposée sans moyen de l'interrompre contrevient au critère
-                          WCAG 2.2.1 (« Réglage du délai ») : un utilisateur qui lit
-                          lentement, ou qui utilise une aide technique, se voyait
-                          emmener ailleurs au milieu de sa lecture.
-                        */}
-                        {showCountdown && (
-                            <div
-                                style={rise(0.5)}
-                                className="err-rise flex items-center justify-center gap-3 py-2 pl-5 pr-2.5 mt-8 bg-black/50 rounded-full w-fit mx-auto border border-white/10"
-                            >
-                                <div className="relative w-6 h-6 flex items-center justify-center" aria-hidden="true">
-                                    <svg className="absolute inset-0 w-full h-full -rotate-90">
-                                        {/* Cercle d'arrière-plan (gris) */}
-                                        <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" strokeWidth="2" className="text-white/10" />
-                                        {/* Cercle d'avant-plan (doré) qui se remplit */}
-                                        <circle
-                                            cx="12"
-                                            cy="12"
-                                            r="10"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            strokeWidth="2"
-                                            strokeDasharray={RING_CIRCUMFERENCE}
-                                            strokeDashoffset={RING_CIRCUMFERENCE - (RING_CIRCUMFERENCE * (REDIRECT_DELAY - countdown)) / REDIRECT_DELAY}
-                                            className="err-ring text-[#F0A500]"
-                                        />
-                                    </svg>
-                                    <span className="text-[10px] font-bold text-[#F0A500] absolute tabular-nums">{countdown}</span>
-                                </div>
-
-                                <span aria-live="polite" className="text-[13px] font-medium text-gray-300 uppercase tracking-[0.14em] tabular-nums">
-                                    {strings.redirectIn(countdown)}
-                                </span>
-
-                                <button
-                                    onClick={() => setIsCancelled(true)}
-                                    aria-label={strings.cancel}
-                                    title={strings.cancel}
-                                    className="cursor-pointer p-1.5 rounded-full text-gray-400 hover:text-white hover:bg-white/10 transition-colors
-                                               focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F0A500]"
-                                >
-                                    <X className="w-3.5 h-3.5" aria-hidden="true" />
-                                </button>
-                            </div>
-                        )}
-
-                        {/* Boutons d'action : Choix entre "Accueil", "Rafraichir" ou "Précédent" */}
-                        <div
-                            style={rise(0.6, '20px')}
-                            className="err-rise flex flex-col sm:flex-row items-center justify-center gap-3 pt-8"
-                        >
-                            {/* Bouton Primaire (Retour Manuel à l'Accueil) */}
-                            <button
-                                onClick={handleManualReturn}
-                                className="group relative flex items-center text-[14px] gap-3 px-8 py-4 bg-[#F0A500] text-[#070510] rounded-full font-bold
-                                           shadow-[0_2px_4px_rgba(0,0,0,0.3),0_16px_32px_-18px_rgba(0,0,0,0.9)]
-                                           hover:brightness-[1.08] transition-[filter] duration-300 overflow-hidden w-full sm:w-auto justify-center cursor-pointer
-                                           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F0A500] focus-visible:ring-offset-2 focus-visible:ring-offset-[#030208]"
-                            >
-                                <Home className="w-5 h-5 relative z-10" aria-hidden="true" />
-                                <span className="relative z-10">{strings.home}</span>
-                            </button>
-
-                            {/* Bouton Secondaire (Dépendant de la cause de l'erreur) */}
-                            {reset ? (
-                                // Si "reset" est fourni (cas d'erreur Next.js Error Boundary), on propose de retenter
-                                <button
-                                    onClick={reset}
-                                    className="flex items-center justify-center text-[14px] gap-3 px-8 py-4 bg-white/5 text-white border border-white/10 rounded-full font-bold
-                                               hover:bg-white/10 hover:border-white/30 transition-colors duration-300 w-full sm:w-auto cursor-pointer
-                                               focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F0A500] focus-visible:ring-offset-2 focus-visible:ring-offset-[#030208]"
-                                >
-                                    <RefreshCw className="w-5 h-5 text-gray-300" aria-hidden="true" />
-                                    <span>{strings.retry}</span>
-                                </button>
-
-                            ) : (
-
-                                // Si pas de reset (ex: 404), on propose de retourner à la page précédente de l'historique
-                                <button
-                                    onClick={() => window.history.back()}
-                                    className="flex items-center justify-center text-[14px] gap-3 px-8 py-4 bg-white/5 text-white border border-white/10 rounded-full font-bold
-                                               hover:bg-white/10 hover:border-white/30 transition-colors duration-300 w-full sm:w-auto cursor-pointer
-                                               focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F0A500] focus-visible:ring-offset-2 focus-visible:ring-offset-[#030208]"
-                                >
-                                    <ArrowLeft className="w-5 h-5 text-gray-300" aria-hidden="true" />
-                                    <span>{strings.previous}</span>
-                                </button>
-                            )}
-
-                        </div>
-
-                    </div>
-                </div>
-
-                {/* Footer discret "Signature Système" */}
-                <div
-                    style={rise(0.9)}
-                    className="err-rise mt-10 flex items-center justify-center gap-2 text-gray-500 text-xs font-bold uppercase tracking-[0.18em]"
-                >
-                    <ShieldAlert className="w-3 h-3" aria-hidden="true" />
-                    <span>{strings.signature} &bull; Kalvin Portfolio</span>
-                </div>
-
-            </div>
-
-        </div>
-    );
+/** Langue posée sur `<html lang>` par l'appelant, si elle est connue. */
+const readDocumentLocale = (): ErrorLocale => {
+  const documentLocale = document.documentElement.lang;
+  return documentLocale in UI_STRINGS ? (documentLocale as ErrorLocale) : FALLBACK_LOCALE;
 };
 
-export default PageErreur;
+/** Réglages d'une animation d'entrée (`.err-rise`, voir `app/globals.css`). */
+const rise = (delay: number, shift = '0px') =>
+  ({ '--err-delay': `${delay}s`, '--err-shift': shift }) as React.CSSProperties;
+
+/** Actions sur le papier du billet : même contraste dans les deux thèmes. */
+const ACTION_BASE =
+  'inline-flex items-center justify-center rounded-control px-5 py-3 text-[0.9375rem] font-semibold cursor-pointer transition-colors duration-(--motion-fast) ' +
+  'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stamp';
+const ACTION_PRIMARY = `${ACTION_BASE} bg-stamp text-white hover:bg-stamp/90`;
+const ACTION_SECONDARY = `${ACTION_BASE} border border-paper-line text-paper-ink hover:border-paper-ink`;
+
+interface PageErreurProps {
+  /** Code affiché en grand (« 404 »). Absent pour une erreur d'exécution. */
+  code?: string;
+  title?: string;
+  message?: string;
+  /** Fourni par un périmètre d'erreur Next.js : propose de réessayer. */
+  reset?: () => void;
+}
+
+export default function PageErreur({ code, title, message, reset }: PageErreurProps) {
+  const router = useRouter();
+  const [countdown, setCountdown] = useState(REDIRECT_DELAY);
+  const [isPaused, setIsPaused] = useState(false);
+  const [isCancelled, setIsCancelled] = useState(false);
+
+  // Repli au rendu serveur, langue réelle ensuite, sans écart d'hydratation.
+  const locale = useClientSnapshot(readDocumentLocale, FALLBACK_LOCALE);
+  const strings = UI_STRINGS[locale];
+  // Accueil dans la langue courante : « / » repassait par la détection de langue.
+  const homeUrl = `/${locale}`;
+
+  /**
+   * La présence de `reset` signifie que l'appelant est un périmètre d'erreur :
+   * le visiteur a une action à sa disposition — réessayer — et l'emmener
+   * ailleurs de force la lui retirerait. La redirection automatique ne
+   * concerne donc que la page 404.
+   */
+  const shouldAutoRedirect = !reset;
+  const showCountdown = shouldAutoRedirect && !isCancelled;
+
+  /** Décompte seconde par seconde : un délai par tic, arrêté à zéro ou en pause. */
+  useEffect(() => {
+    if (!shouldAutoRedirect || isCancelled || isPaused || countdown <= 0) return;
+    const timeout = setTimeout(() => setCountdown((previous) => previous - 1), 1000);
+    return () => clearTimeout(timeout);
+  }, [countdown, isPaused, isCancelled, shouldAutoRedirect]);
+
+  /**
+   * Redirection à zéro. `replace` et non `push` : sinon, revenir en arrière
+   * depuis l'accueil ramenait sur la 404, qui relançait le décompte.
+   */
+  useEffect(() => {
+    if (!shouldAutoRedirect || isCancelled || countdown > 0) return;
+    router.replace(homeUrl);
+  }, [countdown, isCancelled, shouldAutoRedirect, homeUrl, router]);
+
+  const goHome = () => {
+    setIsCancelled(true);
+    router.replace(homeUrl);
+  };
+
+  /** Toute interaction avec le billet suspend le décompte (WCAG 2.2.1). */
+  const pauseCountdown = useCallback(() => setIsPaused(true), []);
+  const resumeCountdown = useCallback(() => setIsPaused(false), []);
+
+  const progress = (REDIRECT_DELAY - countdown) / REDIRECT_DELAY;
+
+  return (
+    <div className="grid min-h-[calc(100svh-4rem)] place-items-center bg-canvas px-4 pb-16 pt-28 text-ink sm:px-6">
+      <div
+        className="err-rise err-ticket w-full max-w-[30rem]"
+        style={rise(0, '16px')}
+        onPointerEnter={pauseCountdown}
+        onPointerLeave={resumeCountdown}
+        onFocusCapture={pauseCountdown}
+      >
+        <div className="err-paper">
+          <div className="flex items-start justify-between gap-4">
+            {code && <p className="err-code" aria-hidden="true">{code}</p>}
+            <p className="err-stamp err-rise" style={rise(0.35)}>
+              {code ? strings.stampNotFound : strings.stampError}
+            </p>
+          </div>
+
+          <h1 className="mt-4 text-heading font-bold text-balance">{title ?? strings.defaultTitle}</h1>
+          <p className="mt-3 text-pretty text-paper-muted">{message ?? strings.defaultMessage}</p>
+
+          {showCountdown && (
+            <div className="mt-6 flex items-center gap-3 border-y border-dashed border-paper-line py-3">
+              <svg className="h-6 w-6 shrink-0 -rotate-90" viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" strokeWidth="2" className="text-paper-line" />
+                <circle
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeDasharray={RING_CIRCUMFERENCE}
+                  strokeDashoffset={RING_CIRCUMFERENCE * (1 - progress)}
+                  className="err-ring text-stamp"
+                />
+              </svg>
+              <span aria-live="polite" className="flex-1 text-caption font-medium tabular-nums">
+                {strings.redirectIn(countdown)}
+              </span>
+              <button
+                type="button"
+                onClick={() => setIsCancelled(true)}
+                aria-label={strings.cancel}
+                title={strings.cancel}
+                className="cursor-pointer rounded-control p-1.5 text-paper-muted transition-colors hover:text-paper-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stamp"
+              >
+                <X className="h-4 w-4" aria-hidden="true" />
+              </button>
+            </div>
+          )}
+
+          <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+            <button type="button" onClick={goHome} className={ACTION_PRIMARY}>
+              {strings.home}
+            </button>
+            {reset ? (
+              <button type="button" onClick={reset} className={ACTION_SECONDARY}>
+                {strings.retry}
+              </button>
+            ) : (
+              <button type="button" onClick={() => window.history.back()} className={ACTION_SECONDARY}>
+                {strings.previous}
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

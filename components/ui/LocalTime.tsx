@@ -2,7 +2,8 @@
 
 /**
  * @file LocalTime.tsx
- * @description Heure locale de Kalvin (Lomé), affichée sur le reçu du profil.
+ * @description Heure locale de Kalvin (Lomé), affichée sur le reçu du profil
+ * (accueil) et dans les coordonnées (page Contact).
  *
  * @remarks Information utile, pas décorative : un recruteur ou un client situé
  * sur un autre fuseau sait immédiatement s'il peut attendre une réponse.

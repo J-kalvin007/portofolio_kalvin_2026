@@ -17,6 +17,7 @@ import { getMessages, getTranslations, setRequestLocale } from 'next-intl/server
 import { routing } from '@/i18n/routing';
 import { resolveLocale, type LocaleParams } from '@/i18n/params';
 import { SITE_NAME, SITE_URL } from '@/lib/site';
+import { OPEN_GRAPH_LOCALES, SHARE_IMAGE, TITLE_TEMPLATE } from '@/lib/seo';
 import { fontVariables, poppins } from '@/lib/fonts';
 import '../globals.css';
 import Navbar from '@/components/layout/Navbar';
@@ -46,17 +47,6 @@ export const viewport: Viewport = {
   ],
 };
 
-/** Correspondance langue de l'URL → locale OpenGraph (format `langue_PAYS`). */
-const OPEN_GRAPH_LOCALES = { fr: 'fr_FR', en: 'en_US' } as const;
-
-/**
- * Image de partage actuelle : le monogramme, **carré 1080 × 1080**.
- * Elle était déclarée en 1200 × 630 : LinkedIn, WhatsApp et Facebook recadraient
- * donc l'aperçu sur de fausses dimensions. Les dimensions réelles sont déclarées
- * et la carte Twitter passe au format carré (`summary`). Une vraie carte de
- * partage 1200 × 630 viendra avec la nouvelle identité visuelle.
- */
-const SHARE_IMAGE = { url: '/logo/kal_logo_01.png', width: 1080, height: 1080 } as const;
 
 /**
  * Mots-clés du site : le nom, le métier et les technologies réellement
@@ -89,7 +79,7 @@ export async function generateMetadata({ params }: LocaleParams): Promise<Metada
     metadataBase: new URL(SITE_URL),
     title: {
       default: title,
-      template: '%s | Kalvin Takoudjou', // Modèle utilisé par les sous-pages (ex: "Contact | Kalvin Takoudjou")
+      template: TITLE_TEMPLATE, // Modèle des sous-pages : « Contact | Kalvin Takoudjou »
     },
     description,
     keywords: KEYWORDS,
@@ -97,21 +87,17 @@ export async function generateMetadata({ params }: LocaleParams): Promise<Metada
     creator: 'Kalvin Takoudjou',
     publisher: 'Kalvin Takoudjou',
     formatDetection: { email: false, address: false, telephone: false }, // Empêche iOS de transformer les textes en liens moches
-    // Indique aux moteurs la version de chaque langue et la version canonique :
-    // sans ces `alternates`, les deux locales se concurrencent à l'indexation.
-    alternates: {
-      canonical: `/${locale}`,
-      languages: {
-        fr: '/fr',
-        en: '/en',
-      },
-    },
+    // Adresse canonique et versions linguistiques : déclarées par CHAQUE page
+    // (lib/seo.ts). Déclarées ici, elles s'appliquaient à toutes les pages —
+    // Projets, À propos, Contact et même la page 404 désignaient l'accueil
+    // comme leur version canonique.
     icons: {
       icon: '/logo/kal_logo_01.png',
       shortcut: '/logo/kal_logo_01.png',
       apple: '/logo/kal_logo_01.png',
     },
-    // Configuration OpenGraph (Pour l'aperçu sur LinkedIn, WhatsApp, Facebook, etc.)
+    // Aperçu de partage par défaut (LinkedIn, WhatsApp, Facebook…). Chaque page le
+    // redéclare en entier (lib/seo.ts) : Next.js remplace cet objet, il ne le complète pas.
     openGraph: {
       type: 'website',
       locale: OPEN_GRAPH_LOCALES[locale],
