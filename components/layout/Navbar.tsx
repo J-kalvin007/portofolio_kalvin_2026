@@ -1,105 +1,138 @@
-
-
 'use client';
 
 /**
- * @file Navbar.tsx — Ultra-Premium Navigation V2
- * @description Barre de navigation cinématique avec glassmorphism avancé,
- * indicateur doré magnétique, menu mobile théâtral et micro-interactions premium.
+ * @file Navbar.tsx
+ * @description Barre de navigation du site — direction « Reçu ».
  *
- * @remarks **Correctif visible.** La pastille de survol dorée ne s'est jamais
- * affichée. Elle était rendue en `absolute inset-y-1` dans le conteneur de la
- * navigation, sans `left`, `right` ni largeur : sa position horizontale restait
- * `auto` et sa largeur valait celle de son contenu, c'est-à-dire zéro. Elle est
- * désormais rendue à l'intérieur du lien survolé, en `inset-0`, et le `layoutId`
- * la fait glisser d'un lien à l'autre — l'effet réellement recherché.
+ * @architecture
+ * Une barre fixe de 4 rem : logotype typographique, liens, langue, thème et
+ * action principale. Sur mobile, un panneau plein écran reprend les liens sous
+ * forme de lignes de reçu.
+ *
+ * Toutes les animations sont en CSS, pilotées par des attributs (`data-*`,
+ * `aria-expanded`) : la barre n'embarque plus framer-motion, qui représentait
+ * à lui seul une grande partie du JavaScript de chaque page.
+ *
+ * Comportements conservés de la version précédente (et testés) :
+ *  - verrouillage du défilement pendant l'ouverture du menu, avec restauration
+ *    de la valeur précédente et compensation de la barre de défilement ;
+ *  - `Échap` ferme le menu et rend le focus au bouton ;
+ *  - le focus reste dans la barre et le panneau tant que le menu est ouvert ;
+ *  - le menu se ferme à chaque changement de page ;
+ *  - la langue proposée est déduite de `routing`, et le bouton porte `lang`.
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { AnimatePresence, motion, useMotionValueEvent, useReducedMotion, useScroll } from 'framer-motion';
 import { useLocale, useTranslations } from 'next-intl';
-import { Link, useRouter, usePathname } from '@/i18n/navigation';
+import { Link, usePathname, useRouter } from '@/i18n/navigation';
 import { routing } from '@/i18n/routing';
-import Logo from './Logo';
+import { CONTACT } from '@/lib/site';
+import Arrow from '@/components/ui/Arrow';
 import ThemeToggle from './ThemeToggle';
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   ▌ SEUILS ET COURBES
+   ▌ SEUILS
    ═══════════════════════════════════════════════════════════════════════════ */
 
-/** Défilement (px) au-delà duquel la barre se compacte et sa plaque apparaît. */
-const COMPACT_THRESHOLD = 50;
+/** Défilement (px) au-delà duquel la barre reçoit son filet et son fond flouté. */
+const SCROLLED_THRESHOLD = 8;
 
-/** Défilement (px) au-delà duquel la barre peut s'escamoter vers le haut. */
-const HIDE_THRESHOLD = 200;
+/** Défilement (px) au-delà duquel la barre s'escamote quand on descend. */
+const HIDE_THRESHOLD = 240;
 
-/** Décélération franche, sans rebond — identique sur toute l'application. */
-const EASE_OUT_EXPO = [0.22, 1, 0.36, 1] as const;
+/** Largeur (px) à partir de laquelle la navigation de bureau remplace le menu. */
+const DESKTOP_QUERY = '(min-width: 768px)';
 
-/** Ressort des indicateurs partagés (`layoutId`). */
-const INDICATOR_SPRING = { type: 'spring', bounce: 0.15, duration: 0.5 } as const;
+/** Éléments pouvant recevoir le focus, pour le piège de focus du menu. */
+const FOCUSABLE = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ▌ STYLES PARTAGÉS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+const FOCUS_RING = 'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus';
+
+const LANGUAGE_BUTTON =
+  `inline-flex h-9 items-center gap-1 rounded-control px-2 text-caption font-medium tracking-[0.04em] text-ink-muted ` +
+  `transition-colors duration-(--motion-fast) hover:text-ink cursor-pointer ${FOCUS_RING}`;
 
 export default function Navbar() {
-  const intlPathname = usePathname();
+  const pathname = usePathname();
   const router = useRouter();
   const locale = useLocale();
   const t = useTranslations('nav');
+  const tBrand = useTranslations('brand');
 
-  const shouldReduceMotion = useReducedMotion();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [hiddenByScroll, setHiddenByScroll] = useState(false);
 
-  const NAV_LINKS = [
-    { href: '/' as const, label: t('home') },
+  /** Englobe la barre et le panneau : périmètre du piège de focus. */
+  const shellRef = useRef<HTMLDivElement>(null);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+
+  const closeMenu = useCallback(() => setMenuOpen(false), []);
+
+  /* ── Liens ─────────────────────────────────────────────────────────── */
+  const desktopLinks = [
     { href: '/projets' as const, label: t('projects') },
     { href: '/propos' as const, label: t('about') },
     { href: '/contact' as const, label: t('contact') },
   ];
+  // Le menu mobile ajoute l'accueil : le logotype est petit sur un téléphone.
+  const mobileLinks = [{ href: '/' as const, label: t('home') }, ...desktopLinks];
 
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isHidden, setIsHidden] = useState(false);
-  const [hoveredLink, setHoveredLink] = useState<string | null>(null);
-  const { scrollY } = useScroll();
+  const isActive = (href: string) => (href === '/' ? pathname === '/' : pathname.startsWith(href));
 
-  const mobileMenuRef = useRef<HTMLDivElement>(null);
-  const menuTriggerRef = useRef<HTMLButtonElement>(null);
-
-  /* ── Libellés (catalogue `nav`) ─────────────────────────────────────── */
-  const menuLabel = menuOpen ? t('closeMenu') : t('openMenu');
-  const mobileNavLabel = t('mainNavigation');
-
+  /* ── Langue ────────────────────────────────────────────────────────── */
   /*
    * Langue proposée : l'autre langue déclarée dans `routing`, et non un
-   * `'fr' ? 'en' : 'fr'` écrit en dur qui ignorerait toute langue ajoutée.
-   * Le libellé `switchLanguage` est rédigé dans la langue CIBLE (« Switch to
-   * English » sur la version française) : l'attribut `lang` posé sur le bouton
-   * permet aux lecteurs d'écran de le prononcer correctement.
+   * `'fr' ? 'en' : 'fr'` écrit en dur. Le libellé `switchLanguage` est rédigé
+   * dans la langue CIBLE (« Switch to English » sur la version française) :
+   * l'attribut `lang` du bouton le fait prononcer correctement. Le code de
+   * langue visible (« EN ») figure aussi dans le nom accessible, pour qu'un
+   * utilisateur de commande vocale puisse dire « cliquer EN ».
    */
   const nextLocale = routing.locales.find((candidate) => candidate !== locale) ?? routing.defaultLocale;
-  const languageLabel = t('switchLanguage');
+  const languageLabel = `${t('switchLanguage')} (${nextLocale.toUpperCase()})`;
+  const switchLanguage = () => router.replace(pathname, { locale: nextLocale });
 
-  const toggleLanguage = () => {
-    router.replace(intlPathname, { locale: nextLocale });
-  };
+  /* ═══════════════════════════════════════════════════════════════════════
+     ▌ DÉFILEMENT
+     Un seul écouteur passif, limité à une lecture par image. `setState` avec
+     une valeur identique ne provoque aucun rendu : la barre ne se re-rend que
+     lorsqu'un seuil est franchi.
+     ═══════════════════════════════════════════════════════════════════════ */
+  useEffect(() => {
+    let previousY = window.scrollY;
+    let frame = 0;
 
-  useMotionValueEvent(scrollY, 'change', (latest) => {
-    const previous = scrollY.getPrevious() ?? 0;
-    setIsScrolled(latest > COMPACT_THRESHOLD);
-    if (latest > HIDE_THRESHOLD && latest > previous && !menuOpen) {
-      setIsHidden(true);
-    } else {
-      setIsHidden(false);
-    }
-  });
+    const update = () => {
+      frame = 0;
+      const y = window.scrollY;
+      setIsScrolled(y > SCROLLED_THRESHOLD);
+      // S'escamote en descendant, réapparaît dès que l'on remonte.
+      setHiddenByScroll(y > HIDE_THRESHOLD && y > previousY);
+      previousY = y;
+    };
+    const onScroll = () => {
+      if (frame === 0) frame = requestAnimationFrame(update);
+    };
+
+    // Première lecture : la page peut être chargée déjà défilée (retour arrière, ancre).
+    frame = requestAnimationFrame(update);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      cancelAnimationFrame(frame);
+    };
+  }, []);
 
   /* ═══════════════════════════════════════════════════════════════════════
      ▌ VERROUILLAGE DU DÉFILEMENT
-     ───────────────────────────────────────────────────────────────────────
-     La version précédente restaurait `overflow: 'unset'` en dur au lieu de
-     rendre la valeur précédente. Un autre composant ayant verrouillé le
-     défilement — la visionneuse d'images, par exemple — voyait son verrou levé
-     par la simple fermeture de ce menu. La largeur de la barre de défilement
-     est en outre compensée : sans cela, toute la page se décalait d'une dizaine
-     de pixels à l'ouverture du menu.
+     La valeur précédente est restaurée (et non `'unset'`) : un autre composant
+     ayant verrouillé la page — la visionneuse d'images — garde son verrou. La
+     largeur de la barre de défilement est compensée pour éviter un décalage.
      ═══════════════════════════════════════════════════════════════════════ */
   useEffect(() => {
     if (!menuOpen) return;
@@ -119,13 +152,12 @@ export default function Navbar() {
   }, [menuOpen]);
 
   /* ═══════════════════════════════════════════════════════════════════════
-     ▌ CLAVIER DANS LE MENU MOBILE
-     Une superposition plein écran doit pouvoir être fermée par `Échap` et
-     retenir le focus : sans cela, la tabulation continue de parcourir la page
-     masquée derrière, hors de vue.
+     ▌ CLAVIER ET REDIMENSIONNEMENT PENDANT L'OUVERTURE
+     `Échap` ferme le menu. La tabulation boucle entre la barre et le panneau :
+     sans cela, elle parcourrait la page masquée derrière. Si la fenêtre passe
+     en largeur bureau, le panneau disparaît (`md:hidden`) : le menu est fermé
+     pour ne pas laisser la page verrouillée.
      ═══════════════════════════════════════════════════════════════════════ */
-  const closeMenu = useCallback(() => setMenuOpen(false), []);
-
   useEffect(() => {
     if (!menuOpen) return;
 
@@ -133,320 +165,201 @@ export default function Navbar() {
       if (event.key === 'Escape') {
         event.preventDefault();
         closeMenu();
-        menuTriggerRef.current?.focus();
+        menuButtonRef.current?.focus();
         return;
       }
-
       if (event.key !== 'Tab') return;
 
-      const focusables = mobileMenuRef.current?.querySelectorAll<HTMLElement>(
-        'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
-      );
-      if (!focusables || focusables.length === 0) return;
+      const focusables = Array.from(shellRef.current?.querySelectorAll<HTMLElement>(FOCUSABLE) ?? [])
+        // Ignore les éléments masqués (liens de la navigation de bureau, par exemple).
+        .filter((element) => element.offsetParent !== null);
+      if (focusables.length === 0) return;
 
       const first = focusables[0];
       const last = focusables[focusables.length - 1];
+      const active = document.activeElement;
+      const focusIsInside = shellRef.current?.contains(active) ?? false;
 
-      if (event.shiftKey && document.activeElement === first) {
+      if (event.shiftKey && (active === first || !focusIsInside)) {
         event.preventDefault();
         last.focus();
-      } else if (!event.shiftKey && document.activeElement === last) {
+      } else if (!event.shiftKey && (active === last || !focusIsInside)) {
         event.preventDefault();
         first.focus();
       }
     };
 
+    const desktop = window.matchMedia(DESKTOP_QUERY);
+    const handleViewportChange = (event: MediaQueryListEvent) => {
+      if (event.matches) closeMenu();
+    };
+
     window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    desktop.addEventListener('change', handleViewportChange);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      desktop.removeEventListener('change', handleViewportChange);
+    };
   }, [menuOpen, closeMenu]);
 
   /**
-   * Ferme le menu à chaque changement de route — sécurité si un lien externe est ajouté.
+   * Ferme le menu à chaque changement de page.
    *
    * Motif « ajuster l'état quand une prop change » (documentation React) : la
-   * comparaison a lieu pendant le rendu. Un `useEffect` produisait un premier
-   * rendu avec le menu encore ouvert sur la nouvelle page, puis un second pour
-   * le fermer.
+   * comparaison a lieu pendant le rendu. Un `useEffect` produirait d'abord un
+   * rendu avec le menu encore ouvert sur la nouvelle page.
    */
-  const [pathnameOfLastRender, setPathnameOfLastRender] = useState(intlPathname);
-  if (pathnameOfLastRender !== intlPathname) {
-    setPathnameOfLastRender(intlPathname);
+  const [pathnameOfLastRender, setPathnameOfLastRender] = useState(pathname);
+  if (pathnameOfLastRender !== pathname) {
+    setPathnameOfLastRender(pathname);
     setMenuOpen(false);
   }
 
-  const isActive = (href: string) => {
-    if (href === '/') return intlPathname === '/';
-    return intlPathname.startsWith(href);
-  };
+  /** Jamais escamotée menu ouvert, ni quand un élément de la barre a le focus (voir `focus-within`). */
+  const isHidden = hiddenByScroll && !menuOpen;
 
   return (
-    <>
-      <motion.header
-        initial={{ y: -100 }}
-        animate={{ y: isHidden && !shouldReduceMotion ? -100 : 0 }}
-        transition={{ duration: 0.6, ease: EASE_OUT_EXPO }}
-        className={`
-          fixed top-0 inset-x-0 z-50 transition-all duration-700
-          ${isScrolled
-            ? 'py-2.5 px-4 lg:px-8'
-            : 'py-4 px-6 lg:px-12'
-          }
-        `}
+    <div ref={shellRef}>
+      <header
+        data-scrolled={isScrolled || menuOpen}
+        data-hidden={isHidden}
+        className="fixed inset-x-0 top-0 z-50 h-16 border-b border-transparent bg-canvas
+                   transition-[translate,background-color,border-color] duration-(--motion-base) ease-emphasized
+                   data-[scrolled=true]:border-line data-[scrolled=true]:bg-canvas/90 data-[scrolled=true]:backdrop-blur-md
+                   data-[hidden=true]:not-focus-within:-translate-y-full
+                   motion-reduce:transition-none"
       >
-        {/* Glassmorphic Background Layer */}
-        <motion.div
-          aria-hidden="true"
-          className="absolute inset-0 transition-opacity duration-700"
-          style={{ opacity: isScrolled ? 1 : 0 }}
-        >
-          <div className="absolute inset-x-3 inset-y-0 rounded-2xl bg-base-100/75 dark:bg-base-100/70 backdrop-blur-2xl border border-base-content/[0.06] dark:border-white/[0.06] shadow-[0_1px_2px_rgba(0,0,0,0.04),0_12px_32px_-16px_rgba(0,0,0,0.25)] dark:shadow-[0_16px_40px_-20px_rgba(0,0,0,0.7)]" />
-        </motion.div>
+        <div className="mx-auto flex h-full w-full max-w-content items-center gap-5 px-4 sm:px-6 lg:px-8">
+          {/* Logotype : le nom, sans image. `·` en bleu, seul accent de la barre. */}
+          <Link
+            href="/"
+            aria-label={tBrand('homeLabel')}
+            className={`rounded-control text-[0.9375rem] font-extrabold uppercase leading-none tracking-[0.06em] text-ink ${FOCUS_RING}`}
+          >
+            K<span className="text-brand-text">·</span>Takoudjou
+          </Link>
 
-        <div className="max-w-[1400px] mx-auto flex justify-between items-center relative z-10">
-          {/* Logo */}
-          <div className="relative z-[60]">
-            <Logo size={isScrolled ? 32 : 36} showText={!isScrolled} />
-          </div>
-
-          {/* Desktop Navigation */}
-          <nav aria-label={mobileNavLabel} className="hidden md:flex relative items-center gap-1 px-2 py-1.5 rounded-full">
-            {NAV_LINKS.map(({ href, label }) => {
-              const active = isActive(href);
-              return (
-                <Link
-                  key={href}
-                  href={href}
-                  aria-current={active ? 'page' : undefined}
-                  onMouseEnter={() => setHoveredLink(href)}
-                  onMouseLeave={() => setHoveredLink(null)}
-                  onFocus={() => setHoveredLink(href)}
-                  onBlur={() => setHoveredLink(null)}
-                  className="cursor-pointer relative px-5 py-2.5 rounded-full text-sm font-medium tracking-wide transition-colors duration-300 group
-                             focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-base-100"
-                >
-                  {/* Pastille de survol — désormais dimensionnée par `inset-0`,
-                      donc réellement visible, et glissante grâce au `layoutId`. */}
-                  {hoveredLink === href && !active && (
-                    <motion.span
-                      layoutId="nav-hover-glow"
-                      aria-hidden="true"
-                      className="absolute inset-0 rounded-full bg-primary/[0.08] dark:bg-primary/[0.12] border border-primary/20"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={INDICATOR_SPRING}
-                    />
-                  )}
-
-                  {/* Active indicator */}
-                  {active && (
-                    <motion.span
-                      layoutId="nav-active-indicator"
-                      aria-hidden="true"
-                      className="absolute inset-0 rounded-full bg-primary/10 dark:bg-primary/15 border border-primary/25"
-                      transition={INDICATOR_SPRING}
-                    />
-                  )}
-
-                  <span className={`relative z-10 transition-colors duration-300 ${active
-                    ? 'text-primary font-bold'
-                    : 'text-base-content/60 group-hover:text-primary'
-                    }`}>
-                    {label}
-                  </span>
-
-                  {/* Active dot */}
-                  {active && (
-                    <motion.span
-                      layoutId="nav-active-dot"
-                      aria-hidden="true"
-                      className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-primary"
-                      transition={INDICATOR_SPRING}
-                    />
-                  )}
-                </Link>
-              );
-            })}
+          {/* Navigation de bureau */}
+          <nav aria-label={t('mainNavigation')} className="ml-auto hidden md:block">
+            <ul className="flex items-center gap-1">
+              {desktopLinks.map(({ href, label }) => {
+                const active = isActive(href);
+                return (
+                  <li key={href}>
+                    <Link
+                      href={href}
+                      aria-current={active ? 'page' : undefined}
+                      className={`relative inline-flex h-9 items-center rounded-control px-3 text-[0.875rem] transition-colors duration-(--motion-fast)
+                                  after:absolute after:inset-x-3 after:bottom-1 after:h-px after:origin-left after:scale-x-0 after:bg-current
+                                  after:transition-transform after:duration-(--motion-base) after:ease-emphasized hover:after:scale-x-100
+                                  aria-[current=page]:font-semibold aria-[current=page]:text-ink aria-[current=page]:after:scale-x-100
+                                  text-ink-soft hover:text-ink ${FOCUS_RING}`}
+                    >
+                      {label}
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
           </nav>
 
-          {/* Desktop Actions */}
-          <div className="hidden md:flex items-center gap-3 relative z-[60]">
-            {/* Language toggle */}
-            <button
-              onClick={toggleLanguage}
-              aria-label={languageLabel}
-              lang={nextLocale}
-              className="cursor-pointer relative px-3 py-1.5 rounded-lg text-xs font-bold tracking-widest uppercase text-base-content/50 hover:text-primary border border-transparent hover:border-primary/20 hover:bg-primary/5 transition-colors duration-300
-                         focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-base-100"
-            >
-              {nextLocale.toUpperCase()}
+          <div className="ml-auto flex items-center gap-1 md:ml-2 md:gap-2">
+            <button type="button" onClick={switchLanguage} aria-label={languageLabel} lang={nextLocale} className={LANGUAGE_BUTTON}>
+              {routing.locales.map((code, index) => (
+                <span key={code} aria-hidden="true" className="inline-flex items-center gap-1">
+                  {index > 0 && <span className="text-ink-faint">/</span>}
+                  <span className={code === locale ? 'font-semibold text-ink' : undefined}>{code.toUpperCase()}</span>
+                </span>
+              ))}
             </button>
 
             <ThemeToggle />
 
-            {/* CTA — or plein plutôt que dégradé auréolé.
-                `text-black` était codé en dur : en mode clair, l'encre du thème
-                (`--primary-content`) est blanche. Le token est utilisé. */}
             <Link
               href="/contact"
-              className="cursor-pointer group relative overflow-hidden px-7 py-2.5 rounded-full
-                         bg-primary text-primary-content
-                         shadow-[0_1px_2px_rgba(0,0,0,0.14),0_10px_24px_-14px_rgba(0,0,0,0.6)]
-                         hover:brightness-[1.06] hover:-translate-y-0.5 active:translate-y-0
-                         motion-reduce:transform-none
-                         transition-[filter,transform,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]
-                         focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-base-100"
+              className={`ml-2 hidden h-9 items-center rounded-control bg-brand px-3.5 text-[0.8125rem] font-semibold text-brand-ink shadow-e1
+                          transition-[transform,box-shadow] duration-(--motion-fast) ease-emphasized hover:-translate-y-px hover:shadow-e2
+                          motion-reduce:transform-none md:inline-flex ${FOCUS_RING}`}
             >
-              <span className="relative z-10 font-bold text-sm tracking-wide">
-                {t('contactBtn')}
-              </span>
+              {t('contactBtn')}
             </Link>
-          </div>
 
-          {/* Mobile Actions */}
-          <div className="flex md:hidden items-center gap-2.5 relative z-[60]">
+            {/* Bouton du menu mobile : deux traits qui se croisent à l'ouverture */}
             <button
-              onClick={toggleLanguage}
-              aria-label={languageLabel}
-              lang={nextLocale}
-              className="cursor-pointer px-2 py-1 rounded-md text-xs font-bold tracking-widest uppercase text-base-content/50 hover:text-primary transition-colors
-                         focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-            >
-              {nextLocale.toUpperCase()}
-            </button>
-            <ThemeToggle />
-
-            {/* Animated hamburger */}
-            <button
-              ref={menuTriggerRef}
-              className="cursor-pointer p-2 -mr-2 text-base-content flex flex-col justify-center items-center w-10 h-10 gap-[5px] rounded-lg
-                         focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-              onClick={() => setMenuOpen(!menuOpen)}
-              aria-label={menuLabel}
+              ref={menuButtonRef}
+              type="button"
+              onClick={() => setMenuOpen((open) => !open)}
+              aria-label={menuOpen ? t('closeMenu') : t('openMenu')}
               aria-expanded={menuOpen}
               aria-controls="mobile-menu"
+              className={`group/menu relative -mr-2 inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-control text-ink md:hidden ${FOCUS_RING}`}
             >
-              <motion.span
-                animate={menuOpen ? { rotate: 45, y: 7 } : { rotate: 0, y: 0 }}
-                className={`w-6 h-[2px] block origin-center transition-colors duration-300 ${menuOpen ? 'bg-primary' : 'bg-current'}`}
-                transition={{ duration: 0.3 }}
-              />
-              <motion.span
-                animate={menuOpen ? { opacity: 0, scaleX: 0 } : { opacity: 1, scaleX: 1 }}
-                className="w-6 h-[2px] bg-current block"
-                transition={{ duration: 0.2 }}
-              />
-              <motion.span
-                animate={menuOpen ? { rotate: -45, y: -7 } : { rotate: 0, y: 0 }}
-                className={`w-6 h-[2px] block origin-center transition-colors duration-300 ${menuOpen ? 'bg-primary' : 'bg-current'}`}
-                transition={{ duration: 0.3 }}
-              />
+              <span aria-hidden="true" className="absolute h-[1.5px] w-5 -translate-y-[3.5px] bg-current transition-transform duration-(--motion-base) ease-emphasized group-aria-expanded/menu:translate-y-0 group-aria-expanded/menu:rotate-45" />
+              <span aria-hidden="true" className="absolute h-[1.5px] w-5 translate-y-[3.5px] bg-current transition-transform duration-(--motion-base) ease-emphasized group-aria-expanded/menu:translate-y-0 group-aria-expanded/menu:-rotate-45" />
             </button>
           </div>
         </div>
-      </motion.header>
+      </header>
 
-      {/* ═══ MOBILE MENU — Theatrical Full-Screen ═══ */}
-      <AnimatePresence>
-        {menuOpen && (
-          <motion.div
-            id="mobile-menu"
-            ref={mobileMenuRef}
-            role="dialog"
-            aria-modal="true"
-            aria-label={mobileNavLabel}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.45, ease: EASE_OUT_EXPO }}
-            className="fixed inset-0 z-40 md:hidden flex flex-col overflow-hidden"
-          >
-            {/* Backdrop */}
-            <div aria-hidden="true" className="absolute inset-0 bg-base-100/[0.97] backdrop-blur-3xl" />
-
-            {/* Une seule source lumineuse : trois calques flous plein écran
-                empilés coûtaient trois compositions GPU sur l'appareil le moins
-                puissant du parc. */}
-            <motion.div
-              aria-hidden="true"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.15, duration: 0.8 }}
-              className="absolute top-1/4 right-0 w-[400px] h-[400px] bg-primary/[0.08] rounded-full blur-[120px] pointer-events-none"
-            />
-
-            {/* Grid pattern */}
-            <div aria-hidden="true" className="absolute inset-0 opacity-[0.02]" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, currentColor 1px, transparent 0)', backgroundSize: '32px 32px' }} />
-
-            <div className="flex flex-col justify-center h-full px-8 pb-20 items-center relative z-10">
-              <nav aria-label={mobileNavLabel} className="flex flex-col gap-3 items-center text-center w-full max-w-xs">
-                {NAV_LINKS.map(({ href, label }, i) => (
-                  <div key={href} className="overflow-hidden w-full">
-                    <motion.div
-                      initial={{ y: '100%', opacity: 0 }}
-                      animate={{ y: 0, opacity: 1 }}
-                      exit={{ y: '100%', opacity: 0 }}
-                      transition={{
-                        delay: shouldReduceMotion ? 0 : 0.1 + i * 0.08,
-                        duration: 0.6,
-                        ease: EASE_OUT_EXPO
-                      }}
-                    >
-                      <Link
-                        href={href}
-                        onClick={closeMenu}
-                        aria-current={isActive(href) ? 'page' : undefined}
-                        className={`cursor-pointer group relative flex items-center justify-center py-4 px-6 rounded-2xl text-2xl sm:text-3xl font-bold tracking-[-0.03em] transition-colors duration-[400ms]
-                                    focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-base-100 ${isActive(href)
-                            ? 'text-primary bg-primary/10 border border-primary/20'
-                            : 'text-base-content hover:text-primary hover:bg-primary/5'
-                          }`}
-                      >
-                        {/* Active glow line */}
-                        {isActive(href) && (
-                          <span aria-hidden="true" className="absolute left-4 top-1/2 -translate-y-1/2 w-1 h-8 rounded-full bg-primary" />
-                        )}
-                        {label}
-                      </Link>
-                    </motion.div>
-                  </div>
-                ))}
-
-                {/* Mobile CTA */}
-                <motion.div
-                  initial={{ y: '100%', opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  exit={{ y: '100%', opacity: 0 }}
-                  transition={{ delay: shouldReduceMotion ? 0 : 0.45, duration: 0.6, ease: EASE_OUT_EXPO }}
-                  className="w-full mt-4"
-                >
-                  <Link
-                    href="/contact"
-                    onClick={closeMenu}
-                    className="cursor-pointer flex items-center justify-center py-4 px-6 rounded-2xl
-                               bg-primary text-primary-content font-bold text-lg tracking-wide
-                               shadow-[0_2px_4px_rgba(0,0,0,0.16),0_16px_32px_-18px_rgba(0,0,0,0.65)]
-                               hover:brightness-[1.06] transition-[filter] duration-300
-                               focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-base-100"
-                  >
-                    {t('contactBtn')}
-                  </Link>
-                </motion.div>
-              </nav>
-
-              {/* Footer */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ delay: 0.5, duration: 0.6 }}
-                className="absolute bottom-8 left-0 right-0 text-center text-[10px] text-base-content/30 tracking-[0.3em] uppercase font-bold"
+      {/*
+        Panneau mobile — toujours présent dans le DOM pour permettre la
+        transition CSS. Fermé, il est `inert` : ni focalisable, ni lu par les
+        lecteurs d'écran, ni cliquable. Il est placé hors du <header>, dont le
+        flou d'arrière-plan créerait un bloc conteneur pour `position: fixed`.
+      */}
+      <div
+        id="mobile-menu"
+        data-open={menuOpen}
+        inert={!menuOpen}
+        className="group/panel invisible fixed inset-x-0 top-16 bottom-0 z-40 flex flex-col overflow-y-auto bg-canvas px-4 pb-8 pt-4 opacity-0
+                   transition-[opacity,visibility] duration-(--motion-base) ease-emphasized
+                   data-[open=true]:visible data-[open=true]:opacity-100 sm:px-6 md:hidden motion-reduce:transition-none"
+      >
+        <nav aria-label={t('mainNavigation')}>
+          <ol className="border-t border-ink">
+            {mobileLinks.map(({ href, label }, index) => (
+              <li
+                key={href}
+                style={{ '--i': index } as React.CSSProperties}
+                className="translate-y-2 border-b border-line opacity-0 transition-[opacity,translate] duration-(--motion-slow) ease-emphasized
+                           [transition-delay:calc(var(--i)*45ms)]
+                           group-data-[open=true]/panel:translate-y-0 group-data-[open=true]/panel:opacity-100
+                           motion-reduce:translate-y-0 motion-reduce:transition-none"
               >
-                Takoudjou Moïse Kalvin © {new Date().getFullYear()}
-              </motion.div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </>
+                <Link
+                  href={href}
+                  onClick={closeMenu}
+                  aria-current={isActive(href) ? 'page' : undefined}
+                  className={`group/link flex items-baseline gap-3 py-4 text-ink ${FOCUS_RING}`}
+                >
+                  <span className="text-caption font-semibold tabular-nums text-ink-muted">{String(index + 1).padStart(2, '0')}</span>
+                  <span className="text-[1.75rem] font-bold leading-tight tracking-[-0.02em] group-aria-[current=page]/link:text-brand-text">
+                    {label}
+                  </span>
+                  <span aria-hidden="true" className="flex-1 -translate-y-1.5 border-b border-dotted border-line-strong" />
+                  <Arrow className="text-ink-muted" />
+                </Link>
+              </li>
+            ))}
+          </ol>
+        </nav>
+
+        <Link
+          href="/contact"
+          onClick={closeMenu}
+          className={`mt-8 inline-flex items-center justify-center rounded-control bg-brand px-5 py-3.5 font-semibold text-brand-ink shadow-e1 ${FOCUS_RING}`}
+        >
+          {t('contactBtn')}
+        </Link>
+
+        <p className="mt-auto pt-10 text-caption text-ink-muted">
+          <a href={`mailto:${CONTACT.email}`} className={`break-all text-ink-soft underline decoration-line-strong underline-offset-4 ${FOCUS_RING}`}>
+            {CONTACT.email}
+          </a>
+          <br />
+          {CONTACT.city}, {CONTACT.country}
+        </p>
+      </div>
+    </div>
   );
 }

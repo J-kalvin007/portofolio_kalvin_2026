@@ -54,3 +54,38 @@ export const CONTENT_LAST_MODIFIED = new Date('2026-07-01T00:00:00.000Z');
 
 /** Nom affiché du site (OpenGraph, e-mails transactionnels). */
 export const SITE_NAME = 'Kalvin Portfolio';
+/* ═══════════════════════════════════════════════════════════════════════════
+   ▌ COORDONNÉES ET LIENS
+   ───────────────────────────────────────────────────────────────────────────
+   Source unique pour le pied de page, la page d'accueil et la page Contact.
+   Ces valeurs étaient recopiées dans plusieurs composants.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+export const CONTACT = {
+  email: 'takoudjoumoisecalvin@gmail.com',
+  phoneDisplay: '+228 92 51 56 85',
+  phoneHref: 'tel:+22892515685',
+  whatsappHref: 'https://wa.me/22892515685',
+  city: 'Lomé',
+  country: 'Togo',
+  /** Fuseau IANA de Lomé (UTC+0, sans heure d'été). */
+  timeZone: 'Africa/Lome',
+} as const;
+
+/** CV téléchargeable, servi depuis `public/cv/`. */
+export const CV_PATH = '/cv/cv_kalvin.pdf';
+
+/**
+ * Liens vers les profils publics.
+ *
+ * @remarks Seuls les liens réels sont listés. Le pied de page précédent affichait
+ * aussi Instagram, Snapchat, Telegram, Facebook, TikTok et LinkedIn, mais leurs
+ * adresses étaient des gabarits (`https://instagram.com/`,
+ * `https://t.me/yourusername`…) : ils menaient à la page d'accueil de chaque
+ * réseau, pas au profil de Kalvin. Ajouter ici une entrée avec l'adresse exacte
+ * du profil suffit à la faire apparaître partout.
+ */
+export const SOCIAL_LINKS = [
+  { label: 'GitHub', href: 'https://github.com/J-kalvin007' },
+  { label: 'WhatsApp', href: CONTACT.whatsappHref },
+] as const;

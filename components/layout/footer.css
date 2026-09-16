@@ -1,0 +1,48 @@
+/**
+ * @file footer.css
+ * @description Bord déchiré du pied de page : le bas de page se lit comme
+ * la fin d'un reçu. Même découpe en dents de scie que le reçu de l'accueil.
+ *
+ * Deux couches identiques, décalées d'un pixel : la première, couleur filet,
+ * dessine le contour des dents ; la seconde, couleur du pied de page, le
+ * remplit. Un simple fond découpé serait presque invisible, la surface et le
+ * fond de page n'étant séparés que par une nuance.
+ */
+
+.ft-edge {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 100%;
+  height: 0.5rem;
+  pointer-events: none;
+}
+.ft-edge::before,
+.ft-edge::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  /* Dents orientées vers le haut */
+  -webkit-mask: conic-gradient(from 135deg at top, #0000, #000 1deg 89deg, #0000 90deg) 50% / 0.9rem 100%;
+  mask: conic-gradient(from 135deg at top, #0000, #000 1deg 89deg, #0000 90deg) 50% / 0.9rem 100%;
+}
+.ft-edge::before {
+  top: 0;
+  background: var(--ds-line);
+}
+.ft-edge::after {
+  top: 1px;
+  /* Recouvre le filet sous les dents, pour une découpe continue */
+  bottom: -1px;
+  background: var(--ds-surface);
+}
+
+/* Écrans à contraste forcé : la découpe n'a pas de sens, un filet la remplace. */
+@media (forced-colors: active) {
+  .ft-edge {
+    display: none;
+  }
+  .site-footer {
+    border-top: 1px solid CanvasText;
+  }
+}
