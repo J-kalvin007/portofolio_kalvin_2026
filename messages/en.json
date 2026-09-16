@@ -6,8 +6,8 @@
       "imageAlt": "Kalvin Takoudjou — Software Engineer"
     },
     "home": {
-      "title": "Home",
-      "description": "Portfolio of Kalvin Takoudjou, Software Engineer & Web Architect specialized in premium digital experiences."
+      "title": "Kalvin Takoudjou — Full-stack & mobile software engineer",
+      "description": "Web and mobile applications shipped to production: ticketing paid with Mobile Money, e-commerce, inventory and rental management. Every project comes with its architecture."
     },
     "projects": {
       "title": "My Projects",
@@ -32,74 +32,6 @@
     "openMenu": "Open menu",
     "closeMenu": "Close menu",
     "switchLanguage": "Passer en français"
-  },
-  "hero": {
-    "badge": "Available for remote missions",
-    "greeting": "Hello, I'm",
-    "floatingBadge1": "Senior Developer",
-    "floatingBadge2": "Full-Stack Architect",
-    "words": {
-      "engineer": "Engineer",
-      "architect": "Architect",
-      "artisan": "Artisan"
-    },
-    "titleWithRole": "Software <role></role>",
-    "description": "I design <bold1>high-performance</bold1> and <bold2>elegant</bold2> digital solutions that turn ideas into exceptional products.",
-    "ctaPrimary": "View my projects",
-    "ctaSecondary": "Contact me",
-    "scrollHint": "Scroll to content"
-  },
-  "about_teaser": {
-    "eyebrow": "Philosophy",
-    "title": "Beyond code, a vision",
-    "p1": "In a world saturated with digital noise, <bold>quality</bold> is the only differentiator.",
-    "p2": "Every pixel, every interaction, every transition is designed to <bold>elevate your message</bold> and turn your visitors into ambassadors.",
-    "cta": "Learn more"
-  },
-  "values": {
-    "solid": "Solid Architecture",
-    "solid_desc": "Structured, maintainable code ready for scale.",
-    "perf": "Performance",
-    "perf_desc": "Optimized for speed and user experience.",
-    "design": "Premium Design",
-    "design_desc": "Elegant interfaces that leave a lasting impression.",
-    "reliability": "Reliability",
-    "reliability_desc": "Robust, secure solutions built for the long run."
-  },
-  "skills": {
-    "eyebrow": "Expertise",
-    "title": "Technical Mastery",
-    "description": "A cutting-edge technology stack to transform complex concepts into fluid, scalable digital solutions.",
-    "expert": "Expert",
-    "advanced": "Advanced",
-    "intermediate": "Intermediate",
-    "categories": {
-      "frontend": "Frontend",
-      "backend": "Backend",
-      "database": "Database",
-      "devops": "DevOps & Tools"
-    }
-  },
-  "featured": {
-    "eyebrow": "Achievements",
-    "title": "Featured Projects",
-    "description": "Digital solutions crafted with rigor to solve real-world problems.",
-    "viewAll": "All my projects",
-    "viewProject": "View project",
-    "sourceCode": "{title} source code on GitHub"
-  },
-  "stats": {
-    "years": "Years of experience",
-    "projects": "Projects delivered",
-    "technologies": "Technologies",
-    "engagement": "Commitment"
-  },
-  "cta": {
-    "title1": "Ready to elevate your",
-    "title2": "digital standard?",
-    "description": "Let's discuss your project. No hard sell, just a strategic conversation.",
-    "ctaPrimary": "Start a conversation",
-    "ctaSecondary": "Download my CV"
   },
   "projects_page": {
     "badge": "Technical Portfolio",
@@ -236,15 +168,12 @@
     "cta": "Back to home"
   },
   "footer": {
-    "description": "Software Engineer & Full-Stack Architect specialized in designing high-performance, scalable, business-oriented digital solutions.",
+    "description": "Full-stack and mobile software engineer. Web and mobile applications shipped to production, from Lomé.",
     "navigation": "Navigation",
-    "followMe": "Follow me",
-    "legal": "Legal",
-    "privacy": "Privacy",
-    "terms": "Terms of use",
+    "contact": "Contact",
+    "elsewhere": "Elsewhere",
     "copyright": "All rights reserved.",
-    "bottomTerms": "Terms of use | Privacy.",
-    "scrollTop": "Back to top"
+    "madeIn": "Designed and built in Lomé."
   },
   "experience": {
     "job1_title": "Consultant - Full Stack Developer",
@@ -326,12 +255,135 @@
     "skipToContent": "Skip to main content"
   },
   "brand": {
-    "role": "Software Engineer",
-    "homeLabel": "Kalvin — back to home"
+    "homeLabel": "Kalvin Takoudjou, home"
   },
   "theme": {
     "toLight": "Switch to light mode",
     "toDark": "Switch to dark mode"
+  },
+  "home": {
+    "overline": "Software engineer · full-stack & mobile",
+    "title": "I build the software that real businesses run on.",
+    "lead": "Tickets paid with Mobile Money, inventory scanned by barcode, rental properties, tracked plantations. From the first screen to production, from Lomé.",
+    "ctaProjects": "See the projects",
+    "ctaCv": "Download the CV (PDF)",
+    "receipt": {
+      "label": "Profile summary",
+      "role": "Full-stack software engineer",
+      "location": "Lomé, Togo",
+      "localTime": "Local time",
+      "status": "Status",
+      "statusValue": "Available",
+      "missions": "Engagements",
+      "missionsValue": "Remote",
+      "position": "Position",
+      "positionValue": "Consultant · Myriade Groupe",
+      "education": "Education",
+      "educationValue": "MBA Big Data & AI",
+      "total": "Total shipped",
+      "stack": "Stack",
+      "stamp": "Available",
+      "thanks": "Thank you for visiting"
+    },
+    "projects": {
+      "overline": "Shipped projects",
+      "title": "Every project, with its architecture.",
+      "description": "What was shipped, what it is for, and how it is built.",
+      "ticket": "Ticket no.",
+      "ticketOf": "Ticket {number} of {total}",
+      "year": "Year",
+      "stack": "Stack",
+      "images": "{count, plural, one {# screenshot} other {# screenshots}}",
+      "liveSite": "Visit the site",
+      "details": "Project details",
+      "others": "Other projects",
+      "othersHint": "Expand a line to see the ticket and its architecture.",
+      "viewAll": "All projects"
+    },
+    "stack": {
+      "overline": "Skills statement",
+      "title": "Tools, by purpose.",
+      "description": "Each technology shows how many of the projects presented here use it.",
+      "usage": "{count, plural, =0 {other work} one {# project} other {# projects}}",
+      "categories": {
+        "frontend": "Web and mobile interfaces",
+        "backend": "Servers and APIs",
+        "database": "Data",
+        "devops": "Deployment and tooling"
+      }
+    },
+    "career": {
+      "overline": "Career",
+      "title": "Experience and education.",
+      "experience": "Experience",
+      "education": "Education",
+      "cta": "Full career"
+    },
+    "contact": {
+      "overline": "Contact",
+      "title": "A project, a position, a question?",
+      "description": "Answered within 24 hours.",
+      "email": "Send an email",
+      "form": "Use the contact form",
+      "cv": "Download the CV"
+    }
+  },
+  "architecture": {
+    "caption": "Architecture",
+    "summary": "{title} architecture",
+    "components": "Components",
+    "connections": "Connections",
+    "link": "{from} to {to}",
+    "external": "External",
+    "nodes": {
+      "employees": "Employees",
+      "timeClock": "Time clock",
+      "hoursCalc": "Hours calculation",
+      "timesheets": "Timesheets",
+      "mobileApp": "Mobile app",
+      "adminDashboard": "Admin dashboard",
+      "api": "API",
+      "restApi": "REST API",
+      "database": "Database",
+      "mobileMoney": "Mobile Money",
+      "storefront": "Online store",
+      "onlinePayment": "Online payment",
+      "visitors": "Visitors",
+      "searchEngines": "Search engines",
+      "hosting": "Hosting",
+      "staticSite": "Prerendered site",
+      "webApp": "Web app",
+      "server": "Server",
+      "orm": "ORM",
+      "realtime": "Real time",
+      "barcodes": "Barcodes",
+      "fieldApp": "Field app",
+      "dashboard": "Dashboard",
+      "dataPipeline": "Data pipeline",
+      "managers": "Property managers",
+      "stores": "Stores"
+    },
+    "edges": {
+      "clockIn": "clock in",
+      "records": "records",
+      "produces": "produces",
+      "tickets": "tickets · QR",
+      "management": "management",
+      "payment": "payment",
+      "data": "data",
+      "orders": "orders",
+      "analytics": "analytics",
+      "visit": "visit",
+      "indexing": "indexing",
+      "prerendered": "prerendered pages",
+      "scan": "scan",
+      "requests": "requests",
+      "alerts": "alerts",
+      "fieldData": "field data",
+      "charts": "charts",
+      "rentals": "properties · rent",
+      "promotions": "promotions"
+    }
   },
   "gallery": {
     "label": "Project gallery",
@@ -343,6 +395,6 @@
     "position": "Image {position} of {total}",
     "imagesLabel": "Project images",
     "screenshotAlt": "{title} — screenshot {position}",
-    "keyboardHint": "←/→ to navigate, Esc to close"
+    "keyboardHint": "Left and right arrow keys to navigate, Esc to close"
   }
 }

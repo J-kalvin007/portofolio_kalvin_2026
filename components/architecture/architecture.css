@@ -1,0 +1,298 @@
+/**
+ * @file architecture.css
+ * @description Apparence et animation des schémas d'architecture.
+ *
+ * @architecture
+ * Toutes les couleurs viennent du système de design (`--ds-*`) : le schéma suit
+ * le thème clair ou sombre sans règle supplémentaire. Toutes les écritures sont
+ * en Poppins, comme le reste du site (`--font-sans`).
+ *
+ * Séquence d'apparition (état `data-reveal="play"`, posé par ArchitectureFigure) :
+ *   1. les composants apparaissent, de gauche à droite (`--i` = ordre) ;
+ *   2. les liaisons se dessinent depuis leur composant de départ ;
+ *   3. les étiquettes, les zones et la cote de stack se posent ;
+ *   4. les flux se mettent à circuler en continu le long des liaisons.
+ * Hors écran, les flux sont suspendus (`data-visible` absent).
+ */
+
+.arch {
+  --arch-bg: var(--ds-canvas);
+  --arch-grid: color-mix(in srgb, var(--ds-ink) 5%, transparent);
+  --arch-grid-major: color-mix(in srgb, var(--ds-ink) 9%, transparent);
+  --arch-ease: cubic-bezier(0.16, 1, 0.3, 1);
+
+  margin: 0;
+  border: 1px solid var(--ds-line);
+  border-radius: 10px;
+  overflow: hidden;
+  color: var(--ds-ink);
+  font-family: var(--font-sans);
+  background-color: var(--arch-bg);
+  /* Papier millimétré : trame fine de 16 unités, trame forte de 96 */
+  background-image:
+    linear-gradient(var(--arch-grid-major) 1px, transparent 1px),
+    linear-gradient(90deg, var(--arch-grid-major) 1px, transparent 1px),
+    linear-gradient(var(--arch-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--arch-grid) 1px, transparent 1px);
+  background-size: 96px 96px, 96px 96px, 16px 16px, 16px 16px;
+}
+
+/* ── Cartouche de légende ── */
+.arch-caption {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px 18px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--ds-line);
+  background: color-mix(in srgb, var(--ds-canvas) 86%, transparent);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ds-ink-muted);
+}
+.arch-caption strong {
+  color: var(--ds-ink);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+/* ── Zone de dessin : défile horizontalement sur petit écran ── */
+.arch-scroll {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+}
+
+/* Indice de défilement : le bord droit s'estompe tant qu'il reste du schéma à
+   voir, puis redevient net en fin de course. Piloté par le défilement même
+   (`animation-timeline`) : sans débordement, la chronologie est inactive et
+   aucun fondu n'est appliqué — le schéma reste intact sur grand écran.
+   Navigateurs sans cette fonction : pas d'indice, le défilement fonctionne. */
+@property --arch-fade {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+@keyframes arch-scroll-hint {
+  0%, 92% { --arch-fade: 56px; }
+  100% { --arch-fade: 0px; }
+}
+@supports (animation-timeline: scroll()) {
+  .arch-scroll {
+    mask-image: linear-gradient(to right, #000 calc(100% - var(--arch-fade)), transparent);
+    animation: arch-scroll-hint linear both;
+    animation-timeline: scroll(self inline);
+  }
+}
+.arch-svg {
+  display: block;
+  width: 100%;
+  min-width: 660px;
+  height: auto;
+  color: var(--ds-ink-soft); /* couleur des pointes de flèche (marker) */
+  font-family: var(--font-sans);
+}
+
+/* ── Zones d'exécution ── */
+.arch-zone rect {
+  fill: none;
+  stroke: var(--ds-line-strong);
+  stroke-width: 1;
+  stroke-dasharray: 3 4;
+}
+.arch-zone text {
+  fill: var(--ds-ink-muted);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+}
+
+/* ── Composants ── */
+.arch-box {
+  fill: var(--ds-surface);
+  stroke: var(--ds-ink);
+  stroke-width: 1.5;
+  pointer-events: all;
+}
+.arch-node[data-kind='actor'] .arch-box,
+.arch-node[data-kind='external'] .arch-box {
+  fill: color-mix(in srgb, var(--ds-surface) 55%, transparent);
+}
+.arch-node[data-kind='external'] .arch-box {
+  stroke-dasharray: 6 5;
+}
+.arch-node[data-kind='service'] .arch-box {
+  stroke: var(--ds-brand-text);
+}
+.arch-mark {
+  fill: none;
+  stroke: var(--ds-ink-muted);
+  stroke-width: 1.5;
+}
+.arch-title {
+  fill: var(--ds-ink);
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.arch-tech {
+  fill: var(--ds-ink-muted);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+}
+
+/* ── Liaisons ── */
+.arch-line {
+  fill: none;
+  stroke: var(--ds-ink-soft);
+  stroke-width: 1.4;
+}
+.arch-flow {
+  fill: none;
+  stroke: var(--ds-brand);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-dasharray: 2 14;
+  animation: arch-flow 2.6s linear infinite;
+}
+.arch-label {
+  fill: var(--ds-ink-muted);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  /* Halo de la couleur du fond : le texte reste lisible là où il croise un trait */
+  paint-order: stroke;
+  stroke: var(--arch-bg);
+  stroke-width: 5px;
+  stroke-linejoin: round;
+}
+
+/* ── Cote de stack ── */
+.arch-dim path {
+  fill: none;
+  stroke: var(--ds-annotation);
+  stroke-width: 1.2;
+}
+.arch-dim text {
+  fill: var(--ds-annotation);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  paint-order: stroke;
+  stroke: var(--arch-bg);
+  stroke-width: 10px;
+  stroke-linejoin: round;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ▌ ANIMATION
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@keyframes arch-flow {
+  to { stroke-dashoffset: -64; }
+}
+@keyframes arch-node-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes arch-draw {
+  from { stroke-dashoffset: 1; }
+  to { stroke-dashoffset: 0; }
+}
+@keyframes arch-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.arch-node {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: opacity 220ms ease;
+}
+.arch-edge {
+  transition: opacity 220ms ease;
+}
+
+/* En attente : rien n'est encore visible (le schéma est hors écran) */
+.arch[data-reveal='pending'] .arch-node,
+.arch[data-reveal='pending'] .arch-label,
+.arch[data-reveal='pending'] .arch-flow,
+.arch[data-reveal='pending'] .arch-zone,
+.arch[data-reveal='pending'] .arch-dim {
+  opacity: 0;
+}
+.arch[data-reveal='pending'] .arch-line {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+
+/* Lecture : composants → liaisons → étiquettes et zones → cote → flux
+   Remplissage `backwards` et non `both` : l'état de départ s'applique pendant
+   le délai, puis, l'animation finie, les styles normaux reprennent la main.
+   Avec `both`, l'opacité finale (1) restait figée et l'emportait sur
+   l'estompage du survol. Chaque image clé finale est égale à l'état normal :
+   la fin de l'animation ne produit aucun saut. */
+.arch[data-reveal='play'] .arch-node {
+  animation: arch-node-in 620ms var(--arch-ease) calc(var(--i) * 110ms) backwards;
+}
+.arch[data-reveal='play'] .arch-line {
+  stroke-dasharray: 1;
+  animation: arch-draw 900ms var(--arch-ease) calc(380ms + var(--i) * 130ms) backwards;
+}
+.arch[data-reveal='play'] .arch-label {
+  animation: arch-fade-in 400ms ease calc(900ms + var(--i) * 130ms) backwards;
+}
+.arch[data-reveal='play'] .arch-zone {
+  animation: arch-fade-in 700ms ease 700ms backwards;
+}
+.arch[data-reveal='play'] .arch-dim {
+  animation: arch-fade-in 700ms ease 1500ms backwards;
+}
+.arch[data-reveal='play'] .arch-flow {
+  animation:
+    arch-fade-in 500ms ease calc(1300ms + var(--i) * 130ms) backwards,
+    arch-flow 2.6s linear calc(1300ms + var(--i) * 130ms) infinite;
+}
+
+/* Hors écran : les flux s'arrêtent (aucun calcul de rendu inutile) */
+.arch:not([data-visible]) .arch-flow {
+  animation-play-state: paused;
+}
+
+/* ── Survol d'un composant : ses liaisons ressortent, le reste s'estompe ── */
+.arch[data-focus] .arch-node:not(.is-related),
+.arch[data-focus] .arch-edge:not(.is-related) {
+  opacity: 0.22;
+}
+.arch[data-focus] .arch-edge.is-related .arch-line {
+  stroke: var(--ds-brand-text);
+}
+
+/* ── Mouvement réduit : schéma complet et immobile ── */
+@media (prefers-reduced-motion: reduce) {
+  .arch .arch-node,
+  .arch .arch-label,
+  .arch .arch-zone,
+  .arch .arch-dim {
+    animation: none !important;
+    opacity: 1 !important;
+  }
+  .arch .arch-line {
+    animation: none !important;
+    stroke-dasharray: none !important;
+    stroke-dashoffset: 0 !important;
+  }
+  .arch .arch-flow {
+    display: none;
+  }
+}
+
+/* ── Contrastes forcés (Windows) : couleurs système ── */
+@media (forced-colors: active) {
+  .arch-box, .arch-line, .arch-zone rect, .arch-dim path { stroke: CanvasText; }
+  .arch-title, .arch-tech, .arch-label, .arch-zone text, .arch-dim text { fill: CanvasText; stroke: Canvas; }
+  .arch-flow { display: none; }
+}

@@ -157,3 +157,34 @@ export const FEATURED_PROJECTS = PROJECTS.filter((p) => p.featured);
 
 /** Catégories effectivement représentées, dans l'ordre de première apparition. */
 export const PROJECT_CATEGORIES: ProjectCategory[] = [...new Set(PROJECTS.map((p) => p.category))];
+
+/* ═══════════════════════════════════════════════
+   STATISTIQUES DÉRIVÉES
+   Calculées à partir de PROJECTS : elles ne peuvent pas se désynchroniser
+   des projets présentés (les anciens compteurs « 10+ projets », « 89 % »
+   étaient écrits à la main).
+   ═══════════════════════════════════════════════ */
+
+/** Nombre de projets par catégorie, dans l'ordre de `PROJECT_CATEGORIES`. */
+export const PROJECT_COUNT_BY_CATEGORY: { category: ProjectCategory; count: number }[] =
+  PROJECT_CATEGORIES.map((category) => ({
+    category,
+    count: PROJECTS.filter((p) => p.category === category).length,
+  }));
+
+/** Nombre de projets présentés qui utilisent chaque technologie. */
+export const TECH_USAGE: ReadonlyMap<string, number> = PROJECTS.reduce((usage, project) => {
+  for (const tech of project.techStack) usage.set(tech, (usage.get(tech) ?? 0) + 1);
+  return usage;
+}, new Map<string, number>());
+
+/**
+ * Technologies les plus employées, de la plus fréquente à la moins fréquente
+ * (à égalité : ordre alphabétique, pour un résultat stable d'un build à l'autre).
+ */
+export function mostUsedTechnologies(limit: number): string[] {
+  return [...TECH_USAGE.entries()]
+    .sort(([nameA, countA], [nameB, countB]) => countB - countA || nameA.localeCompare(nameB))
+    .slice(0, limit)
+    .map(([name]) => name);
+}

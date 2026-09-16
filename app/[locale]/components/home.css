@@ -1,0 +1,449 @@
+/**
+ * @file home.css
+ * @description Objets de la page d'accueil : le reçu du profil, les billets de
+ * projet, les lignes de reçu dépliables et le relevé de compétences.
+ *
+ * @architecture
+ * CSS natif : ces objets reposent sur des techniques que les utilitaires
+ * Tailwind exprimeraient mal (masque dentelé, encoches de perforation,
+ * pointillés de reçu). Toutes les valeurs viennent du système de design
+ * (`--ds-*`) ; la police est celle du site, Poppins.
+ */
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ▌ LIGNE DE REÇU (partagée par le reçu et les billets)
+   Libellé · pointillés · valeur
+   ═══════════════════════════════════════════════════════════════════════════ */
+.rc-lines {
+  margin: 0;
+  display: grid;
+  gap: 0.2rem;
+}
+.rc-line {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+}
+.rc-line dt {
+  display: flex;
+  flex: 1;
+  align-items: baseline;
+  gap: 0.4rem;
+  min-width: 0;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ds-paper-muted);
+  white-space: nowrap;
+}
+.rc-line dt::after {
+  content: '';
+  flex: 1;
+  min-width: 0.75rem;
+  border-bottom: 1px dotted var(--ds-paper-line);
+  transform: translateY(-0.25rem);
+}
+.rc-line dd {
+  margin: 0;
+  font-weight: 600;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.rc-total dt,
+.rc-total dd {
+  color: var(--ds-paper-ink);
+  font-weight: 700;
+}
+.rc-total dd {
+  font-size: 0.875rem;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ▌ LE REÇU DU PROFIL
+   ═══════════════════════════════════════════════════════════════════════════ */
+.rc {
+  position: relative;
+  justify-self: center;
+  /* Réserve le débord de la fente (0,9 rem de chaque côté) dans la gouttière. */
+  width: min(100% - 1.8rem, 22.5rem);
+  margin: 0;
+  /* L'ombre suit la découpe dentelée (un box-shadow serait coupé par le masque) */
+  filter: drop-shadow(0 1px 1px hsl(var(--ds-shadow-color) / 0.1)) drop-shadow(0 18px 22px hsl(var(--ds-shadow-color) / 0.18));
+}
+.dark .rc {
+  filter: drop-shadow(0 1px 1px hsl(var(--ds-shadow-color) / 0.6)) drop-shadow(0 20px 28px hsl(var(--ds-shadow-color) / 0.7));
+}
+
+/* Fente d'impression dont sort le reçu */
+.rc-slot {
+  position: relative;
+  z-index: 2;
+  height: 0.75rem;
+  margin-inline: -0.9rem;
+  border-radius: 0.45rem;
+  background: #1b2028;
+  box-shadow: inset 0 -3px 0 rgb(255 255 255 / 0.07);
+}
+.dark .rc-slot {
+  background: #05070a;
+  box-shadow: inset 0 0 0 1px var(--ds-line);
+}
+
+.rc-paper {
+  position: relative;
+  z-index: 1;
+  margin-top: -0.4rem;
+  padding: 1.7rem 1.4rem 2.3rem;
+  background: var(--ds-paper);
+  color: var(--ds-paper-ink);
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  transform: rotate(1.2deg);
+  /* Bord inférieur déchiré en dents de scie */
+  -webkit-mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / 0.9rem 100%;
+  mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / 0.9rem 100%;
+  /* Une seule animation sur la page : le reçu sort de la fente au chargement */
+  animation: rc-print 1.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@keyframes rc-print {
+  from { transform: translateY(-1.6rem) rotate(0deg); }
+  to { transform: translateY(0) rotate(1.2deg); }
+}
+.rc-head {
+  margin: 0;
+  text-align: center;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.rc-sub {
+  margin: 0.25rem 0 0;
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--ds-paper-muted);
+}
+.rc-rule {
+  margin: 0.85rem 0;
+  border: 0;
+  border-top: 1px dashed var(--ds-paper-line);
+}
+.rc-stack {
+  margin: 0;
+  font-size: 0.75rem;
+  line-height: 1.6;
+  color: var(--ds-paper-muted);
+}
+.rc-stack strong {
+  margin-right: 0.3rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ds-paper-ink);
+}
+.rc-stamp-row {
+  margin: 1rem 0 0;
+  text-align: center;
+}
+/* Le tampon : le seul élément incliné et bleu de la page */
+.rc-stamp {
+  display: inline-block;
+  padding: 0.35rem 0.55rem 0.3rem 0.75rem;
+  border: 3px double var(--ds-stamp);
+  border-radius: 0.3rem;
+  color: var(--ds-stamp);
+  font-size: 0.8125rem;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  transform: rotate(-7deg);
+  mix-blend-mode: multiply;
+  opacity: 0.92;
+}
+.rc-thanks {
+  margin: 0.95rem 0 0;
+  text-align: center;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ▌ BILLET DE PROJET
+   ═══════════════════════════════════════════════════════════════════════════ */
+.tk-entry {
+  display: grid;
+  gap: 1rem;
+}
+.tk {
+  display: grid;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  background: var(--ds-paper);
+  color: var(--ds-paper-ink);
+  box-shadow: 0 1px 1px hsl(var(--ds-shadow-color) / 0.06), 0 10px 24px -14px hsl(var(--ds-shadow-color) / 0.28);
+}
+@media (min-width: 768px) {
+  .tk { grid-template-columns: minmax(0, 1fr) 12rem; }
+}
+.tk-main {
+  display: grid;
+}
+@media (min-width: 640px) {
+  .tk-main { grid-template-columns: minmax(13rem, 38%) minmax(0, 1fr); }
+}
+
+/* Capture de couverture — ouvre la galerie */
+.tk-media {
+  position: relative;
+  display: block;
+  min-height: 13rem;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  background: var(--ds-surface-sunken);
+  cursor: zoom-in;
+}
+.tk-media img {
+  object-fit: cover;
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.tk-media:hover img {
+  transform: scale(1.035);
+}
+.tk-media:focus-visible {
+  outline: 2px solid var(--ds-focus);
+  outline-offset: -4px;
+}
+.tk-media-count {
+  position: absolute;
+  left: 0.75rem;
+  bottom: 0.75rem;
+  padding: 0.3rem 0.55rem;
+  border-radius: 0.3rem;
+  background: rgb(17 22 29 / 0.78);
+  color: #ffffff;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.tk-body {
+  display: grid;
+  align-content: start;
+  gap: 0.6rem;
+  padding: 1.3rem 1.4rem 1.5rem;
+}
+.tk-meta {
+  margin: 0;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ds-paper-muted);
+}
+.tk-title {
+  margin: 0;
+  font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+.tk-desc {
+  margin: 0;
+  max-width: 56ch;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: color-mix(in srgb, var(--ds-paper-ink) 84%, var(--ds-paper));
+}
+.tk-lines {
+  margin-top: 0.35rem;
+}
+/* Une stack longue passe sous son libellé au lieu de le recouvrir :
+   le libellé garde sa largeur, la valeur prend une ligne entière si besoin. */
+.tk-lines .rc-line {
+  flex-wrap: wrap;
+  row-gap: 0.15rem;
+}
+.tk-lines .rc-line dt {
+  flex: 1 0 auto;
+}
+.tk-lines .rc-line dd {
+  max-width: 100%;
+  margin-left: auto;
+  white-space: normal;
+  font-size: 0.8125rem;
+}
+
+/* Souche perforée */
+.tk-stub {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.1rem 1.25rem 1.25rem;
+  background: var(--ds-stub);
+  color: var(--ds-paper-ink);
+  border-top: 2px dashed rgb(17 22 29 / 0.3);
+}
+@media (min-width: 768px) {
+  .tk-stub {
+    border-top: 0;
+    border-left: 2px dashed rgb(17 22 29 / 0.3);
+  }
+}
+/* Encoches de perforation, de la couleur du fond de page */
+.tk-stub::before,
+.tk-stub::after {
+  content: '';
+  position: absolute;
+  width: 1.1rem;
+  height: 1.1rem;
+  border-radius: 50%;
+  background: var(--ds-canvas);
+}
+.tk-stub::before { top: -0.6rem; left: -0.6rem; }
+.tk-stub::after { top: -0.6rem; right: -0.6rem; }
+@media (min-width: 768px) {
+  .tk-stub::after { top: auto; right: auto; bottom: -0.6rem; left: -0.6rem; }
+}
+.tk-number {
+  margin: 0;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.tk-number strong {
+  display: block;
+  margin-top: 0.2rem;
+  font-size: 2.25rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+.tk-number strong span {
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+/* Soulignement typographique (et non une bordure) : correct même si le libellé
+   passe sur deux lignes, dans une langue plus longue. */
+.tk-link {
+  align-self: flex-start;
+  color: var(--ds-paper-ink);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 0.3em;
+  text-wrap: balance;
+}
+.tk-link:hover {
+  color: var(--ds-stamp);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ▌ AUTRES PROJETS — lignes de reçu dépliables
+   ═══════════════════════════════════════════════════════════════════════════ */
+.hm-others {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--ds-ink);
+}
+.hm-other {
+  border-bottom: 1px solid var(--ds-line);
+}
+.hm-other summary {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  padding: 1rem 0.25rem;
+  cursor: pointer;
+  list-style: none;
+}
+.hm-other summary::-webkit-details-marker {
+  display: none;
+}
+.hm-other summary:focus-visible {
+  outline: 2px solid var(--ds-focus);
+  outline-offset: 2px;
+  border-radius: 0.25rem;
+}
+.hm-other-number {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--ds-ink-muted);
+  font-variant-numeric: tabular-nums;
+}
+.hm-other-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--ds-ink);
+  transition: color var(--motion-fast) ease;
+}
+.hm-other summary:hover .hm-other-title {
+  color: var(--ds-brand-text);
+}
+.hm-other-leader {
+  flex: 1;
+  min-width: 1rem;
+  border-bottom: 1px dotted var(--ds-line-strong);
+  transform: translateY(-0.3rem);
+}
+.hm-other-meta {
+  font-size: 0.8125rem;
+  color: var(--ds-ink-muted);
+  white-space: nowrap;
+}
+/* Signe plus / moins dessiné en CSS */
+.hm-other-toggle {
+  position: relative;
+  flex: none;
+  width: 0.75rem;
+  height: 0.75rem;
+  align-self: center;
+}
+.hm-other-toggle::before,
+.hm-other-toggle::after {
+  content: '';
+  position: absolute;
+  inset: 50% 0 auto;
+  height: 1.5px;
+  background: var(--ds-ink);
+  transition: transform var(--motion-base) cubic-bezier(0.16, 1, 0.3, 1);
+}
+.hm-other-toggle::after {
+  transform: rotate(90deg);
+}
+.hm-other[open] .hm-other-toggle::after {
+  transform: rotate(0deg);
+}
+.hm-other-body {
+  padding: 0.5rem 0 2rem;
+}
+@media (max-width: 520px) {
+  .hm-other-meta { display: none; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ▌ RELEVÉ DE COMPÉTENCES
+   ═══════════════════════════════════════════════════════════════════════════ */
+.hm-skill {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+.hm-skill-leader {
+  flex: 1;
+  min-width: 0.75rem;
+  border-bottom: 1px dotted var(--ds-line-strong);
+  transform: translateY(-0.3rem);
+}

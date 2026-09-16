@@ -9,13 +9,18 @@ export interface Skill {
 }
 
 export interface SkillCategory {
-  title: string;
+  /**
+   * Clé de traduction du groupe (`home.stack.categories`). Remplace l'ancien
+   * titre en français (`'Base de données'`), qui servait à la fois de libellé et
+   * d'identifiant : la page d'accueil filtrait sur `title === 'Frontend'`.
+   */
+  key: 'frontend' | 'backend' | 'database' | 'devops';
   skills: Skill[];
 }
 
 export const SKILLS: SkillCategory[] = [
   {
-    title: 'Frontend',
+    key: 'frontend',
     skills: [
       { name: 'React.js', icon: '/svg/react_02.svg', level: 4 },
       { name: 'Next.js', icon: '/svg/next_02.svg', level: 4 },
@@ -25,7 +30,7 @@ export const SKILLS: SkillCategory[] = [
     ],
   },
   {
-    title: 'Backend',
+    key: 'backend',
     skills: [
       { name: 'Node.js', icon: '/svg/node.svg', level: 4 },
       { name: 'Django', icon: '/svg/django.svg', level: 4 },
@@ -34,7 +39,7 @@ export const SKILLS: SkillCategory[] = [
     ],
   },
   {
-    title: 'Base de données',
+    key: 'database',
     skills: [
       { name: 'PostgreSQL', icon: '/svg/postgresql.svg', level: 4 },
       { name: 'Supabase', icon: '/svg/supabase.svg', level: 3 },
@@ -42,7 +47,7 @@ export const SKILLS: SkillCategory[] = [
     ],
   },
   {
-    title: 'DevOps & Outils',
+    key: 'devops',
     skills: [
       { name: 'Docker', icon: '/svg/docker.svg', level: 3 },
       { name: 'Git', icon: '/svg/github.svg', level: 4 },

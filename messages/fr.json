@@ -6,8 +6,8 @@
       "imageAlt": "Kalvin Takoudjou — Ingénieur logiciel"
     },
     "home": {
-      "title": "Accueil",
-      "description": "Portfolio de Kalvin Takoudjou, Ingénieur Logiciel & Architecte Web spécialiste des expériences digitales premium."
+      "title": "Kalvin Takoudjou — Ingénieur logiciel full-stack et mobile",
+      "description": "Applications web et mobiles livrées en production : billetterie payée par Mobile Money, e-commerce, gestion de stock, gestion locative. L'architecture de chaque projet est détaillée."
     },
     "projects": {
       "title": "Mes Projets",
@@ -32,74 +32,6 @@
     "openMenu": "Ouvrir le menu",
     "closeMenu": "Fermer le menu",
     "switchLanguage": "Switch to English"
-  },
-  "hero": {
-    "badge": "Disponible pour missions remote",
-    "greeting": "Bonjour, je suis",
-    "floatingBadge1": "Développeur Senior",
-    "floatingBadge2": "Architecte Full-Stack",
-    "words": {
-      "engineer": "Ingénieur",
-      "architect": "Architecte",
-      "artisan": "Artisan"
-    },
-    "titleWithRole": "<role></role> Logiciel",
-    "description": "Je conçois des solutions digitales <bold1>performantes</bold1> et <bold2>élégantes</bold2> qui transforment les idées en produits d'exception.",
-    "ctaPrimary": "Voir mes projets",
-    "ctaSecondary": "Me contacter",
-    "scrollHint": "Faire défiler vers le contenu"
-  },
-  "about_teaser": {
-    "eyebrow": "Philosophie",
-    "title": "Au-delà du code, une vision",
-    "p1": "Dans un monde saturé de bruit numérique, la <bold>qualité</bold> est le seul facteur de différenciation.",
-    "p2": "Chaque pixel, chaque interaction, chaque transition est pensé pour <bold>sublimer votre message</bold> et convertir vos visiteurs en ambassadeurs.",
-    "cta": "En savoir plus"
-  },
-  "values": {
-    "solid": "Architecture Solide",
-    "solid_desc": "Code structuré, maintenable et prêt pour l'échelle.",
-    "perf": "Performance",
-    "perf_desc": "Optimisé pour la rapidité et l'expérience utilisateur.",
-    "design": "Design Premium",
-    "design_desc": "Interfaces élégantes qui marquent les esprits.",
-    "reliability": "Fiabilité",
-    "reliability_desc": "Solutions robustes et sécurisées pour le long terme."
-  },
-  "skills": {
-    "eyebrow": "Expertise",
-    "title": "Maîtrise Technique",
-    "description": "Un arsenal technologique de pointe pour transformer des concepts complexes en solutions digitales fluides et scalables.",
-    "expert": "Expert",
-    "advanced": "Avancé",
-    "intermediate": "Intermédiaire",
-    "categories": {
-      "frontend": "Frontend",
-      "backend": "Backend",
-      "database": "Base de données",
-      "devops": "DevOps & Outils"
-    }
-  },
-  "featured": {
-    "eyebrow": "Réalisations",
-    "title": "Projets phares",
-    "description": "Solutions digitales conçues avec rigueur pour résoudre des problématiques réelles.",
-    "viewAll": "Tous mes projets",
-    "viewProject": "Voir le projet",
-    "sourceCode": "Code source de {title} sur GitHub"
-  },
-  "stats": {
-    "years": "Années d'expérience",
-    "projects": "Projets livrés",
-    "technologies": "Technologies",
-    "engagement": "Engagement"
-  },
-  "cta": {
-    "title1": "Prêt à élever votre",
-    "title2": "standard digital ?",
-    "description": "Discutons de votre projet. Pas de vente forcée, juste une conversation stratégique.",
-    "ctaPrimary": "Démarrer une conversation",
-    "ctaSecondary": "Télécharger mon CV"
   },
   "projects_page": {
     "badge": "Portfolio Technique",
@@ -236,15 +168,12 @@
     "cta": "Retour à l'accueil"
   },
   "footer": {
-    "description": "Software Engineer & Full-Stack Architect spécialisé dans la conception de solutions digitales performantes, scalables et orientées business.",
+    "description": "Ingénieur logiciel full-stack et mobile. Applications web et mobiles livrées en production, depuis Lomé.",
     "navigation": "Navigation",
-    "followMe": "Me suivre",
-    "legal": "Légal",
-    "privacy": "Confidentialité",
-    "terms": "Conditions d'utilisation",
+    "contact": "Contact",
+    "elsewhere": "Ailleurs",
     "copyright": "Tous droits réservés.",
-    "bottomTerms": "Conditions d'utilisation | Confidentialité.",
-    "scrollTop": "Remonter en haut de page"
+    "madeIn": "Conçu et développé à Lomé."
   },
   "experience": {
     "job1_title": "Consultant - Développeur Full Stack",
@@ -326,12 +255,135 @@
     "skipToContent": "Aller au contenu principal"
   },
   "brand": {
-    "role": "Ingénieur logiciel",
-    "homeLabel": "Kalvin — retour à l'accueil"
+    "homeLabel": "Kalvin Takoudjou, accueil"
   },
   "theme": {
     "toLight": "Passer en mode clair",
     "toDark": "Passer en mode sombre"
+  },
+  "home": {
+    "overline": "Ingénieur logiciel · full-stack et mobile",
+    "title": "Je code les logiciels qui font tourner des entreprises réelles.",
+    "lead": "Billets payés par Mobile Money, stocks scannés au code-barres, biens en location, plantations suivies. Du premier écran à la mise en production, depuis Lomé.",
+    "ctaProjects": "Voir les projets",
+    "ctaCv": "Télécharger le CV (PDF)",
+    "receipt": {
+      "label": "Récapitulatif du profil",
+      "role": "Ingénieur logiciel full-stack",
+      "location": "Lomé, Togo",
+      "localTime": "Heure locale",
+      "status": "Statut",
+      "statusValue": "Disponible",
+      "missions": "Missions",
+      "missionsValue": "Remote",
+      "position": "Poste",
+      "positionValue": "Consultant · Myriade Groupe",
+      "education": "Formation",
+      "educationValue": "MBA Big Data & IA",
+      "total": "Total livré",
+      "stack": "Stack",
+      "stamp": "Disponible",
+      "thanks": "Merci de votre visite"
+    },
+    "projects": {
+      "overline": "Projets livrés",
+      "title": "Chaque projet, avec son architecture.",
+      "description": "Ce qui a été livré, pour quel usage, et comment c'est construit.",
+      "ticket": "Billet n°",
+      "ticketOf": "Billet {number} sur {total}",
+      "year": "Année",
+      "stack": "Stack",
+      "images": "{count, plural, one {# capture} other {# captures}}",
+      "liveSite": "Voir le site",
+      "details": "Détails du projet",
+      "others": "Les autres projets",
+      "othersHint": "Déplier une ligne pour voir le billet et son architecture.",
+      "viewAll": "Tous les projets"
+    },
+    "stack": {
+      "overline": "Relevé de compétences",
+      "title": "Les outils, par usage.",
+      "description": "Chaque technologie indique le nombre de projets présentés ici qui l'utilisent.",
+      "usage": "{count, plural, =0 {autres travaux} one {# projet} other {# projets}}",
+      "categories": {
+        "frontend": "Interfaces web et mobiles",
+        "backend": "Serveurs et API",
+        "database": "Données",
+        "devops": "Déploiement et outils"
+      }
+    },
+    "career": {
+      "overline": "Parcours",
+      "title": "Expérience et formation.",
+      "experience": "Expérience",
+      "education": "Formation",
+      "cta": "Parcours complet"
+    },
+    "contact": {
+      "overline": "Contact",
+      "title": "Un projet, un poste, une question ?",
+      "description": "Réponse sous 24 heures.",
+      "email": "Écrire un e-mail",
+      "form": "Passer par le formulaire",
+      "cv": "Télécharger le CV"
+    }
+  },
+  "architecture": {
+    "caption": "Architecture",
+    "summary": "Architecture de {title}",
+    "components": "Composants",
+    "connections": "Liaisons",
+    "link": "{from} vers {to}",
+    "external": "Externe",
+    "nodes": {
+      "employees": "Employés",
+      "timeClock": "Pointage",
+      "hoursCalc": "Calcul des heures",
+      "timesheets": "Relevés d'heures",
+      "mobileApp": "Application mobile",
+      "adminDashboard": "Tableau de bord",
+      "api": "API",
+      "restApi": "API REST",
+      "database": "Base de données",
+      "mobileMoney": "Mobile Money",
+      "storefront": "Boutique en ligne",
+      "onlinePayment": "Paiement en ligne",
+      "visitors": "Visiteurs",
+      "searchEngines": "Moteurs de recherche",
+      "hosting": "Hébergement",
+      "staticSite": "Site pré-rendu",
+      "webApp": "Application web",
+      "server": "Serveur",
+      "orm": "ORM",
+      "realtime": "Temps réel",
+      "barcodes": "Codes-barres",
+      "fieldApp": "Application terrain",
+      "dashboard": "Tableau de bord",
+      "dataPipeline": "Pipeline de données",
+      "managers": "Gestionnaires",
+      "stores": "Magasins"
+    },
+    "edges": {
+      "clockIn": "pointe",
+      "records": "enregistre",
+      "produces": "produit",
+      "tickets": "billets · QR",
+      "management": "gestion",
+      "payment": "paiement",
+      "data": "données",
+      "orders": "commandes",
+      "analytics": "analyses",
+      "visit": "visite",
+      "indexing": "indexation",
+      "prerendered": "pages pré-rendues",
+      "scan": "scan",
+      "requests": "requêtes",
+      "alerts": "alertes",
+      "fieldData": "relevés",
+      "charts": "visualisations",
+      "rentals": "biens · loyers",
+      "promotions": "promotions"
+    }
   },
   "gallery": {
     "label": "Galerie du projet",
@@ -343,6 +395,6 @@
     "position": "Image {position} sur {total}",
     "imagesLabel": "Images du projet",
     "screenshotAlt": "{title} — capture d'écran {position}",
-    "keyboardHint": "←/→ pour naviguer, Échap pour fermer"
+    "keyboardHint": "Flèches gauche et droite pour naviguer, Échap pour fermer"
   }
 }

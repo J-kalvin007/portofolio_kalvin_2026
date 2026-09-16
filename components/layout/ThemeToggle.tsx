@@ -1,120 +1,55 @@
-
 'use client';
 
 /**
  * @file ThemeToggle.tsx
- * @description Bouton d'interface permettant à l'utilisateur de basculer manuellement entre le mode clair et sombre.
- * 
+ * @description Bouton de bascule entre le mode clair et le mode sombre.
+ *
  * @architecture
- * - Se connecte au store global Zustand via `useTheme()` pour récupérer et modifier l'état instantanément.
- * - Utilise `framer-motion` et `AnimatePresence` pour créer une animation de rotation/fondu élégante
- *   lorsque l'icône change (Soleil <-> Lune).
- * 
- * Pourquoi : Offre un contrôle total à l'utilisateur sur l'esthétique du site. Le design "Void & Or" 
- * repose beaucoup sur le mode sombre, mais l'accessibilité exige qu'un mode clair soit disponible.
+ * L'icône et le libellé sont choisis **en CSS**, d'après la classe `.dark` que
+ * le script anti-flash pose sur `<html>` avant le premier affichage :
+ *  - le bouton est correct dès le HTML statique, sans état d'attente
+ *    d'hydratation (l'ancienne version affichait un bouton vide et désactivé
+ *    jusqu'au montage) ;
+ *  - les deux libellés sont présents, mais celui qui est masqué
+ *    (`display: none`) est exclu du nom accessible : un lecteur d'écran
+ *    n'entend que l'action réellement disponible.
+ *
+ * Au clic, le thème courant est lu sur le document — la source de vérité
+ * visible — puis le store (`useThemeStore`) applique et mémorise le suivant.
+ * L'animation de l'icône est une transition CSS : plus de framer-motion.
  */
 
-import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
-import { Sun, Moon } from 'lucide-react';
+import { Moon, Sun } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { useTheme } from '@/lib/useTheme';
-import { useIsClient } from '@/hooks/useClientSnapshot';
+import { useThemeStore } from '@/lib/useTheme';
 
-// Les différents modes de thème disponibles dans le cycle du bouton
-const THEME_CYCLE = ['light', 'dark'] as const;
-
-// Mapping (Dictionnaire) liant un mode à son icône Lucide correspondante
-const ICONS = {
-  light: Sun,
-  dark: Moon,
-} as const;
+const ICON = 'h-[18px] w-[18px] transition-[rotate,scale,opacity] duration-(--motion-base) ease-emphasized motion-reduce:transition-none';
 
 export default function ThemeToggle({ className = '' }: { className?: string }) {
-  // Extraction de l'état actuel et de la fonction de mutation depuis Zustand
-  const { theme, setTheme } = useTheme();
-  // Le thème réel n'est connu que dans le navigateur : avant cela, un repli neutre
-  // est rendu, sans écart d'hydratation (voir hooks/useClientSnapshot.ts).
-  const mounted = useIsClient();
+  // Seule l'action est lue : le bouton ne se re-rend pas quand le thème change.
+  const setTheme = useThemeStore((state) => state.setTheme);
+  const t = useTranslations('theme');
 
-  const tTheme = useTranslations('theme');
-  const shouldReduceMotion = useReducedMotion();
-
-  /**
-   * @function cycleTheme
-   * @description Calcule mathématiquement le prochain thème dans le tableau `THEME_CYCLE`.
-   * Permet de faire boucler la sélection indéfiniment.
-   */
-  const cycleTheme = () => {
-    const currentIndex = THEME_CYCLE.indexOf(theme as typeof THEME_CYCLE[number]);
-    const nextIndex = (currentIndex + 1) % THEME_CYCLE.length;
-    setTheme(THEME_CYCLE[nextIndex]);
+  const toggleTheme = () => {
+    const isDark = document.documentElement.classList.contains('dark');
+    setTheme(isDark ? 'light' : 'dark');
   };
 
-  // Résolution dynamique de l'icône à afficher en fonction du thème actif (Fallback sur Lune par sécurité)
-  const Icon = ICONS[theme as keyof typeof ICONS] || Moon;
-
-  // Un libellé de bascule décrit **l'action à venir**, pas l'état courant :
-  // « Passer en mode clair » est actionnable, « Thème : sombre » ne l'est pas.
-  const actionLabel = theme === 'dark' ? tTheme('toLight') : tTheme('toDark');
-
-  /** Habillage partagé par le repli d'hydratation et le bouton réel. */
-  const shellClasses = `
-    cursor-pointer relative p-2.5 rounded-xl
-    bg-base-200/50 hover:bg-base-200
-    dark:bg-white/5 dark:hover:bg-white/10
-    border border-base-300/50 dark:border-white/10
-    text-base-content/60 hover:text-primary
-    transition-colors duration-300
-    focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-base-100
-    ${className}
-  `;
-
-  if (!mounted) {
-    return (
-      // Repli d'hydratation : `disabled` et `aria-hidden` l'écartent du parcours
-      // clavier. Il était auparavant focalisable et annoncé comme un bouton
-      // sans nom, qui ne réagissait à aucun clic.
-      <button
-        type="button"
-        disabled
-        aria-hidden="true"
-        tabIndex={-1}
-        className={`${shellClasses} cursor-default`}
-      >
-        <div className="w-[18px] h-[18px]" />
-      </button>
-    );
-  }
-
   return (
-    <motion.button
+    <button
       type="button"
-      onClick={cycleTheme}
-      // Animations de micro-interactions "Void & Or"
-      whileHover={shouldReduceMotion ? undefined : { scale: 1.05 }}
-      whileTap={shouldReduceMotion ? undefined : { scale: 0.95 }}
-      // Styles Glassmorphism avec prise en charge avancée du mode sombre (dark:...)
-      className={shellClasses}
-      aria-label={actionLabel} // Accessibilité pour les lecteurs d'écran
-      title={actionLabel} // Bulle d'aide au survol
+      onClick={toggleTheme}
+      className={`relative inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-control text-ink-soft
+                  transition-colors duration-(--motion-fast) hover:bg-surface-sunken hover:text-ink
+                  focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus ${className}`}
     >
-      {/* 
-        AnimatePresence mode="wait" : 
-        Attend que l'icône sortante disparaisse complètement avant d'afficher la nouvelle.
-        Cela empêche les icônes de se superposer disgracieusement pendant la transition.
-      */}
-      <AnimatePresence mode="wait" initial={false}>
-        <motion.span
-          key={theme} // La clé force React à recréer le nœud lors du changement, déclenchant l'animation
-          initial={{ y: -12, opacity: 0, rotate: -90 }} // Départ d'en haut à gauche
-          animate={{ y: 0, opacity: 1, rotate: 0 }} // Position centrale parfaite
-          exit={{ y: 12, opacity: 0, rotate: 90 }} // Sortie vers le bas à droite
-          transition={{ duration: 0.2 }}
-          className="block"
-        >
-          <Icon className="w-[18px] h-[18px]" strokeWidth={2} aria-hidden="true" />
-        </motion.span>
-      </AnimatePresence>
-    </motion.button>
+      {/* Mode clair : la lune propose le mode sombre. */}
+      <Moon aria-hidden="true" strokeWidth={2} className={`${ICON} absolute dark:scale-50 dark:-rotate-90 dark:opacity-0`} />
+      {/* Mode sombre : le soleil propose le mode clair. */}
+      <Sun aria-hidden="true" strokeWidth={2} className={`${ICON} absolute scale-50 rotate-90 opacity-0 dark:scale-100 dark:rotate-0 dark:opacity-100`} />
+
+      <span className="sr-only dark:hidden">{t('toDark')}</span>
+      <span className="sr-only hidden dark:inline">{t('toLight')}</span>
+    </button>
   );
 }
