@@ -18,6 +18,8 @@
 import PageErreur from '@/components/layout/pageErreur';
 import { useClientSnapshot } from '@/hooks/useClientSnapshot';
 import { readPrefersDarkTheme } from '@/lib/theme-preference';
+// Hors du layout : la police doit être appliquée ici aussi (Poppins, lib/fonts.ts).
+import { fontVariables, poppins } from '@/lib/fonts';
 import './globals.css';
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -67,8 +69,8 @@ export default function NotFound() {
   const { title, message } = NOT_FOUND_MESSAGES[locale];
 
   return (
-    <html lang={locale} className={isDark ? 'dark' : undefined} data-theme={isDark ? 'dark' : 'light'} style={{ colorScheme: isDark ? 'dark' : 'light' }}>
-      <body>
+    <html lang={locale} className={`${fontVariables}${isDark ? ' dark' : ''}`} data-theme={isDark ? 'dark' : 'light'} style={{ colorScheme: isDark ? 'dark' : 'light' }}>
+      <body className={poppins.className}>
         <PageErreur
           title={title}
           message={message}

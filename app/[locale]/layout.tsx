@@ -6,56 +6,30 @@
  * @architecture
  * - Définit le shell HTML/Body de base pour l'application.
  * - Configure la génération dynamique des balises SEO (Metadata) en fonction de la langue.
- * - Initialise les polices de caractères Google Fonts optimisées (`Inter`, `Playfair Display`, `JetBrains Mono`).
+ * - Applique la police unique du site, Poppins (`lib/fonts.ts`), à tout le document.
  * - Encapsule l'application dans `NextIntlClientProvider` pour fournir les traductions aux composants enfants.
  * - Injecte un script "anti-FOUC" (Flash of Unstyled Content) pour le mode sombre.
  */
 
 import type { Metadata, Viewport } from 'next';
-import { Inter, Playfair_Display, JetBrains_Mono } from 'next/font/google';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getTranslations, setRequestLocale } from 'next-intl/server';
 import { routing } from '@/i18n/routing';
 import { resolveLocale, type LocaleParams } from '@/i18n/params';
 import { SITE_NAME, SITE_URL } from '@/lib/site';
+import { fontVariables, poppins } from '@/lib/fonts';
 import '../globals.css';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import ThemeInitializer from '@/components/layout/ThemeInitializer';
 
 /* ═══════════════════════════════════════════════
-   CONFIGURATION DES POLICES (Google Fonts)
-   Pourquoi `display: 'swap'` : Garantit que le texte reste visible pendant le chargement de la police.
-   ═══════════════════════════════════════════════ */
-
-// Police principale pour les textes courants (Lisibilité optimale)
-const inter = Inter({
-  subsets: ['latin'],
-  variable: '--font-inter',
-  display: 'swap',
-});
-
-// Police à empattements pour les grands titres (Esthétique Luxe / Premium)
-const playfair = Playfair_Display({
-  subsets: ['latin'],
-  variable: '--font-playfair',
-  display: 'swap',
-});
-
-// Police monospace pour les extraits de code et les badges techniques
-const jetbrains = JetBrains_Mono({
-  subsets: ['latin'],
-  variable: '--font-jetbrains',
-  display: 'swap',
-});
-
-/* ═══════════════════════════════════════════════
    COULEURS DE L'INTERFACE SYSTÈME
+   Doivent correspondre à `--ds-canvas` (app/design-system.css).
    ═══════════════════════════════════════════════ */
 
-/** Fond du thème sombre « Void & Or » — utilisé pour teinter le chrome du navigateur mobile. */
-const VOID_BACKGROUND = '#070510';
-const LIGHT_BACKGROUND = '#FFFFFF';
+const LIGHT_BACKGROUND = '#EEF0EF';
+const DARK_BACKGROUND = '#0E1115';
 
 /**
  * @constant viewport
@@ -68,15 +42,10 @@ export const viewport: Viewport = {
   colorScheme: 'light dark',
   themeColor: [
     { media: '(prefers-color-scheme: light)', color: LIGHT_BACKGROUND },
-    { media: '(prefers-color-scheme: dark)', color: VOID_BACKGROUND },
+    { media: '(prefers-color-scheme: dark)', color: DARK_BACKGROUND },
   ],
 };
 
-/**
- * @function generateMetadata
- * @description Génère dynamiquement les balises `<meta>` pour le SEO et le partage social (OpenGraph, Twitter).
- * @param params Contient la locale ('fr' ou 'en') provenant de l'URL.
- */
 /** Correspondance langue de l'URL → locale OpenGraph (format `langue_PAYS`). */
 const OPEN_GRAPH_LOCALES = { fr: 'fr_FR', en: 'en_US' } as const;
 
@@ -89,6 +58,22 @@ const OPEN_GRAPH_LOCALES = { fr: 'fr_FR', en: 'en_US' } as const;
  */
 const SHARE_IMAGE = { url: '/logo/kal_logo_01.png', width: 1080, height: 1080 } as const;
 
+/**
+ * Mots-clés du site : le nom, le métier et les technologies réellement
+ * employées dans les projets présentés. « Fintech », « Luxe » et « Premium Web
+ * Design » ont été retirés : aucun projet ne les justifiait.
+ */
+const KEYWORDS = [
+  'Kalvin Takoudjou', 'Software Engineer', 'Ingénieur logiciel', 'Développeur full-stack', 'Développeur mobile',
+  'Next.js', 'React', 'TypeScript', 'Django', 'Flutter', 'PostgreSQL', 'Docker', 'Lomé', 'Togo',
+];
+
+/**
+ * @function generateMetadata
+ * @description Génère les balises `<meta>` du site pour le référencement et le
+ * partage social (OpenGraph, Twitter). Les pages complètent ou remplacent ces valeurs.
+ * @param params Contient la locale ('fr' ou 'en') provenant de l'URL.
+ */
 export async function generateMetadata({ params }: LocaleParams): Promise<Metadata> {
   const locale = await resolveLocale(params);
   const t = await getTranslations({ locale, namespace: 'seo.site' });
@@ -96,10 +81,6 @@ export async function generateMetadata({ params }: LocaleParams): Promise<Metada
   // Textes SEO traduits (catalogue `seo.site`)
   const title = t('title');
   const description = t('description');
-  const keywords = [
-    'Kalvin Takoudjou', 'Software Engineer', 'Ingénieur Logiciel', 'Développeur Web', 'Full-Stack',
-    'React', 'Next.js', 'TypeScript', 'TailwindCSS', 'Fintech', 'Luxe', 'Premium Web Design', 'Architecte Web', 'Togo', 'Lomé'
-  ];
 
   return {
     // Source unique de l'URL du site (`lib/site.ts`). Le repli local
@@ -111,7 +92,7 @@ export async function generateMetadata({ params }: LocaleParams): Promise<Metada
       template: '%s | Kalvin Takoudjou', // Modèle utilisé par les sous-pages (ex: "Contact | Kalvin Takoudjou")
     },
     description,
-    keywords,
+    keywords: KEYWORDS,
     authors: [{ name: 'Kalvin Takoudjou', url: 'https://github.com/J-kalvin007' }],
     creator: 'Kalvin Takoudjou',
     publisher: 'Kalvin Takoudjou',
@@ -195,7 +176,7 @@ export default async function LocaleLayout({
     <html
       lang={locale}
       suppressHydrationWarning // Nécessaire car le script thème (ci-dessous) modifie le HTML avant l'hydratation React
-      className={`${inter.variable} ${playfair.variable} ${jetbrains.variable}`}
+      className={fontVariables}
     >
       <head>
         {/* 
@@ -228,7 +209,7 @@ export default async function LocaleLayout({
           }}
         />
       </head>
-      <body className={`${inter.className} antialiased`}>
+      <body className={`${poppins.className} antialiased`}>
         {/*
           Lien d'évitement : invisible jusqu'à ce qu'il reçoive le focus.
           Sans lui, un utilisateur au clavier doit traverser l'intégralité de la
@@ -236,9 +217,9 @@ export default async function LocaleLayout({
         */}
         <a
           href="#main"
-          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[200]
-                     focus:px-5 focus:py-3 focus:rounded-full focus:bg-primary focus:text-primary-content
-                     focus:font-bold focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-4 focus:z-[200]
+                     focus:rounded-control focus:bg-brand focus:px-5 focus:py-3 focus:font-semibold focus:text-brand-ink focus:shadow-e2
+                     focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
         >
           {skipLabel}
         </a>

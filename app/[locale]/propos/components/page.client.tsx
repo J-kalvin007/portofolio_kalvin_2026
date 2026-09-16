@@ -42,7 +42,7 @@
 import React, { useCallback, useRef } from 'react';
 import Image from 'next/image';
 import { motion, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion';
-import { Terminal, Globe, Cpu, Shield, ArrowRight, Download, Briefcase, GraduationCap, ChevronDown } from 'lucide-react';
+import { Terminal, Globe, Cpu, Shield, ArrowRight, Download, Briefcase, GraduationCap, ChevronDown, Infinity as InfinityIcon } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import FadeIn from '@/components/animations/FadeIn';
@@ -247,8 +247,10 @@ export default function AboutPage() {
           <FadeIn delay={0.3} className="text-center group">
             <motion.div initial={{ scale: 0, rotate: -180 }} whileInView={{ scale: 1, rotate: 0 }} viewport={{ once: true }}
               transition={{ delay: 1.5, duration: 0.8, type: 'spring' }}
-              className="text-4xl md:text-5xl font-bold mb-2 text-transparent bg-clip-text bg-gradient-to-b from-base-content to-base-content/50 group-hover:from-primary group-hover:to-accent transition-all duration-500">
-              ∞
+              className="text-4xl md:text-5xl mb-2 flex justify-center text-base-content/80 group-hover:text-primary transition-colors duration-500">
+              {/* Icône et non caractère « ∞ » : Poppins ne contient pas ce signe,
+                  qui s'affichait dans une police système. */}
+              <InfinityIcon aria-hidden="true" strokeWidth={2} className="h-[1em] w-[1em]" />
             </motion.div>
             <div aria-hidden="true" className="w-8 h-[2px] bg-primary/30 group-hover:bg-primary group-hover:w-12 transition-all duration-500 mx-auto mb-2" />
             <div className="text-xs font-bold uppercase tracking-[0.15em] text-base-content/40 group-hover:text-primary/80 transition-colors">{t('stats.passion')}</div>

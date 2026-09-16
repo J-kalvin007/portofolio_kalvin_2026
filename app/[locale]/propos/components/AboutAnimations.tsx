@@ -172,9 +172,7 @@ export function MarqueeRow({ items, direction = 'left', speed = 35 }: { items: T
    Extraite de la boucle : le même balisage servait au rail animé et devait
    servir au repli accessible. Une seule définition, deux usages.
 
-   Le guillemet ouvrant est composé en Playfair Display (`font-display`) —
-   la police à empattements est déjà chargée par le layout ; l'employer sur un
-   unique signe typographique lui donne enfin une raison d'être.
+   Comme tout le site, la carte est composée en Poppins (lib/fonts.ts).
    ═══════════════════════════════════════════════════════════════════════════ */
 function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
   return (

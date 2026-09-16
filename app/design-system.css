@@ -21,91 +21,122 @@
  * 4 niveaux d'encre, 3 élévations, 3 rayons, 8 tailles de texte.
  *
  * **Coexistence.** Les anciens noms (`primary`, `base-100`, `base-content`…)
- * restent définis dans `globals.css` : les pages actuelles s'affichent à
- * l'identique. Chaque page adopte ces rôles lors de sa refonte ; les anciens
- * noms seront retirés quand plus aucun composant ne les utilisera.
+ * restent disponibles dans `globals.css`, mais comme simples alias de ces
+ * rôles : les pages pas encore refaites adoptent la même palette. Ils seront
+ * retirés quand plus aucun composant ne les utilisera.
  *
- * **Valeurs provisoires.** Celles ci-dessous transposent la palette actuelle
- * « Void & Or » dans les nouveaux rôles, avec des contrastes corrigés et mesurés
- * (WCAG 2.2). Elles seront remplacées par celles de la direction retenue.
+ * **Direction retenue : A « Reçu »** (choix du 15 septembre 2026).
+ * Le portfolio reprend l'objet que produisent les logiciels de Kalvin : le reçu,
+ * le billet. D'où trois rôles propres à cette direction — `paper` (le papier du
+ * reçu et des billets), `stub` (la souche jaune du billet) et `stamp` (le
+ * tampon) — et un rôle `annotation` pour les cotes des schémas d'architecture.
+ * Toutes les valeurs ci-dessous ont été mesurées (WCAG 2.2).
  */
 
 /* ═══════════════════════════════════════════════════════════════════════════
    ▌ 1. VALEURS — mode clair
    ───────────────────────────────────────────────────────────────────────────
    Contrastes mesurés sur `canvas` (et sur `surface` pour les encres) :
-     ink 18,9:1 · ink-soft 10,4:1 · ink-muted 5,7:1 (5,3:1 sur surface)
-     brand-text 5,7:1 · brand-ink sur brand 6,7:1
-   `ink-faint` (3,3:1) est réservé au décor et aux très grands textes :
-   jamais pour une information à lire.
+     ink 15,9:1 · ink-soft 9,6:1 (sur surface) · ink-muted 5,3:1 (5,7:1 sur surface)
+     brand-text 7,2:1 · brand-ink sur brand 8,2:1 · annotation 5,4:1
+     paper-ink sur paper 16,9:1 · paper-muted sur paper 5,9:1
+   `ink-faint` et `line-strong` (3,0:1) sont réservés au décor et aux bordures
+   de contrôles : jamais pour une information à lire.
    ═══════════════════════════════════════════════════════════════════════════ */
 :root {
   /* Surfaces : du plus bas au plus haut */
-  --ds-canvas: #ffffff;
-  --ds-surface: #f6f6f7;
-  --ds-surface-sunken: #efeff1;
+  --ds-canvas: #eef0ef;
+  --ds-surface: #f7f8f7;
+  --ds-surface-sunken: #e4e7e6;
 
   /* Encres : 4 niveaux, pas un de plus */
-  --ds-ink: #111111;
-  --ds-ink-soft: #3f3f46;
-  --ds-ink-muted: #666670;
-  --ds-ink-faint: #8c8c96;
+  --ds-ink: #11161d;
+  --ds-ink-soft: #3a424d;
+  --ds-ink-muted: #5a636e;
+  --ds-ink-faint: #838b94;
 
   /* Filets */
-  --ds-line: #e4e4e7;
-  --ds-line-strong: #8c8c96;
+  --ds-line: #c9ced4;
+  --ds-line-strong: #838b94;
 
-  /* Marque : une couleur rare, réservée aux actions et à un geste par écran.
-     `brand` est un remplissage (le texte qu'il porte, `brand-ink`, assure le
-     contraste) ; `brand-text` est la variante lisible en texte courant. */
-  --ds-brand: #c8900a;
-  --ds-brand-ink: #16110a;
-  --ds-brand-text: #8a5f00;
-  --ds-brand-soft: color-mix(in srgb, #c8900a 12%, transparent);
+  /* Marque — le bleu du tampon. Une couleur rare, réservée aux actions et au
+     tampon « Disponible ». `brand` est un remplissage ; `brand-text` sa
+     variante lisible en texte courant. */
+  --ds-brand: #1f3bcc;
+  --ds-brand-ink: #ffffff;
+  --ds-brand-text: #1f3bcc;
+  --ds-brand-soft: color-mix(in srgb, #1f3bcc 10%, transparent);
+
+  /* Papier du reçu et des billets. Il reste clair en mode sombre : un reçu
+     reste un reçu. D'où des encres propres au papier, identiques dans les
+     deux thèmes à une nuance près. */
+  --ds-paper: #fbfbf8;
+  --ds-paper-ink: #11161d;
+  --ds-paper-muted: #5a636e;
+  --ds-paper-line: #b8bec5;
+
+  /* Souche du billet et tampon */
+  --ds-stub: #f0d861;
+  --ds-stamp: #1f3bcc;
+
+  /* Cotes et annotations des schémas d'architecture (ocre lisible) */
+  --ds-annotation: #7a5e00;
 
   /* Retours d'état (formulaires) */
   --ds-success: #15803d;
   --ds-danger: #b91c1c;
 
-  /* Anneau de focus clavier — même teinte que le texte de marque (5,7:1) */
-  --ds-focus: #8a5f00;
+  /* Anneau de focus clavier — le bleu du tampon (7,2:1) */
+  --ds-focus: #1f3bcc;
 
-  /* Couleur d'ombre : une seule source de lumière, en haut */
-  --ds-shadow-color: 0deg 0% 0%;
+  /* Couleur d'ombre : une seule source de lumière, en haut, teintée d'encre */
+  --ds-shadow-color: 214deg 26% 9%;
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
    ▌ 1 bis. VALEURS — mode sombre
    ───────────────────────────────────────────────────────────────────────────
    Contrastes mesurés sur `canvas` :
-     ink 17,0:1 · ink-soft 11,9:1 · ink-muted 7,2:1 (6,8:1 sur surface)
-     brand-text 9,7:1 · brand-ink sur brand 9,7:1 · ink-faint 3,9:1 (décor)
+     ink 15,7:1 · ink-muted 6,3:1 (5,8:1 sur surface) · brand-text 8,7:1
+     brand-ink sur brand 7,1:1 · annotation 10,9:1 · ink-faint 3,5:1 (décor)
+     paper-ink sur paper 14,5:1 · paper-muted sur paper 5,2:1
    ═══════════════════════════════════════════════════════════════════════════ */
 .dark {
-  --ds-canvas: #070510;
-  --ds-surface: #110d1f;
-  --ds-surface-sunken: #0c0918;
+  --ds-canvas: #0e1115;
+  --ds-surface: #161a1f;
+  --ds-surface-sunken: #0a0c0f;
 
-  --ds-ink: #f0ecd8;
-  --ds-ink-soft: #ccc6b5;
-  --ds-ink-muted: #a09a8a;
-  --ds-ink-faint: #6f6985;
+  --ds-ink: #e7eaed;
+  --ds-ink-soft: #bcc3cb;
+  --ds-ink-muted: #8d96a0;
+  --ds-ink-faint: #626a74;
 
-  --ds-line: #231c36;
-  --ds-line-strong: #3a3057;
+  --ds-line: #2a3038;
+  --ds-line-strong: #5c646e;
 
-  --ds-brand: #f0a500;
-  --ds-brand-ink: #070510;
-  --ds-brand-text: #f0a500;
-  --ds-brand-soft: color-mix(in srgb, #f0a500 14%, transparent);
+  --ds-brand: #8398ff;
+  --ds-brand-ink: #0e1115;
+  --ds-brand-text: #9aabff;
+  --ds-brand-soft: color-mix(in srgb, #8398ff 14%, transparent);
+
+  /* Le papier est atténué pour ne pas éblouir sur fond sombre */
+  --ds-paper: #e4e6e1;
+  --ds-paper-ink: #11161d;
+  --ds-paper-muted: #565f6a;
+  --ds-paper-line: #a9b0b8;
+
+  --ds-stub: #d9c25a;
+  --ds-stamp: #1f3bcc;
+
+  --ds-annotation: #e0c35a;
 
   --ds-success: #4ade80;
   --ds-danger: #f87171;
 
-  --ds-focus: #ffd166;
+  --ds-focus: #9aabff;
 
   /* Sur fond sombre, une ombre doit être plus dense pour rester perceptible */
-  --ds-shadow-color: 250deg 60% 2%;
+  --ds-shadow-color: 216deg 30% 2%;
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -129,6 +160,15 @@
   --color-brand-ink: var(--ds-brand-ink);
   --color-brand-text: var(--ds-brand-text);
   --color-brand-soft: var(--ds-brand-soft);
+
+  /* Rôles propres à la direction « Reçu » */
+  --color-paper: var(--ds-paper);
+  --color-paper-ink: var(--ds-paper-ink);
+  --color-paper-muted: var(--ds-paper-muted);
+  --color-paper-line: var(--ds-paper-line);
+  --color-stub: var(--ds-stub);
+  --color-stamp: var(--ds-stamp);
+  --color-annotation: var(--ds-annotation);
 
   --color-success: var(--ds-success);
   --color-danger: var(--ds-danger);
