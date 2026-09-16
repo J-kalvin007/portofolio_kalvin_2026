@@ -148,16 +148,20 @@ export const useThemeStore = create<AppState>((set) => ({
 export function useThemeInit(): void {
   useEffect(() => {
     const preferred = readPreferredTheme();
-    const { theme, setTheme } = useThemeStore.getState();
+    const isDark = resolveIsDark(preferred);
 
-    // Le script a déjà posé la bonne classe : on se contente de synchroniser
-    // l'état, sans réécrire le DOM ni le localStorage.
-    if (preferred === theme) {
-      applyThemeToDOM(resolveIsDark(theme));
-      return;
-    }
-
-    setTheme(preferred);
+    // Le script a déjà posé la bonne classe : on synchronise le document et
+    // l'état React, **sans écrire dans le localStorage**.
+    //
+    // ⚠️ Correctif. Cette branche appelait `setTheme(preferred)`, qui enregistre
+    // le thème. Un premier visiteur dont le système est en clair voyait donc
+    // « light » mémorisé comme s'il l'avait choisi : la préférence système
+    // devenait un choix explicite figé, et passer ensuite le système en sombre
+    // n'avait plus aucun effet sur le site (l'écouteur ci-dessous ignore les
+    // changements dès qu'un choix explicite existe). Seul un clic sur le bouton
+    // de thème enregistre désormais une préférence.
+    applyThemeToDOM(isDark);
+    useThemeStore.setState({ theme: preferred, isDark });
   }, []);
 
   /**
