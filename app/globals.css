@@ -17,30 +17,26 @@
 
 /**
  * @file globals.css
- * @description Fichier racine de la configuration Tailwind CSS et du Design System "Void & Or".
- * 
+ * @description Point d'entrée CSS : Tailwind, système de design, styles de base.
+ *
  * @architecture
- * Ce fichier utilise les nouvelles directives Tailwind v4 (@theme, @layer) pour injecter 
- * les variables sémantiques CSS natives. Il définit la palette colorimétrique absolue du projet.
- * 
- * Pourquoi : Plutôt que de coder les couleurs en dur (`text-[#F0A500]`) partout, on utilise
- * des variables d'environnement CSS (`var(--primary)`). Ainsi, si le client veut passer
- * d'un "Or Solaire" à un "Rouge Rubis", il suffit de changer 2 lignes de code ici pour 
- * que tout le site se mette à jour instantanément.
+ * - `design-system.css` porte les valeurs et les rôles (`bg-canvas`, `text-ink`…).
+ * - Ce fichier ne garde que ce qui est transverse : alias de compatibilité,
+ *   polices, règles de base, barres de défilement, animations partagées.
  */
 
 /* ═══════════════════════════════════════════════════════════════
-   KALVIN PORTFOLIO — Design System: VOID & OR
+   ALIAS DE COMPATIBILITÉ
    ─────────────────────────────────────────────────────────────
-   Palette "Void & Or" — Identité visuelle duale
-   Mode sombre : Void cosmique + Or solaire
-   Mode clair  : Ivoire chaud  + Or impérial
-   ═══════════════════════════════════════════════════════════════ */
+   Les anciens noms (`primary`, `base-100`, `base-content`…) sont encore
+   utilisés par les pages qui n'ont pas été refaites (Projets, À propos,
+   Contact). Ils ne portent plus de valeur propre : ils pointent vers les
+   rôles du système de design. Conséquence voulue — ces pages adoptent
+   immédiatement la palette de la direction « Reçu » et restent cohérentes
+   avec la navigation et le pied de page, sans attendre leur refonte.
 
-/* 
- * Déclaration globale Tailwind (@theme) 
- * Mappe les variables CSS vers des utilitaires Tailwind utilisables (ex: `text-primary`, `bg-base-100`)
- */
+   Ils disparaîtront quand plus aucun composant ne les utilisera.
+   ═══════════════════════════════════════════════════════════════ */
 @theme {
   --color-primary: var(--primary);
   --color-secondary: var(--secondary);
@@ -50,160 +46,65 @@
   --color-base-200: var(--base-200);
   --color-base-300: var(--base-300);
   --color-base-content: var(--base-content);
-
-  /* ⚠️ CORRECTIF MAJEUR — ces deux lignes manquaient.
-     Tailwind v4 ne génère que les utilitaires déclarés ici. `--primary-content`
-     et `--base-border` existaient dans `:root` et `.dark`, mais n'étaient pas
-     mappées : les classes `text-primary-content`, `bg-primary-content` et
-     `border-base-border` ne produisaient donc AUCUNE règle CSS. Elles étaient
-     simplement ignorées, sans avertissement.
-
-     Conséquence visible : sur tous les boutons dorés, le libellé héritait de
-     `--base-content` au lieu de `--primary-content`. En mode sombre, cela donne
-     de l'ivoire sur de l'or — un contraste sous le seuil WCAG AA. C'est
-     probablement ce qui a conduit au contournement `text-[#070510]` écrit en
-     dur sur les pastilles de filtre de la page Projets. */
   --color-primary-content: var(--primary-content);
   --color-base-border: var(--base-border);
 
-  /* ⚠️ CORRECTIF MAJEUR — les polices ne s'appliquaient pas.
-     `next/font/google` ne déclare pas la famille sous son nom public : il génère
-     un nom aléatoire (`__Playfair_Display_a1b2c3`) et l'expose uniquement via la
-     variable CSS posée sur `<html>` par le layout. Écrire `'Playfair Display'`
-     en littéral ne correspondait donc à aucune `@font-face` chargée, et la
-     police retombait silencieusement sur Georgia — de même que `--font-sans`
-     retombait sur `system-ui` et `--font-mono` sur la monospace du système.
-
-     Le texte courant y échappait par accident, `<body>` portant directement
-     `inter.className`. Mais toute utilisation de `font-display` ou `font-mono`
-     affichait une police de repli. */
-  --font-display: var(--font-playfair), Georgia, 'Times New Roman', serif;
-  --font-sans: var(--font-inter), system-ui, -apple-system, sans-serif;
-  --font-mono: var(--font-jetbrains), 'Fira Code', ui-monospace, monospace;
+  /* Police unique du site : Poppins, sans exception (lib/fonts.ts).
+     Les quatre familles Tailwind pointent vers elle : un `font-mono`,
+     `font-serif` ou `font-display` resté dans un composant s'affiche donc lui
+     aussi en Poppins. Les chiffres alignés passent par `tabular-nums`.
+     next/font n'expose pas le nom public de la famille, seulement la variable
+     posée sur <html> : c'est elle qu'il faut référencer. */
+  --font-sans: var(--font-poppins), system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: var(--font-sans);
+  --font-serif: var(--font-sans);
+  --font-mono: var(--font-sans);
 }
 
 @layer base {
-
-  /* 
-   * :root = Variables pour le MODE CLAIR 
-   */
   :root {
-    /* ── Fonds ── */
-    --base-100: #FFFFFF;
-    /* Blanc pur et moderne (Background général) */
-    --base-200: #F7F7F8;
-    /* Gris ultra-clair (Cartes/Surfaces) */
-    --base-300: #EFEFEF;
-    /* Gris doux (Bordures/Hovers) */
-    --base-border: #E0E0E0;
+    --base-100: var(--ds-canvas);
+    --base-200: var(--ds-surface);
+    --base-300: var(--ds-surface-sunken);
+    --base-border: var(--ds-line);
+    --base-content: var(--ds-ink);
 
-    /* ── Accents Or ── */
-    --primary: #C8900A;
-    /* Or Impérial (Couleur principale) */
-    --secondary: #7A6B50;
-    --accent: #E5A529;
-    --neutral: #1A1410;
-    --app-accent-warm: #C97A00;
-    --app-signature: #7A1A6A;
+    --primary: var(--ds-brand);
+    --primary-content: var(--ds-brand-ink);
+    --secondary: var(--ds-ink-muted);
+    --accent: var(--ds-brand-text);
+    --neutral: var(--ds-ink);
 
-    /* ── Textes ── */
-    --base-content: #111111;
-    /* Texte principal (Noir profond, ultra-lisible) */
-    --text-secondary: #444444;
-    --text-tertiary: #777777;
-    --text-links: #5D1A5A;
+    --background: var(--ds-canvas);
+    --foreground: var(--ds-ink);
 
-    /* ── Sémantiques globales ── */
-    /* Texte sur fond primaire. ⚠️ Correctif d'accessibilité : blanc sur l'or
-       impérial (#C8900A) ne donnait que 2,82:1 — sous le seuil WCAG AA (4,5:1)
-       sur tous les boutons dorés du mode clair. Encre sombre : 6,66:1. */
-    --primary-content: #16110A;
-    --background: var(--base-100);
-    --foreground: var(--base-content);
-
-    /* ── Glow / Effets de lumière ── */
-    --glow-color: rgba(200, 144, 10, 0.10);
-    --glow-color-strong: rgba(200, 144, 10, 0.20);
-    --glass-bg: rgba(255, 255, 255, 0.75);
-    --glass-border: rgba(0, 0, 0, 0.06);
-
-  }
-
-  /* 
-   * .dark = Variables pour le MODE SOMBRE 
-   * Cette classe est injectée automatiquement sur <html> par notre `ThemeInitializer.tsx`.
-   */
-  .dark {
-    /* ── Fonds ── */
-    --base-100: #070510;
-    /* Void Cosmique (Noir très profond teinté de violet spatial) */
-    --base-200: #110D1F;
-    /* Surfaces élevées (Cartes) */
-    --base-300: #1A1430;
-    /* Surfaces interactives */
-    --base-border: #2C2245;
-
-    /* ── Accents Or ── */
-    --primary: #F0A500;
-    /* Or Solaire (Vibrant, contraste avec le Void) */
-    --secondary: #7B6FA0;
-    --accent: #FFD166;
-    --neutral: #F0ECD8;
-    --app-accent-warm: #E06B00;
-    --app-signature: #FF6BDE;
-
-    /* ── Textes ── */
-    --base-content: #F0ECD8;
-    /* Ivoire cassé pour éviter la fatigue visuelle du blanc pur #FFF */
-    --text-secondary: #B8B0A0;
-    --text-tertiary: #7B6FA0;
-    --text-links: #A78BFF;
-
-    /* ── Sémantiques globales ── */
-    --primary-content: #070510;
-    /* Texte sur bouton (ex: Noir sur Or) */
-    --background: var(--base-100);
-    --foreground: var(--base-content);
-
-    /* ── Glow / Effets de lumière ── */
-    --glow-color: rgba(240, 165, 0, 0.08);
-    --glow-color-strong: rgba(240, 165, 0, 0.2);
-    --glass-bg: rgba(7, 5, 16, 0.7);
-    --glass-border: rgba(240, 236, 216, 0.06);
-
+    /* Effets encore utilisés par les pages non refaites, teintés du bleu de marque */
+    --glow-color: color-mix(in srgb, var(--ds-brand) 10%, transparent);
+    --glow-color-strong: color-mix(in srgb, var(--ds-brand) 20%, transparent);
+    --glass-bg: color-mix(in srgb, var(--ds-canvas) 78%, transparent);
+    --glass-border: color-mix(in srgb, var(--ds-ink) 8%, transparent);
   }
 
   /* Application des règles par défaut sur tout le document HTML */
   html {
     scroll-behavior: smooth;
-    /* Défilement doux par défaut */
   }
 
   body {
     background: var(--background);
     color: var(--foreground);
     font-family: var(--font-sans);
-    /* Transition CSS super douce quand l'utilisateur clique sur le bouton "Dark Mode" */
-    transition: background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1),
-      color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    /* Transition douce lors du changement de thème */
+    transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+      color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     -webkit-font-smoothing: antialiased;
-    /* Rendu des polices plus fin sur macOS/iOS */
     -moz-osx-font-smoothing: grayscale;
   }
 
-  /* 
-   * Filtre Noise / Bruit (Effet ultra-premium) 
-   * Ajoute une texture granulaire très subtile sur tout l'écran, ce qui casse l'aspect trop "lisse" et digital du site.
-   */
-  body::after {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
-    pointer-events: none;
-    /* Crucial pour ne pas bloquer les clics de souris */
-    z-index: 9999;
-  }
+  /* Le calque de grain plein écran (`body::after`, `z-index: 9999`) a été
+     retiré : fixé au-dessus de toute la page, il imposait une passe de
+     composition supplémentaire à chaque image affichée, et recouvrait jusqu'aux
+     modales. La direction « Reçu » n'en a pas l'usage. */
 
   /* Surlignage du texte sélectionné.
      ⚠️ Correctif : la règle précédente écrivait `rgb(var(--primary-rgb) / 0.2)`
@@ -216,14 +117,32 @@
     color: inherit;
   }
 
+  /* Italique : la vraie italique de Poppins (instance non préchargée).
+     Déclarée hors couche plus bas pour l'emporter sur les utilitaires. */
+
   /* Anneau de focus par défaut.
      Filet de sécurité : les composants posent leurs propres anneaux
      `focus-visible:ring-*`, mais tout élément interactif oublié reste
      atteignable au clavier de façon visible. */
   :focus-visible {
-    outline: 2px solid var(--primary);
+    outline: 2px solid var(--ds-focus);
     outline-offset: 2px;
   }
+}
+
+/* ═══════════════════════════════════════════════
+   ITALIQUE — Poppins Italic véritable
+   ─────────────────────────────────────────────
+   Hors couche (`@layer`) : une règle hors couche l'emporte sur les utilitaires
+   Tailwind, quelle que soit leur spécificité. Toute italique du site — classe
+   `italic`, `<em>`, `<i>`, `<cite>` — utilise ainsi le fichier italique de
+   Poppins au lieu d'une fausse italique obtenue en inclinant les lettres.
+   ═══════════════════════════════════════════════ */
+.italic,
+em,
+i,
+cite {
+  font-family: var(--font-poppins-italic), var(--font-sans);
 }
 
 /* ═══════════════════════════════════════════════
@@ -468,3 +387,36 @@ html {
   }
 }
 
+
+/* ═══════════════════════════════════════════════
+   PAGE D'ERREUR — animations d'entrée (components/layout/pageErreur.tsx)
+   ─────────────────────────────────────────────
+   En CSS plutôt qu'avec framer-motion : Next.js intègre les écrans d'erreur
+   à chaque page, la bibliothèque était donc téléchargée partout.
+   Déclarées ici et non dans un fichier dédié : une feuille propre à la page
+   d'erreur serait préchargée sur chaque page sans y être utilisée, ce que
+   Chrome signale comme un préchargement inutile. Chaque élément règle son
+   délai avec --err-delay.
+   ═══════════════════════════════════════════════ */
+@keyframes err-rise {
+  from { opacity: 0; transform: translateY(var(--err-shift, 0)) scale(var(--err-scale, 1)); }
+  to { opacity: 1; transform: none; }
+}
+
+.err-rise {
+  animation: err-rise var(--err-duration, 0.6s) cubic-bezier(0.22, 1, 0.36, 1) var(--err-delay, 0s) backwards;
+}
+
+/* Anneau du compte à rebours : chaque seconde, l'arc avance en douceur. */
+.err-ring {
+  transition: stroke-dashoffset 1s linear;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .err-rise {
+    animation: none;
+  }
+  .err-ring {
+    transition: none;
+  }
+}
