@@ -2,16 +2,16 @@
   "seo": {
     "site": {
       "title": "Kalvin Takoudjou — Ingénieur logiciel full-stack et mobile",
-      "description": "Portfolio de Kalvin Takoudjou, ingénieur logiciel full-stack et mobile à Lomé : applications web et mobiles livrées, chacune présentée avec son architecture.",
+      "description": "Portfolio de Kalvin Takoudjou, ingénieur logiciel full-stack, backend et mobile à Lomé : plateformes web, applications mobiles et SaaS, de l’analyse du besoin à la mise en production.",
       "imageAlt": "Kalvin Takoudjou — Ingénieur logiciel"
     },
     "home": {
       "title": "Kalvin Takoudjou — Ingénieur logiciel full-stack et mobile",
-      "description": "Applications web et mobiles livrées en production : billetterie payée par Mobile Money, e-commerce, gestion de stock, gestion locative. L'architecture de chaque projet est détaillée."
+      "description": "Plateformes web et mobiles en production : e-commerce avec wallet et paiements Mobile Money, billetterie digitale, SaaS agricole offline-first. L’architecture de chaque projet est détaillée."
     },
     "projects": {
       "title": "Projets",
-      "description": "Les projets de Kalvin Takoudjou, un par un : captures d'écran, stack et schéma d'architecture de chaque application web et mobile."
+      "description": "Les projets de Kalvin Takoudjou, un par un : captures d’écran, stack et schéma d’architecture de chaque application web et mobile."
     },
     "about": {
       "title": "À propos",
@@ -47,7 +47,9 @@
     "liveSite": "Voir le site",
     "sourceCode": "Code source",
     "details": "Détails du projet",
-    "newTab": "(nouvel onglet)"
+    "newTab": "(nouvel onglet)",
+    "inProduction": "En production",
+    "highlights": "Ce que j’ai construit"
   },
   "projects_page": {
     "overline": "Projets livrés",
@@ -62,7 +64,7 @@
   "about_page": {
     "overline": "À propos",
     "title": "Ingénieur logiciel à Lomé, du besoin métier à la mise en production.",
-    "lead": "Je m'appelle Kalvin Takoudjou. Consultant développeur full-stack chez Myriade Groupe depuis 2024, je conçois des applications web et mobiles, de la base de données à l'écran. Je prépare en parallèle un MBA Big Data et Intelligence Artificielle.",
+    "lead": "Je m’appelle Kalvin Takoudjou. Je conçois et développe des solutions complètes — plateformes web, applications mobiles et systèmes SaaS — de l’analyse du besoin jusqu’à la mise en production : API REST, architectures backend, applications cross-platform, paiements, multi-tenant et offline-first.",
     "ctaCv": "Télécharger le CV (PDF)",
     "ctaContact": "Me contacter",
     "card": {
@@ -70,20 +72,23 @@
       "portraitAlt": "Portrait de Kalvin Takoudjou",
       "role": "Ingénieur logiciel full-stack et mobile",
       "position": "Poste",
-      "positionValue": "Consultant · Myriade Groupe",
+      "positionValue": "Ingénieur · Myriade Groupe",
       "education": "Formation",
       "educationValue": "MBA Big Data & IA, en cours",
       "based": "Basé à",
       "basedValue": "Lomé, Togo · UTC+0",
       "missions": "Missions",
       "missionsValue": "À distance",
-      "stamp": "Disponible"
+      "stamp": "Disponible",
+      "languages": "Langues",
+      "languagesValue": "Français (C2) · anglais"
     },
     "career": {
       "overline": "Parcours",
       "title": "Expérience et formation.",
       "experience": "Expérience",
-      "education": "Formation"
+      "education": "Formation",
+      "tasks": "Missions"
     },
     "method": {
       "overline": "Méthode",
@@ -98,7 +103,7 @@
       },
       "delivery": {
         "title": "Livrer, pas seulement développer",
-        "text": "Conteneurs Docker et déploiement font partie du travail : un logiciel est terminé lorsqu’il tourne chez ceux qui l’utilisent."
+        "text": "Docker, reverse proxy, sauvegardes et restauration, supervision des services : un logiciel est terminé lorsqu’il tourne, et reste exploitable, chez ceux qui l’utilisent."
       },
       "architecture": {
         "title": "Rendre l’architecture lisible",
@@ -108,6 +113,57 @@
     "recommendations": {
       "overline": "Recommandations",
       "title": "Ce qu’en disent ceux qui ont travaillé avec moi."
+    },
+    "profile": {
+      "overline": "Profil",
+      "title": "Langues, atouts et centres d’intérêt.",
+      "languagesTitle": "Langues",
+      "languages": [
+        {
+          "name": "Français",
+          "level": "Langue maternelle",
+          "note": "Excellente maîtrise à l’oral et à l’écrit. Attestation TFC, niveau C2."
+        },
+        {
+          "name": "Anglais",
+          "level": "Niveau intermédiaire",
+          "note": "Lecture et rédaction de documentation technique ; expression orale en cours de consolidation."
+        }
+      ],
+      "strengthsTitle": "Atouts",
+      "strengths": [
+        {
+          "title": "Rigueur d’ingénierie",
+          "text": "Une approche structurée de la conception, du développement et de la résolution des problèmes."
+        },
+        {
+          "title": "Autonomie",
+          "text": "Prendre en charge un sujet de manière responsable, de l’analyse jusqu’à sa mise en œuvre."
+        },
+        {
+          "title": "Résolution de problèmes",
+          "text": "Analyse méthodique, diagnostic et recherche de solutions robustes."
+        },
+        {
+          "title": "Culture open source",
+          "text": "Technologies ouvertes, documentation, partage de connaissances et bonnes pratiques."
+        }
+      ],
+      "interestsTitle": "Centres d’intérêt",
+      "interests": [
+        {
+          "title": "Basketball",
+          "text": "NBA, EuroLeague, analyse et actualité sportive."
+        },
+        {
+          "title": "Nature et découverte",
+          "text": "Randonnées, balades et découverte de nouveaux environnements."
+        },
+        {
+          "title": "IA et automatisation",
+          "text": "Veille technologique et nouvelles applications de l’intelligence artificielle."
+        }
+      ]
     }
   },
   "contact_page": {
@@ -157,7 +213,7 @@
       "success": "Message envoyé",
       "error": "Envoi impossible",
       "successMessage": "Message envoyé avec succès !",
-      "errorMessage": "Erreur lors de l'envoi.",
+      "errorMessage": "Erreur lors de l’envoi.",
       "networkError": "Erreur réseau. Veuillez réessayer.",
       "dismiss": "Fermer la notification"
     }
@@ -174,7 +230,7 @@
     "code": "404",
     "title": "Page introuvable",
     "description": "Cette adresse ne correspond à aucune page du portfolio.",
-    "cta": "Retour à l'accueil"
+    "cta": "Retour à l’accueil"
   },
   "footer": {
     "description": "Ingénieur logiciel full-stack et mobile. Applications web et mobiles livrées en production, depuis Lomé.",
@@ -185,49 +241,95 @@
     "madeIn": "Conçu et développé à Lomé."
   },
   "experience": {
-    "job1_title": "Consultant — Développeur full-stack",
+    "job1_title": "Ingénieur logiciel full-stack et mobile",
     "job1_subtitle": "Myriade Groupe",
     "job1_period": "2024 — Présent",
-    "job1_description": "Pilotage de refontes architecturales complexes. Leadership technique sur des stacks Next.js/Node.js. Conception des solutions SaaS et applications mobiles Android et iOS.",
+    "job1_description": "Conception, développement et mise en production de solutions web et mobiles sur mesure, de l’analyse des besoins et des cahiers des charges jusqu’au déploiement, à la maintenance et à l’évolution des applications.",
     "job1_location": "Lomé, Togo",
-    "job2_title": "Gestionnaire informatique",
-    "job2_subtitle": "LaRegale 228",
+    "job2_title": "Responsable informatique",
+    "job2_subtitle": "La Régale",
     "job2_period": "2023 — 2024",
-    "job2_description": "Développement et maintenance des outils de gestion des utilisateurs et des commandes de la société.",
+    "job2_description": "Gestion du parc informatique, maintenance des équipements et support technique aux utilisateurs, pour garder les outils de travail en condition opérationnelle.",
     "job2_location": "Lomé, Togo",
     "edu1_title": "MBA Big Data et Intelligence Artificielle",
     "edu1_subtitle": "STUDI France",
     "edu1_period": "2026 — En cours",
-    "edu1_description": "Spécialisation en architectures de données massives, machine learning et intégration de l'IA dans les processus métier.",
+    "edu1_description": "Spécialisation en architectures de données massives, machine learning et intégration de l’IA dans les processus métier.",
     "edu1_location": "En ligne",
     "edu2_title": "Licence en Systèmes Informatiques et Logiciels",
     "edu2_subtitle": "IAEC Togo",
     "edu2_period": "2020 — 2023",
-    "edu2_description": "Création et développement de sites web et d'applications mobiles, avec bases de données et outils de gestion.",
-    "edu2_location": "Lomé, Togo"
+    "edu2_description": "Création et développement de sites web et d’applications mobiles, avec bases de données et outils de gestion.",
+    "edu2_location": "Lomé, Togo",
+    "job1_points": [
+      "Analyse des besoins clients et des cahiers des charges, traduits en solutions fonctionnelles et techniques.",
+      "Conception d’architectures applicatives, de modèles de données, d’API REST et de flux métier adaptés à chaque projet.",
+      "Développement et intégration de backends, d’API, d’interfaces web, d’applications mobiles et de services tiers.",
+      "Bonnes pratiques d’ingénierie : qualité et modularité du code, sécurité, validation des données, gestion des erreurs.",
+      "Tests, débogage, optimisation et stabilisation avant la mise en production.",
+      "Déploiement, maintenance corrective et évolutive, amélioration continue selon les retours clients.",
+      "Veille technologique pour améliorer la performance, la fiabilité et l’évolutivité des applications."
+    ],
+    "job2_points": [
+      "Gestion et suivi du parc informatique : ordinateurs, périphériques et équipements.",
+      "Maintenance préventive et corrective des postes et périphériques.",
+      "Diagnostic et résolution des incidents matériels et logiciels.",
+      "Installation, configuration et mise à jour des postes, logiciels et équipements.",
+      "Support technique et accompagnement des utilisateurs.",
+      "Suivi des besoins en maintenance, remplacement et renouvellement du matériel."
+    ]
   },
   "testimonials": {
     "t1_quote": "Kalvin est un professionnel rigoureux et créatif. Kalvin a su proposer des solutions bienveillantes et innovantes.",
     "t1_author": "Justine A.",
     "t1_role": "CEO",
-    "t1_company": "LaRegale 228",
-    "t2_quote": "Il a une vision claire de ce qu'il veut et sait comment l'atteindre.",
+    "t1_company": "La Régale",
+    "t2_quote": "Il a une vision claire de ce qu’il veut et sait comment l’atteindre.",
     "t2_author": "Kahar I.",
     "t2_role": "Ingénieur logiciel senior",
     "t2_company": "Myriade Groupe",
-    "t3_quote": "Un très bon élément, qui apporte la bonne humeur et le sérieux à l'équipe tout en contribuant significativement à la réussite de nos projets.",
+    "t3_quote": "Un très bon élément, qui apporte la bonne humeur et le sérieux à l’équipe tout en contribuant significativement à la réussite de nos projets.",
     "t3_author": "Jonas K.",
-    "t3_role": "Directeur General",
+    "t3_role": "Directeur général",
     "t3_company": "Myriade Groupe"
   },
   "projects_data": {
+    "atelier": {
+      "short": "Plateforme e-commerce full-stack de vente et de livraison de produits biologiques, avec wallet interne et paiements Mobile Money et carte bancaire.",
+      "full": "API REST, back-office d’administration, espace client, wallet interne, paiements multicanal, traitements asynchrones et infrastructure Docker orientée production.",
+      "domain": "E-commerce & paiements",
+      "points": [
+        "Backend Django / Django REST Framework : API REST couvrant utilisateurs, catalogue, commandes, paiements, transactions et wallet.",
+        "Frontend Next.js / TypeScript : catalogue, panier, commandes, compte client et suivi des opérations.",
+        "Back-office d’administration : utilisateurs, produits, catégories, commandes, stocks, paiements et transactions.",
+        "Espace client : profil, adresses, commandes, paiements, wallet et historique des transactions.",
+        "Paiements Mobile Money avec PayDunya et carte bancaire avec Stripe, webhooks et synchronisation sécurisée des statuts de paiement et de commande.",
+        "Cycle de vie complet d’une commande : création, paiement, traitement et livraison.",
+        "Rôles et droits d’accès séparant administration et clients ; soft delete, traçabilité et horodatage des données métier.",
+        "Tâches asynchrones et automatisées avec Celery et Redis.",
+        "Production sous Docker et Linux : PostgreSQL, Django, Next.js, Redis, Celery et reverse proxy Traefik, avec gestion des médias.",
+        "Sauvegarde et restauration de la base de données et des médias ; bases de monitoring et d’administration des services Docker."
+      ]
+    },
+    "shemm": {
+      "short": "Plateforme mobile Android et iOS de gestion d’événements et de billetterie digitale : découverte, achat de billets, paiement Mobile Money et contrôle à l’entrée.",
+      "full": "Application Flutter pour les participants, back-office pour les organisateurs, API Django REST, billets numériques sécurisés, scanner de validation et statistiques de ventes et de fréquentation.",
+      "domain": "Event Tech & mobile",
+      "points": [
+        "Application Android et iOS en Flutter / Dart : découverte des événements, réservation et gestion des billets.",
+        "Backend Django / Django REST Framework et API REST dédiées à l’application mobile.",
+        "Billetterie complète : catégories de billets, tarifs, quotas, disponibilités, commandes, participants et émission des billets.",
+        "Paiements Mobile Money avec PayDunya et suivi du cycle de vie des transactions.",
+        "Back-office de création, de configuration et de gestion des événements et de leur billetterie.",
+        "Billets numériques sécurisés, de l’achat à l’utilisation : création, paiement, émission, validation.",
+        "Scanner optimisé pour une validation rapide aux entrées à forte affluence, qui détecte les billets invalides ou déjà utilisés.",
+        "Suivi en temps réel des entrées ; tableaux de bord des ventes, revenus, billets émis et utilisés, disponibilités et taux de remplissage.",
+        "API séparant utilisateurs, événements, billetterie, paiements, validation et statistiques ; contrôle d’accès et traçabilité des transactions."
+      ]
+    },
     "challenger": {
       "short": "Logiciel Windows de calcul du temps de travail des employés.",
       "full": "Logiciel Windows de pointage et de calcul du temps de travail des employés."
-    },
-    "sheem": {
-      "short": "Application mobile de gestion événementielle avec vente de billets, paiement mobile, génération de QR codes et tableau de bord administrateur.",
-      "full": "Application mobile de gestion événementielle avec vente de billets, paiement mobile, génération de QR codes et tableau de bord administrateur."
     },
     "mboashop": {
       "short": "E-commerce complet avec panier dynamique, paiement intégré et dashboard admin.",
@@ -239,11 +341,23 @@
     },
     "stock": {
       "short": "Gestion de stock en temps réel avec alertes automatiques et reporting avancé.",
-      "full": "SaaS de gestion d'inventaire avec suivi temps réel, alertes de réapprovisionnement et codes-barres."
+      "full": "SaaS de gestion d’inventaire avec suivi temps réel, alertes de réapprovisionnement et codes-barres."
     },
     "green": {
-      "short": "Plateforme de gestion complète de plantation et suivi des activités.",
-      "full": "Plateforme complète de gestion de plantation et suivi des activités avec pipeline de données, API RESTful et visualisations interactives."
+      "short": "SaaS web et mobile multi-tenant de gestion des exploitations agricoles, des équipes et des opérations terrain, avec une application mobile offline-first.",
+      "full": "Chaque entreprise dispose d’un espace isolé. Les techniciens exécutent leurs opérations sur mobile, même sans réseau, puis les synchronisent avec la plateforme dès que la connexion revient.",
+      "domain": "SaaS & offline-first",
+      "points": [
+        "Architecture SaaS multi-tenant : isolation des données et gestion indépendante de plusieurs entreprises.",
+        "Gestion des entreprises, exploitations, fermes, parcelles, équipes et utilisateurs, avec des rôles pour gestionnaires, ingénieurs agronomes, techniciens et ouvriers.",
+        "Workflow des opérations agricoles : création, planification, assignation, exécution, suivi et clôture.",
+        "Application mobile Flutter / Dart pour les techniciens, conçue offline-first avec une base locale Isar.",
+        "Synchronisation entre l’appareil et le cloud, limitée aux données nécessaires pour rester fluide sur des connexions à faible débit.",
+        "Cohérence entre état local et état distant malgré une connectivité intermittente.",
+        "Backend Django / Django REST Framework et API REST consommées par la plateforme web Next.js / TypeScript et l’application mobile.",
+        "Abonnements et paiements de la plateforme avec Stripe.",
+        "Traçabilité des opérations métier ; architecture orientée scalabilité, résilience et séparation des données entre tenants."
+      ]
     },
     "locamanager": {
       "short": "Application mobile Android et iOS de gestion complète de biens immobiliers mis en location.",
@@ -265,14 +379,14 @@
     "toDark": "Passer en mode sombre"
   },
   "home": {
-    "overline": "Ingénieur logiciel · full-stack et mobile",
+    "overline": "Ingénieur logiciel · full-stack, backend et mobile",
     "title": "Je code les logiciels qui font tourner des entreprises réelles.",
-    "lead": "Billets payés par Mobile Money, stocks scannés au code-barres, biens en location, plantations suivies. Du premier écran à la mise en production, depuis Lomé.",
+    "lead": "Boutique bio avec wallet et paiements Mobile Money, billetterie avec scan à l’entrée, SaaS agricole qui fonctionne hors connexion. De l’analyse du besoin à la mise en production, depuis Lomé.",
     "ctaProjects": "Voir les projets",
     "ctaCv": "Télécharger le CV (PDF)",
     "receipt": {
       "label": "Récapitulatif du profil",
-      "role": "Ingénieur logiciel full-stack",
+      "role": "Ingénieur logiciel full-stack et mobile",
       "location": "Lomé, Togo",
       "localTime": "Heure locale",
       "status": "Statut",
@@ -280,7 +394,7 @@
       "missions": "Missions",
       "missionsValue": "Remote",
       "position": "Poste",
-      "positionValue": "Consultant · Myriade Groupe",
+      "positionValue": "Ingénieur · Myriade Groupe",
       "education": "Formation",
       "educationValue": "MBA Big Data & IA",
       "total": "Total livré",
@@ -291,7 +405,7 @@
     "projects": {
       "overline": "Projets livrés",
       "title": "Chaque projet, avec son architecture.",
-      "description": "Ce qui a été livré, pour quel usage, et comment c'est construit.",
+      "description": "Ce qui a été livré, pour quel usage, et comment c’est construit.",
       "others": "Les autres projets",
       "othersHint": "Déplier une ligne pour voir le billet et son architecture.",
       "viewAll": "Tous les projets"
@@ -299,11 +413,11 @@
     "stack": {
       "overline": "Relevé de compétences",
       "title": "Les outils, par usage.",
-      "description": "Chaque technologie indique le nombre de projets présentés ici qui l'utilisent.",
+      "description": "Chaque technologie indique le nombre de projets présentés ici qui l’utilisent.",
       "usage": "{count, plural, =0 {autres travaux} one {# projet} other {# projets}}",
       "categories": {
         "frontend": "Interfaces web et mobiles",
-        "backend": "Serveurs et API",
+        "backend": "Serveurs, API et paiements",
         "database": "Données",
         "devops": "Déploiement et outils"
       }
@@ -327,7 +441,7 @@
       "employees": "Employés",
       "timeClock": "Pointage",
       "hoursCalc": "Calcul des heures",
-      "timesheets": "Relevés d'heures",
+      "timesheets": "Relevés d’heures",
       "mobileApp": "Application mobile",
       "adminDashboard": "Tableau de bord",
       "api": "API",
@@ -346,16 +460,25 @@
       "realtime": "Temps réel",
       "barcodes": "Codes-barres",
       "fieldApp": "Application terrain",
-      "dashboard": "Tableau de bord",
       "dataPipeline": "Pipeline de données",
       "managers": "Gestionnaires",
-      "stores": "Magasins"
+      "stores": "Magasins",
+      "backOffice": "Back-office",
+      "payments": "Paiements",
+      "reverseProxy": "Reverse proxy",
+      "asyncJobs": "Tâches asynchrones",
+      "wallet": "Wallet interne",
+      "ticketControl": "Contrôle des billets",
+      "organizerOffice": "Back-office organisateurs",
+      "webPlatform": "Plateforme web",
+      "localDb": "Base locale",
+      "subscriptions": "Abonnements",
+      "backupStorage": "Sauvegardes"
     },
     "edges": {
       "clockIn": "pointe",
       "records": "enregistre",
       "produces": "produit",
-      "tickets": "billets · QR",
       "management": "gestion",
       "payment": "paiement",
       "data": "données",
@@ -367,10 +490,19 @@
       "scan": "scan",
       "requests": "requêtes",
       "alerts": "alertes",
-      "fieldData": "relevés",
       "charts": "visualisations",
       "rentals": "biens · loyers",
-      "promotions": "promotions"
+      "promotions": "promotions",
+      "balances": "soldes",
+      "tasks": "tâches",
+      "webhooks": "webhooks",
+      "purchase": "achat de billets",
+      "validation": "validation",
+      "eventsStats": "événements · statistiques",
+      "sync": "synchronisation",
+      "offline": "hors connexion",
+      "subscribe": "abonnements",
+      "backedUp": "base · médias"
     }
   },
   "gallery": {
@@ -379,9 +511,9 @@
     "previous": "Image précédente",
     "next": "Image suivante",
     "close": "Fermer la galerie",
-    "goTo": "Aller à l'image {position}",
+    "goTo": "Aller à l’image {position}",
     "imagesLabel": "Images du projet",
-    "screenshotAlt": "{title} — capture d'écran {position}",
+    "screenshotAlt": "{title} — capture d’écran {position}",
     "keyboardHint": "Flèches gauche et droite pour naviguer, Échap pour fermer",
     "count": "{count, plural, one {# capture} other {# captures}}",
     "openAt": "Agrandir la capture {position} de {title}"

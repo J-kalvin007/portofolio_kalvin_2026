@@ -17,7 +17,7 @@
  * Le schéma d'architecture suit le billet dans les deux cas.
  */
 
-import { useTranslations } from 'next-intl';
+import { useMessages, useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import { PROJECTS, projectAnchor, repositoryUrl, type Project } from '@/lib/data/projects';
 import { padNumber } from '@/lib/format';
@@ -37,12 +37,14 @@ interface ProjectTicketProps {
 export default function ProjectTicket({ project, variant = 'summary', headingLevel = 'h3' }: ProjectTicketProps) {
   const t = useTranslations('project');
   const tData = useTranslations('projects_data');
+  const messages = useMessages();
 
   const Heading = headingLevel;
   const isFull = variant === 'full';
   const anchor = projectAnchor(project);
   const headingId = `${anchor}-${variant}-titre`;
   const stackId = `${anchor}-stack`;
+  const highlightsId = `${anchor}-realisations`;
   const number = PROJECTS.indexOf(project) + 1;
 
   const summary = tData(`${project.i18nKey}.short`);
@@ -51,6 +53,13 @@ export default function ProjectTicket({ project, variant = 'summary', headingLev
   const showDetail = isFull && detail !== summary;
   const repository = repositoryUrl(project);
 
+  // Domaine et réalisations : renseignés pour les projets décrits en détail.
+  const data = messages.projects_data[project.i18nKey];
+  const domain = 'domain' in data ? data.domain : undefined;
+  const highlights: string[] = 'points' in data ? data.points : [];
+
+  const meta = [t(`categories.${project.category}`), domain, project.year].filter(Boolean).join(' · ');
+
   return (
     <div className="tk-entry" id={isFull ? anchor : undefined}>
       <article className={isFull ? 'tk tk--full' : 'tk'} aria-labelledby={headingId}>
@@ -58,10 +67,19 @@ export default function ProjectTicket({ project, variant = 'summary', headingLev
           <TicketGallery title={project.title} cover={project.coverImage} images={project.images} variant={isFull ? 'full' : 'cover'} />
 
           <div className="tk-body">
-            <p className="tk-meta">{t(`categories.${project.category}`)} · {project.year}</p>
+            <p className="tk-meta">{meta}</p>
             <Heading id={headingId} className="tk-title">{project.title}</Heading>
             <p className="tk-desc">{summary}</p>
             {showDetail && <p className="tk-detail">{detail}</p>}
+
+            {isFull && highlights.length > 0 && (
+              <>
+                <p id={highlightsId} className="tk-label">{t('highlights')}</p>
+                <ul className="tk-points" aria-labelledby={highlightsId}>
+                  {highlights.map((point) => <li key={point}>{point}</li>)}
+                </ul>
+              </>
+            )}
 
             {isFull ? (
               <>
@@ -83,13 +101,17 @@ export default function ProjectTicket({ project, variant = 'summary', headingLev
 
         {/* Souche : numéro du billet et actions */}
         <div className="tk-stub">
-          <p className="tk-number">
-            {t('ticket')}
-            <strong>
-              {padNumber(number)}
-              <span>/{padNumber(PROJECTS.length)}</span>
-            </strong>
-          </p>
+          <div className="grid justify-items-start gap-3">
+            <p className="tk-number">
+              {t('ticket')}
+              <strong>
+                {padNumber(number)}
+                <span>/{padNumber(PROJECTS.length)}</span>
+              </strong>
+            </p>
+            {/* Tampon : le produit tourne réellement, à l'adresse indiquée dessous. */}
+            {project.liveUrl && <p className="tk-status">{t('inProduction')}</p>}
+          </div>
           <div className="tk-links">
             {project.liveUrl && (
               <a className="tk-link" href={project.liveUrl} target="_blank" rel="noopener noreferrer">

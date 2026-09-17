@@ -24,7 +24,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { X } from 'lucide-react';
-import { useClientSnapshot } from '@/hooks/useClientSnapshot';
+import { useClientSnapshot, useIsClient } from '@/hooks/useClientSnapshot';
 
 /* ═══════════════════════════════════════════════════════════════════════════
    ▌ MINUTERIE DE REDIRECTION (page 404 uniquement)
@@ -42,13 +42,13 @@ const RING_CIRCUMFERENCE = 62.83;
 const UI_STRINGS = {
   fr: {
     defaultTitle: 'Page introuvable',
-    defaultMessage: "Cette adresse ne correspond à aucune page du site. Elle a peut-être été déplacée, ou l'adresse comporte une erreur de frappe.",
+    defaultMessage: "Cette adresse ne correspond à aucune page du site. Elle a peut-être été déplacée, ou l’adresse comporte une erreur de frappe.",
     stampNotFound: 'Introuvable',
     stampError: 'Erreur',
-    home: "Retour à l'accueil",
+    home: "Retour à l’accueil",
     retry: 'Réessayer',
     previous: 'Page précédente',
-    redirectIn: (s: number) => `Redirection vers l'accueil dans ${s} s`,
+    redirectIn: (s: number) => `Redirection vers l’accueil dans ${s} s`,
     cancel: 'Annuler la redirection',
   },
   en: {
@@ -112,7 +112,12 @@ export default function PageErreur({ code, title, message, reset }: PageErreurPr
    * concerne donc que la page 404.
    */
   const shouldAutoRedirect = !reset;
-  const showCountdown = shouldAutoRedirect && !isCancelled;
+  // Le décompte n'est affiché qu'une fois la page interactive : rendu dans le
+  // HTML initial, son bouton « Annuler » pouvait être cliqué avant l'hydratation
+  // — clic perdu, puis redirection malgré tout. Sans JavaScript, aucune
+  // redirection n'a lieu : elle n'est donc pas annoncée.
+  const isInteractive = useIsClient();
+  const showCountdown = isInteractive && shouldAutoRedirect && !isCancelled;
 
   /** Décompte seconde par seconde : un délai par tic, arrêté à zéro ou en pause. */
   useEffect(() => {

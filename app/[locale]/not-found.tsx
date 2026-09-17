@@ -19,9 +19,6 @@ export default function NotFound() {
   const t = useTranslations('notfound');
 
   return (
-    <PageErreur 
-      title={t('title')} 
-      message={t('description')} 
-    />
+    <PageErreur code={t('code')} title={t('title')} message={t('description')} />
   );
 }

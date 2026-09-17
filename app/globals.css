@@ -3,17 +3,10 @@
 /* Système de design : rôles de couleur, échelles, élévations (voir le fichier). */
 @import "./design-system.css";
 
-/* Enable class-based dark mode for Tailwind v4 */
-/* ⚠️ Le sélecteur ne couvrait que les *descendants* de `.dark`. L'élément
-   porteur lui-même — `<html class="dark">` — en était exclu : toute utilitaire
-   `dark:` posée sur `<html>` ou sur `<body>` (qui en est bien un descendant,
-   mais pas `<html>`) restait sans effet. `:where(.dark, .dark *)` inclut les
-   deux, et sa spécificité nulle évite d'écraser vos autres règles.
-
-   Sur Tailwind v4.0 stable, cette directive s'appelle `@custom-variant`.
-   Si votre version accepte `@variant` au niveau racine, conservez-la. */
+/* Mode sombre piloté par la classe `.dark` posée sur <html>.
+   `:where(.dark, .dark *)` couvre l'élément porteur lui-même et ses
+   descendants, avec une spécificité nulle. */
 @variant dark (&:where(.dark, .dark *));
-
 
 /**
  * @file globals.css
@@ -21,38 +14,22 @@
  *
  * @architecture
  * - `design-system.css` porte les valeurs et les rôles (`bg-canvas`, `text-ink`…).
- * - Ce fichier ne garde que ce qui est transverse : alias de compatibilité,
- *   polices, règles de base, barres de défilement, animations partagées.
+ * - Ce fichier ne garde que ce qui est transverse : police, règles de base,
+ *   barres de défilement, mouvement réduit, et les styles de la page d'erreur
+ *   (intégrée par Next.js à toutes les pages, voir plus bas).
+ * - Les objets propres à une page vivent à côté de leur composant
+ *   (`home.css`, `project.css`, `receipt.css`, `about.css`, `architecture.css`).
+ *
+ * @remarks Les anciens alias (`primary`, `base-100`, `glass`, `text-gradient`…)
+ * et les huit animations de l'ancien design (désintégration, étincelles,
+ * nébuleuses, anneau orbital…) ont été retirés avec les pages qui les
+ * utilisaient.
  */
 
-/* ═══════════════════════════════════════════════════════════════
-   ALIAS DE COMPATIBILITÉ
-   ─────────────────────────────────────────────────────────────
-   Les anciens noms (`primary`, `base-100`, `base-content`…) sont encore
-   utilisés par les pages qui n'ont pas été refaites (Projets, À propos,
-   Contact). Ils ne portent plus de valeur propre : ils pointent vers les
-   rôles du système de design. Conséquence voulue — ces pages adoptent
-   immédiatement la palette de la direction « Reçu » et restent cohérentes
-   avec la navigation et le pied de page, sans attendre leur refonte.
-
-   Ils disparaîtront quand plus aucun composant ne les utilisera.
-   ═══════════════════════════════════════════════════════════════ */
 @theme {
-  --color-primary: var(--primary);
-  --color-secondary: var(--secondary);
-  --color-accent: var(--accent);
-  --color-neutral: var(--neutral);
-  --color-base-100: var(--base-100);
-  --color-base-200: var(--base-200);
-  --color-base-300: var(--base-300);
-  --color-base-content: var(--base-content);
-  --color-primary-content: var(--primary-content);
-  --color-base-border: var(--base-border);
-
   /* Police unique du site : Poppins, sans exception (lib/fonts.ts).
      Les quatre familles Tailwind pointent vers elle : un `font-mono`,
-     `font-serif` ou `font-display` resté dans un composant s'affiche donc lui
-     aussi en Poppins. Les chiffres alignés passent par `tabular-nums`.
+     `font-serif` ou `font-display` s'affiche donc lui aussi en Poppins.
      next/font n'expose pas le nom public de la famille, seulement la variable
      posée sur <html> : c'est elle qu'il faut référencer. */
   --font-sans: var(--font-poppins), system-ui, -apple-system, 'Segoe UI', sans-serif;
@@ -62,37 +39,23 @@
 }
 
 @layer base {
-  :root {
-    --base-100: var(--ds-canvas);
-    --base-200: var(--ds-surface);
-    --base-300: var(--ds-surface-sunken);
-    --base-border: var(--ds-line);
-    --base-content: var(--ds-ink);
-
-    --primary: var(--ds-brand);
-    --primary-content: var(--ds-brand-ink);
-    --secondary: var(--ds-ink-muted);
-    --accent: var(--ds-brand-text);
-    --neutral: var(--ds-ink);
-
-    --background: var(--ds-canvas);
-    --foreground: var(--ds-ink);
-
-    /* Effets encore utilisés par les pages non refaites, teintés du bleu de marque */
-    --glow-color: color-mix(in srgb, var(--ds-brand) 10%, transparent);
-    --glow-color-strong: color-mix(in srgb, var(--ds-brand) 20%, transparent);
-    --glass-bg: color-mix(in srgb, var(--ds-canvas) 78%, transparent);
-    --glass-border: color-mix(in srgb, var(--ds-ink) 8%, transparent);
+  html {
+    /* Toute ancre (#projets, #main…) s'arrête sous la barre de navigation fixe. */
+    scroll-padding-top: 5.5rem;
+    scrollbar-width: thin;
+    scrollbar-color: var(--ds-line-strong) var(--ds-surface);
   }
 
-  /* Application des règles par défaut sur tout le document HTML */
-  html {
-    scroll-behavior: smooth;
+  /* Défilement doux, uniquement pour qui n'a pas demandé moins d'animations. */
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
   }
 
   body {
-    background: var(--background);
-    color: var(--foreground);
+    background: var(--ds-canvas);
+    color: var(--ds-ink);
     font-family: var(--font-sans);
     /* Transition douce lors du changement de thème */
     transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
@@ -101,29 +64,25 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
-  /* Le calque de grain plein écran (`body::after`, `z-index: 9999`) a été
-     retiré : fixé au-dessus de toute la page, il imposait une passe de
-     composition supplémentaire à chaque image affichée, et recouvrait jusqu'aux
-     modales. La direction « Reçu » n'en a pas l'usage. */
-
-  /* Surlignage du texte sélectionné.
-     ⚠️ Correctif : la règle précédente écrivait `rgb(var(--primary-rgb) / 0.2)`
-     avec des composantes séparées par des virgules (« 200, 144, 10 »). Mêler
-     virgules et barre oblique est une syntaxe invalide : Chrome la rejetait
-     (`CSS.supports` → false), le fond calculé était transparent et la couleur
-     de sélection ne s'appliquait jamais. `color-mix` évite le piège. */
+  /* Surlignage du texte sélectionné (`color-mix` : la syntaxe `rgb(a, b, c / x)`
+     de l'ancienne règle était invalide et n'était jamais appliquée). */
   ::selection {
     background: color-mix(in srgb, var(--ds-brand) 24%, transparent);
     color: inherit;
   }
 
-  /* Italique : la vraie italique de Poppins (instance non préchargée).
-     Déclarée hors couche plus bas pour l'emporter sur les utilitaires. */
+  /* Guillemets de citation (<q>) : en français, « » avec espaces insécables
+     à l'intérieur, comme l'exige la typographie ; les guillemets automatiques
+     du navigateur les collaient au texte. */
+  :lang(fr) q {
+    quotes: '«\00a0' '\00a0»' '“' '”';
+  }
+  :lang(en) q {
+    quotes: '“' '”' '‘' '’';
+  }
 
-  /* Anneau de focus par défaut.
-     Filet de sécurité : les composants posent leurs propres anneaux
-     `focus-visible:ring-*`, mais tout élément interactif oublié reste
-     atteignable au clavier de façon visible. */
+  /* Anneau de focus par défaut : filet de sécurité pour tout élément
+     interactif qui n'aurait pas le sien. */
   :focus-visible {
     outline: 2px solid var(--ds-focus);
     outline-offset: 2px;
@@ -146,22 +105,33 @@ cite {
 }
 
 /* ═══════════════════════════════════════════════
-   MOUVEMENT RÉDUIT — préférence système
-   ─────────────────────────────────────────────
-   `scroll-behavior: smooth` était appliqué sans condition. C'est l'une des
-   causes les plus courantes de malaise vestibulaire signalées sur le web :
-   l'utilisateur qui a demandé « réduire les animations » au niveau de son
-   système se voyait tout de même imposer un défilement animé sur chaque ancre.
+   BARRES DE DÉFILEMENT (Chrome, Edge, Safari)
+   Firefox est couvert par `scrollbar-color`, plus haut.
+   ═══════════════════════════════════════════════ */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
 
-   Le bloc ci-dessous neutralise en outre les animations et transitions
-   résiduelles — celles des composants tiers, ou celles écrites en CSS pure qui
-   n'ont pas de garde `motion-reduce:` côté Tailwind.
+::-webkit-scrollbar-track {
+  background: var(--ds-surface);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--ds-line-strong);
+  border-radius: 99px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--ds-ink-muted);
+}
+
+/* ═══════════════════════════════════════════════
+   MOUVEMENT RÉDUIT — préférence système
+   Neutralise les animations et transitions résiduelles, y compris celles
+   des composants tiers qui n'ont pas de garde `motion-reduce:`.
    ═══════════════════════════════════════════════ */
 @media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-
   *,
   *::before,
   *::after {
@@ -173,238 +143,64 @@ cite {
 }
 
 /* ═══════════════════════════════════════════════
-   SCROLLBAR PERSONNALISÉE
-   ═══════════════════════════════════════════════ */
-
-/* Firefox — les règles `::-webkit-scrollbar` ne l'atteignent pas.
-   La barre y restait au style système, en décalage complet avec le reste. */
-html {
-  scrollbar-width: thin;
-  scrollbar-color: var(--base-300) var(--base-200);
-}
-
-::-webkit-scrollbar {
-  width: 8px;
-  /* Plus fine qu'une scrollbar classique */
-}
-
-::-webkit-scrollbar-track {
-  background: var(--base-200);
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--base-300);
-  border-radius: 99px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--primary);
-  /* Devient or au survol */
-}
-
-/* ═══════════════════════════════════════════════
-   CLASSES UTILITAIRES (Accessibles partout via @layer utilities)
-   ═══════════════════════════════════════════════ */
-@layer utilities {
-
-  /* Dégradé de texte (Or Solaire → Or Clair) */
-  .text-gradient {
-    background: linear-gradient(135deg, var(--primary), var(--accent));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  /* En mode contrastes forcés (Windows), le fond de dégradé est supprimé mais
-     `-webkit-text-fill-color: transparent` subsiste : le texte disparaissait
-     purement et simplement. Ici, on restitue une couleur système. */
-  @media (forced-colors: active) {
-    .text-gradient {
-      -webkit-text-fill-color: CanvasText;
-      background: none;
-      color: CanvasText;
-    }
-  }
-
-  /* Effet Vitre dépolie (Glassmorphism) */
-  .glass {
-    background: var(--glass-bg);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid var(--glass-border);
-  }
-
-  /* Les raccourcis `.font-display` et `.font-mono` ont été retirés d'ici :
-     Tailwind v4 génère déjà ces utilitaires à partir des variables `--font-*`
-     déclarées dans `@theme`. Les redéfinir créait deux règles concurrentes pour
-     la même classe, avec un ordre de cascade dépendant de la compilation. */
-
-}
-
-/* ═══════════════════════════════════════════════
-   ANIMATIONS KEYFRAMES GLOBALES
-   ═══════════════════════════════════════════════ */
-@keyframes float {
-
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
-/* ═══════════════════════════════════════════════
-   PROJETS PAGE — Animations Désintégration
-   ═══════════════════════════════════════════════ */
-
-/* Cubes s'envolant vers le haut lors de la désintégration */
-@keyframes cube-disintegrate {
-  0% {
-    transform: translateX(0) translateY(0) rotateX(0deg) rotateZ(0deg) scale(1);
-    opacity: 1;
-  }
-
-  100% {
-    transform:
-      translateX(var(--cube-dx, 50px)) translateY(var(--cube-dy, -120px)) rotateX(90deg) rotateZ(var(--cube-rotate, 180deg)) scale(0);
-    opacity: 0;
-    filter: blur(2px);
-  }
-}
-
-/* Cubes convergeant lors de la reformation */
-@keyframes cube-reform {
-  0% {
-    transform:
-      translateX(var(--cube-dx, 50px)) translateY(var(--cube-dy, -120px)) rotateX(-90deg) rotateZ(var(--cube-rotate, -180deg)) scale(0);
-    opacity: 0;
-    filter: blur(2px);
-  }
-
-  100% {
-    transform: translateX(0) translateY(0) rotateX(0deg) rotateZ(0deg) scale(1);
-    opacity: 1;
-    filter: blur(0px);
-  }
-}
-
-/* Étincelles de particules résiduelles */
-@keyframes sparkle {
-  0% {
-    transform: scale(0) translateY(0);
-    opacity: 1;
-  }
-
-  50% {
-    transform: scale(1.5) translateY(-30px);
-    opacity: 0.8;
-  }
-
-  100% {
-    transform: scale(0) translateY(-60px);
-    opacity: 0;
-  }
-}
-
-/* ═══════════════════════════════════════════════
-   PROJETS PAGE — Shimmer Holographique
-   ═══════════════════════════════════════════════ */
-
-@keyframes shimmer {
-  0% {
-    transform: translateX(-100%);
-  }
-
-  100% {
-    transform: translateX(100%);
-  }
-}
-
-/* ═══════════════════════════════════════════════
-   PROJETS PAGE — Champ Stellaire (Modale)
+   PAGE D'ERREUR (components/layout/pageErreur.tsx)
    ─────────────────────────────────────────────
-   Le scintillement et la dérive des étoiles sont portés par une keyframe
-   locale (`star-twinkle-drift`) injectée par `modal/StarField.tsx`.
+   Déclarée ici et non dans une feuille dédiée : Next.js intègre les écrans
+   d'erreur à chaque page, et une feuille propre serait préchargée partout
+   sans être utilisée, ce que Chrome signale comme un préchargement inutile.
+
+   Le billet refusé : papier au bord inférieur déchiré (même découpe que le
+   reçu de l'accueil), code en grand, tampon bleu.
    ═══════════════════════════════════════════════ */
-
-/* Pulsation des nébuleuses */
-@keyframes nebula-pulse {
-
-  0%,
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-
-  50% {
-    transform: scale(1.2);
-    opacity: 0.6;
-  }
+.err-ticket {
+  filter: drop-shadow(0 1px 1px hsl(var(--ds-shadow-color) / 0.1)) drop-shadow(0 18px 24px hsl(var(--ds-shadow-color) / 0.18));
+}
+.dark .err-ticket {
+  filter: drop-shadow(0 1px 1px hsl(var(--ds-shadow-color) / 0.6)) drop-shadow(0 20px 28px hsl(var(--ds-shadow-color) / 0.7));
 }
 
-/* ═══════════════════════════════════════════════
-   À PROPOS PAGE — Orbital Ring (CTA)
-   ═══════════════════════════════════════════════ */
-
-@keyframes orbital-spin {
-  0% {
-    transform: rotate(0deg);
-  }
-
-  100% {
-    transform: rotate(360deg);
-  }
+.err-paper {
+  position: relative;
+  padding: 2rem 1.75rem 2.75rem;
+  background: var(--ds-paper);
+  color: var(--ds-paper-ink);
+  -webkit-mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / 0.9rem 100%;
+  mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / 0.9rem 100%;
 }
 
-/* ═══════════════════════════════════════════════
-   À PROPOS PAGE — Scroll Indicator Pulse
-   ─────────────────────────────────────────────
-   La keyframe n'anime que la pulsation verticale. Le centrage horizontal est
-   confié à la classe `-translate-x-1/2` posée sur l'élément.
-
-   ⚠️ Correctif. La keyframe portait aussi `translateX(-50%)`. Or Tailwind v4
-   implémente `-translate-x-1/2` avec la propriété CSS `translate`, qui
-   **s'additionne** à `transform` au lieu de la remplacer : pendant l'animation,
-   l'élément était décalé de -100 % de sa largeur, puis se recentrait d'un coup
-   dès que l'animation était coupée (`prefers-reduced-motion`). Une seule
-   propriété par responsabilité : `translate` centre, `transform` anime.
-   ═══════════════════════════════════════════════ */
-
-@keyframes scroll-pulse {
-
-  0%,
-  100% {
-    opacity: 0.3;
-    transform: translateY(0);
-  }
-
-  50% {
-    opacity: 1;
-    transform: translateY(10px);
-  }
+.err-code {
+  margin: 0;
+  font-size: clamp(3.5rem, 2.6rem + 4vw, 5.25rem);
+  font-weight: 800;
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
 }
 
+/* Tampon incliné avec `rotate` (propriété indépendante) : l'animation
+   d'entrée, qui agit sur `transform`, ne l'annule pas. */
+.err-stamp {
+  margin: 0.4rem 0 0 auto;
+  padding: 0.3rem 0.5rem 0.25rem 0.7rem;
+  border: 3px double var(--ds-stamp);
+  border-radius: 0.3rem;
+  color: var(--ds-stamp);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  rotate: -8deg;
+}
 
-/* ═══════════════════════════════════════════════
-   PAGE D'ERREUR — animations d'entrée (components/layout/pageErreur.tsx)
-   ─────────────────────────────────────────────
-   En CSS plutôt qu'avec framer-motion : Next.js intègre les écrans d'erreur
-   à chaque page, la bibliothèque était donc téléchargée partout.
-   Déclarées ici et non dans un fichier dédié : une feuille propre à la page
-   d'erreur serait préchargée sur chaque page sans y être utilisée, ce que
-   Chrome signale comme un préchargement inutile. Chaque élément règle son
-   délai avec --err-delay.
-   ═══════════════════════════════════════════════ */
+/* Entrée : chaque élément règle son délai avec --err-delay. */
 @keyframes err-rise {
-  from { opacity: 0; transform: translateY(var(--err-shift, 0)) scale(var(--err-scale, 1)); }
+  from { opacity: 0; transform: translateY(var(--err-shift, 0)); }
   to { opacity: 1; transform: none; }
 }
 
 .err-rise {
-  animation: err-rise var(--err-duration, 0.6s) cubic-bezier(0.22, 1, 0.36, 1) var(--err-delay, 0s) backwards;
+  animation: err-rise 0.6s cubic-bezier(0.22, 1, 0.36, 1) var(--err-delay, 0s) backwards;
 }
 
 /* Anneau du compte à rebours : chaque seconde, l'arc avance en douceur. */

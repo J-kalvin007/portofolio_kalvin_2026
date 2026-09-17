@@ -37,7 +37,7 @@ import './globals.css';
 const NOT_FOUND_MESSAGES = {
   fr: {
     title: 'Page introuvable',
-    message: "Cette adresse ne correspond à aucune page du site. Elle a peut-être été déplacée, ou l'adresse comporte une erreur de frappe.",
+    message: "Cette adresse ne correspond à aucune page du site. Elle a peut-être été déplacée, ou l’adresse comporte une erreur de frappe.",
   },
   en: {
     title: 'Page not found',
@@ -71,10 +71,7 @@ export default function NotFound() {
   return (
     <html lang={locale} className={`${fontVariables}${isDark ? ' dark' : ''}`} data-theme={isDark ? 'dark' : 'light'} style={{ colorScheme: isDark ? 'dark' : 'light' }}>
       <body className={poppins.className}>
-        <PageErreur
-          title={title}
-          message={message}
-        />
+        <PageErreur code="404" title={title} message={message} />
       </body>
     </html>
   );
