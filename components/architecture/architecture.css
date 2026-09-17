@@ -65,25 +65,19 @@
   overscroll-behavior-x: contain;
 }
 
-/* Indice de défilement : le bord droit s'estompe tant qu'il reste du schéma à
-   voir, puis redevient net en fin de course. Piloté par le défilement même
-   (`animation-timeline`) : sans débordement, la chronologie est inactive et
-   aucun fondu n'est appliqué — le schéma reste intact sur grand écran.
-   Navigateurs sans cette fonction : pas d'indice, le défilement fonctionne. */
-@property --arch-fade {
-  syntax: '<length>';
-  inherits: false;
-  initial-value: 0px;
-}
-@keyframes arch-scroll-hint {
-  0%, 92% { --arch-fade: 56px; }
-  100% { --arch-fade: 0px; }
-}
-@supports (animation-timeline: scroll()) {
+/* Indice de défilement (écrans étroits, où le schéma déborde) : une ombre
+   douce au bord droit tant qu'il reste du schéma à voir.
+   Technique des deux fonds : l'ombre est fixe (`scroll`), un cache de la
+   couleur du fond défile avec le contenu (`local`) et la recouvre une fois la
+   fin atteinte. Aucune animation : le navigateur ne repeint qu'au défilement.
+   (Une première version animait un masque en dégradé via `animation-timeline` :
+   mesuré, cela retardait d'une seconde environ l'apparition des schémas, le
+   masque forçant à repeindre en continu les flux animés.) */
+@media (max-width: 719.98px) {
   .arch-scroll {
-    mask-image: linear-gradient(to right, #000 calc(100% - var(--arch-fade)), transparent);
-    animation: arch-scroll-hint linear both;
-    animation-timeline: scroll(self inline);
+    background:
+      linear-gradient(to left, var(--arch-bg) 40%, transparent) right center / 2.5rem 100% no-repeat local,
+      radial-gradient(farthest-side at 100% 50%, hsl(var(--ds-shadow-color) / 0.22), transparent) right center / 0.9rem 100% no-repeat scroll;
   }
 }
 .arch-svg {
@@ -198,8 +192,13 @@
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: none; }
 }
+/* La pointe de flèche (marker) ne suit pas le tracé en pointillés : elle est
+   masquée jusqu'à ce que la ligne soit presque dessinée, sinon elle apparaît
+   seule, avant sa ligne. `marker-end` est discret : il bascule à mi-chemin
+   entre 97 % et 100 %. */
 @keyframes arch-draw {
-  from { stroke-dashoffset: 1; }
+  from { stroke-dashoffset: 1; marker-end: none; }
+  97% { marker-end: none; }
   to { stroke-dashoffset: 0; }
 }
 @keyframes arch-fade-in {
@@ -227,6 +226,7 @@
 .arch[data-reveal='pending'] .arch-line {
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
+  marker-end: none;
 }
 
 /* Lecture : composants → liaisons → étiquettes et zones → cote → flux

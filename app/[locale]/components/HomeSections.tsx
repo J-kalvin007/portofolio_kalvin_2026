@@ -66,7 +66,7 @@ export function ProjectsSection() {
   const others = PROJECTS.filter((project) => !project.featured);
 
   return (
-    <section id="projets" aria-labelledby="projects-title" className="scroll-mt-24 py-section">
+    <section id="projets" aria-labelledby="projects-title" className="py-section">
       <div className={CONTAINER}>
         <SectionHead id="projects-title" overline={t('overline')} title={t('title')} description={t('description')} />
 
@@ -118,7 +118,7 @@ export function StackSection() {
   const t = useTranslations('home.stack');
 
   return (
-    <section id="competences" aria-labelledby="stack-title" className="scroll-mt-24 border-y border-line bg-surface py-section">
+    <section id="competences" aria-labelledby="stack-title" className="border-y border-line bg-surface py-section">
       <div className={CONTAINER}>
         <SectionHead id="stack-title" overline={t('overline')} title={t('title')} description={t('description')} />
         <div className="grid gap-x-10 gap-y-12 sm:grid-cols-2 xl:grid-cols-4">
@@ -168,7 +168,7 @@ export function CareerSection() {
   ];
 
   return (
-    <section id="parcours" aria-labelledby="career-title" className="scroll-mt-24 py-section">
+    <section id="parcours" aria-labelledby="career-title" className="py-section">
       <div className={CONTAINER}>
         <SectionHead id="career-title" overline={t('overline')} title={t('title')} />
         <div className="grid gap-12 md:grid-cols-2">

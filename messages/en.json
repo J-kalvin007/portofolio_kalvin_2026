@@ -2,12 +2,12 @@
   "seo": {
     "site": {
       "title": "Kalvin Takoudjou — Full-stack & mobile software engineer",
-      "description": "Portfolio of Kalvin Takoudjou, full-stack and mobile software engineer in Lomé: web and mobile applications shipped, each one presented with its architecture.",
+      "description": "Portfolio of Kalvin Takoudjou, full-stack, backend and mobile software engineer in Lomé: web platforms, mobile apps and SaaS, from requirements to production.",
       "imageAlt": "Kalvin Takoudjou — Software Engineer"
     },
     "home": {
       "title": "Kalvin Takoudjou — Full-stack & mobile software engineer",
-      "description": "Web and mobile applications shipped to production: ticketing paid with Mobile Money, e-commerce, inventory and rental management. Every project comes with its architecture."
+      "description": "Web and mobile platforms in production: e-commerce with a wallet and Mobile Money payments, digital ticketing, an offline-first farming SaaS. Every project comes with its architecture."
     },
     "projects": {
       "title": "Projects",
@@ -47,7 +47,9 @@
     "liveSite": "Visit the site",
     "sourceCode": "Source code",
     "details": "Project details",
-    "newTab": "(opens in a new tab)"
+    "newTab": "(opens in a new tab)",
+    "inProduction": "In production",
+    "highlights": "What I built"
   },
   "projects_page": {
     "overline": "Shipped projects",
@@ -62,7 +64,7 @@
   "about_page": {
     "overline": "About",
     "title": "Software engineer in Lomé, from business need to production.",
-    "lead": "I'm Kalvin Takoudjou. A full-stack developer and consultant at Myriade Groupe since 2024, I design web and mobile applications, from the database to the screen. I am also working towards an MBA in Big Data and Artificial Intelligence.",
+    "lead": "I'm Kalvin Takoudjou. I design and build complete solutions — web platforms, mobile apps and SaaS systems — from requirements to production: REST APIs, backend architectures, cross-platform apps, payments, multi-tenancy and offline-first.",
     "ctaCv": "Download the CV (PDF)",
     "ctaContact": "Get in touch",
     "card": {
@@ -70,20 +72,23 @@
       "portraitAlt": "Portrait of Kalvin Takoudjou",
       "role": "Full-stack & mobile software engineer",
       "position": "Position",
-      "positionValue": "Consultant · Myriade Groupe",
+      "positionValue": "Engineer · Myriade Groupe",
       "education": "Education",
       "educationValue": "MBA Big Data & AI, ongoing",
       "based": "Based in",
       "basedValue": "Lomé, Togo · UTC+0",
       "missions": "Engagements",
       "missionsValue": "Remote",
-      "stamp": "Available"
+      "stamp": "Available",
+      "languages": "Languages",
+      "languagesValue": "French (C2) · English"
     },
     "career": {
       "overline": "Background",
       "title": "Experience and education.",
       "experience": "Experience",
-      "education": "Education"
+      "education": "Education",
+      "tasks": "Responsibilities"
     },
     "method": {
       "overline": "Method",
@@ -98,7 +103,7 @@
       },
       "delivery": {
         "title": "Ship, not just build",
-        "text": "Docker containers and deployment are part of the job: software is finished when it runs for the people who use it."
+        "text": "Docker, reverse proxy, backup and restore, service monitoring: software is finished when it runs, and stays operable, for the people who use it."
       },
       "architecture": {
         "title": "Make the architecture readable",
@@ -108,6 +113,57 @@
     "recommendations": {
       "overline": "Recommendations",
       "title": "What people who worked with me say."
+    },
+    "profile": {
+      "overline": "Profile",
+      "title": "Languages, strengths and interests.",
+      "languagesTitle": "Languages",
+      "languages": [
+        {
+          "name": "French",
+          "level": "Native language",
+          "note": "Excellent spoken and written command. TFC certificate, C2 level."
+        },
+        {
+          "name": "English",
+          "level": "Intermediate",
+          "note": "Reads and writes technical documentation; spoken English still being strengthened."
+        }
+      ],
+      "strengthsTitle": "Strengths",
+      "strengths": [
+        {
+          "title": "Engineering rigour",
+          "text": "A structured approach to design, development and problem solving."
+        },
+        {
+          "title": "Autonomy",
+          "text": "Taking ownership of a topic, from analysis to delivery."
+        },
+        {
+          "title": "Problem solving",
+          "text": "Methodical analysis, diagnosis and the search for robust solutions."
+        },
+        {
+          "title": "Open-source culture",
+          "text": "Open technologies, documentation, knowledge sharing and good practices."
+        }
+      ],
+      "interestsTitle": "Interests",
+      "interests": [
+        {
+          "title": "Basketball",
+          "text": "NBA, EuroLeague, sports analysis and news."
+        },
+        {
+          "title": "Nature and discovery",
+          "text": "Hiking, walks and discovering new places."
+        },
+        {
+          "title": "AI and automation",
+          "text": "Technology watch and new applications of artificial intelligence."
+        }
+      ]
     }
   },
   "contact_page": {
@@ -185,15 +241,15 @@
     "madeIn": "Designed and built in Lomé."
   },
   "experience": {
-    "job1_title": "Consultant — Full-stack developer",
+    "job1_title": "Full-stack & mobile software engineer",
     "job1_subtitle": "Myriade Groupe",
     "job1_period": "2024 — Present",
-    "job1_description": "Leading complex architecture overhauls. Technical leadership on Next.js/Node.js stacks. Design of SaaS solutions and Android and iOS mobile applications.",
+    "job1_description": "Design, development and delivery of custom web and mobile solutions, from requirements and specifications to deployment, maintenance and evolution.",
     "job1_location": "Lomé, Togo",
     "job2_title": "IT manager",
-    "job2_subtitle": "LaRegale 228",
+    "job2_subtitle": "La Régale",
     "job2_period": "2023 — 2024",
-    "job2_description": "Development and maintenance of the company's user and order management tools.",
+    "job2_description": "IT asset management, equipment maintenance and user support, keeping the work tools operational.",
     "job2_location": "Lomé, Togo",
     "edu1_title": "MBA in Big Data and Artificial Intelligence",
     "edu1_subtitle": "STUDI France",
@@ -204,13 +260,30 @@
     "edu2_subtitle": "IAEC Togo",
     "edu2_period": "2020 — 2023",
     "edu2_description": "Design and development of websites and mobile applications, with databases and management tools.",
-    "edu2_location": "Lomé, Togo"
+    "edu2_location": "Lomé, Togo",
+    "job1_points": [
+      "Analysis of client needs and specifications, turned into functional and technical solutions.",
+      "Design of application architectures, data models, REST APIs and business flows suited to each project.",
+      "Development and integration of backends, APIs, web interfaces, mobile apps and third-party services.",
+      "Engineering practices: code quality and modularity, security, data validation, error handling.",
+      "Testing, debugging, optimisation and stabilisation before release.",
+      "Deployment, corrective and evolutive maintenance, continuous improvement from client feedback.",
+      "Technology watch to improve application performance, reliability and scalability."
+    ],
+    "job2_points": [
+      "Management and tracking of IT assets: computers, peripherals and equipment.",
+      "Preventive and corrective maintenance of workstations and peripherals.",
+      "Diagnosis and resolution of hardware and software incidents.",
+      "Installation, configuration and updates of workstations, software and equipment.",
+      "Technical support and guidance for users.",
+      "Tracking of maintenance, replacement and renewal needs."
+    ]
   },
   "testimonials": {
     "t1_quote": "Kalvin is a rigorous and creative professional. He came up with considerate and innovative solutions.",
     "t1_author": "Justine A.",
     "t1_role": "CEO",
-    "t1_company": "LaRegale 228",
+    "t1_company": "La Régale",
     "t2_quote": "He has a clear vision of what he wants and knows how to get there.",
     "t2_author": "Kahar I.",
     "t2_role": "Senior software engineer",
@@ -221,13 +294,42 @@
     "t3_company": "Myriade Groupe"
   },
   "projects_data": {
+    "atelier": {
+      "short": "Full-stack e-commerce platform for selling and delivering organic products, with an internal wallet and Mobile Money and card payments.",
+      "full": "REST API, admin back office, customer area, internal wallet, multi-channel payments, background jobs and production-grade Docker infrastructure.",
+      "domain": "E-commerce & payments",
+      "points": [
+        "Django / Django REST Framework backend: REST API covering users, catalogue, orders, payments, transactions and wallet.",
+        "Next.js / TypeScript frontend: catalogue, cart, orders, customer account and order tracking.",
+        "Admin back office: users, products, categories, orders, stock, payments and transactions.",
+        "Customer area: profile, addresses, orders, payments, wallet and transaction history.",
+        "Mobile Money payments with PayDunya and card payments with Stripe, with webhooks and secure synchronisation of payment and order statuses.",
+        "Full order lifecycle: creation, payment, processing and delivery.",
+        "Roles and access rights separating administration from customers; soft delete, audit trail and timestamps on business data.",
+        "Background and scheduled jobs with Celery and Redis.",
+        "Production on Docker and Linux: PostgreSQL, Django, Next.js, Redis, Celery and a Traefik reverse proxy, with media management.",
+        "Database and media backup and restore; groundwork for monitoring and administration of the Docker services."
+      ]
+    },
+    "shemm": {
+      "short": "Android and iOS platform for event management and digital ticketing: discovery, ticket purchase, Mobile Money payment and entry control.",
+      "full": "Flutter app for attendees, back office for organisers, Django REST API, secure digital tickets, validation scanner and sales and attendance statistics.",
+      "domain": "Event tech & mobile",
+      "points": [
+        "Android and iOS app in Flutter / Dart: event discovery, booking and ticket management.",
+        "Django / Django REST Framework backend and REST APIs dedicated to the mobile app.",
+        "Complete ticketing: ticket categories, prices, quotas, availability, orders, attendees and ticket issuing.",
+        "Mobile Money payments with PayDunya and tracking of the transaction lifecycle.",
+        "Back office to create, configure and manage events and their ticketing.",
+        "Secure digital tickets, from purchase to use: creation, payment, issuing, validation.",
+        "Scanner optimised for fast validation at busy entrances, detecting invalid or already-used tickets.",
+        "Real-time entry tracking; dashboards for sales, revenue, tickets issued and used, availability and fill rate.",
+        "API separating users, events, ticketing, payments, validation and statistics; access control and transaction audit trail."
+      ]
+    },
     "challenger": {
       "short": "Windows software for calculating employee working hours.",
       "full": "Windows timekeeping and employee working hours calculation software."
-    },
-    "sheem": {
-      "short": "Event management mobile app with ticket sales, mobile payment, QR code generation and admin dashboard.",
-      "full": "Event management mobile app with ticket sales, mobile payment, QR code generation and admin dashboard."
     },
     "mboashop": {
       "short": "Full e-commerce platform with dynamic cart, integrated payment and admin dashboard.",
@@ -242,8 +344,20 @@
       "full": "Inventory management SaaS with real-time tracking, restocking alerts and barcodes."
     },
     "green": {
-      "short": "Complete plantation management and activity tracking platform.",
-      "full": "Complete plantation management and activity tracking platform with data pipeline, RESTful API and interactive visualizations."
+      "short": "Multi-tenant web and mobile SaaS for managing farms, teams and field operations, with an offline-first mobile app.",
+      "full": "Each company gets an isolated workspace. Technicians carry out their operations on mobile, even without a network, and synchronise them with the platform as soon as the connection is back.",
+      "domain": "SaaS & offline-first",
+      "points": [
+        "Multi-tenant SaaS architecture: data isolation and independent management of several companies.",
+        "Management of companies, farms, plots, teams and users, with roles for managers, agronomists, technicians and workers.",
+        "Farming operations workflow: creation, planning, assignment, execution, tracking and closing.",
+        "Flutter / Dart mobile app for technicians, built offline-first with an Isar local database.",
+        "Device-to-cloud synchronisation limited to the data needed, so it stays smooth on low-bandwidth connections.",
+        "Consistency between local and remote state despite intermittent connectivity.",
+        "Django / Django REST Framework backend and REST APIs used by the Next.js / TypeScript web platform and the mobile app.",
+        "Platform subscriptions and payments with Stripe.",
+        "Audit trail of business operations; architecture designed for scalability, resilience and data separation between tenants."
+      ]
     },
     "locamanager": {
       "short": "Android and iOS mobile app for managing rental properties end to end.",
@@ -265,14 +379,14 @@
     "toDark": "Switch to dark mode"
   },
   "home": {
-    "overline": "Software engineer · full-stack & mobile",
+    "overline": "Software engineer · full-stack, backend & mobile",
     "title": "I build the software that real businesses run on.",
-    "lead": "Tickets paid with Mobile Money, inventory scanned by barcode, rental properties, tracked plantations. From the first screen to production, from Lomé.",
+    "lead": "An organic food store with a wallet and Mobile Money payments, event ticketing with scanning at the door, a farming SaaS that works offline. From requirements to production, from Lomé.",
     "ctaProjects": "See the projects",
     "ctaCv": "Download the CV (PDF)",
     "receipt": {
       "label": "Profile summary",
-      "role": "Full-stack software engineer",
+      "role": "Full-stack & mobile software engineer",
       "location": "Lomé, Togo",
       "localTime": "Local time",
       "status": "Status",
@@ -280,7 +394,7 @@
       "missions": "Engagements",
       "missionsValue": "Remote",
       "position": "Position",
-      "positionValue": "Consultant · Myriade Groupe",
+      "positionValue": "Engineer · Myriade Groupe",
       "education": "Education",
       "educationValue": "MBA Big Data & AI",
       "total": "Total shipped",
@@ -303,7 +417,7 @@
       "usage": "{count, plural, =0 {other work} one {# project} other {# projects}}",
       "categories": {
         "frontend": "Web and mobile interfaces",
-        "backend": "Servers and APIs",
+        "backend": "Servers, APIs and payments",
         "database": "Data",
         "devops": "Deployment and tooling"
       }
@@ -346,16 +460,25 @@
       "realtime": "Real time",
       "barcodes": "Barcodes",
       "fieldApp": "Field app",
-      "dashboard": "Dashboard",
       "dataPipeline": "Data pipeline",
       "managers": "Property managers",
-      "stores": "Stores"
+      "stores": "Stores",
+      "backOffice": "Back office",
+      "payments": "Payments",
+      "reverseProxy": "Reverse proxy",
+      "asyncJobs": "Background jobs",
+      "wallet": "Internal wallet",
+      "ticketControl": "Ticket control",
+      "organizerOffice": "Organiser back office",
+      "webPlatform": "Web platform",
+      "localDb": "Local database",
+      "subscriptions": "Subscriptions",
+      "backupStorage": "Backups"
     },
     "edges": {
       "clockIn": "clock in",
       "records": "records",
       "produces": "produces",
-      "tickets": "tickets · QR",
       "management": "management",
       "payment": "payment",
       "data": "data",
@@ -367,10 +490,19 @@
       "scan": "scan",
       "requests": "requests",
       "alerts": "alerts",
-      "fieldData": "field data",
       "charts": "charts",
       "rentals": "properties · rent",
-      "promotions": "promotions"
+      "promotions": "promotions",
+      "balances": "balances",
+      "tasks": "jobs",
+      "webhooks": "webhooks",
+      "purchase": "ticket purchase",
+      "validation": "validation",
+      "eventsStats": "events · statistics",
+      "sync": "synchronisation",
+      "offline": "offline",
+      "subscribe": "subscriptions",
+      "backedUp": "database · media"
     }
   },
   "gallery": {

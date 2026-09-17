@@ -36,7 +36,9 @@ export interface Project {
   category: ProjectCategory;
   coverImage: string;
   images: string[];
+  /** Technologies, telles que Kalvin les liste pour ce projet. */
   techStack: string[];
+  /** Adresse du produit en production. Le billet affiche alors « En production ». */
   liveUrl?: string;
   /**
    * Lien GitHub. Affiché comme « Code source » uniquement s'il désigne un
@@ -44,56 +46,62 @@ export interface Project {
    */
   githubUrl?: string;
   featured: boolean;
-  year: string;
+  /** Année de réalisation, si elle est connue (aucune n'est inventée). */
+  year?: string;
 }
 
 /*
+ * Ordre d'affichage : les trois produits en production décrits par Kalvin
+ * (Atelier du Terroir, Shemm, Green Challenger), puis le site Myriade Groupe,
+ * puis les autres réalisations.
+ *
  * Les chiffres par projet (« 2000+ produits », « Lighthouse 98 »…) ont été
  * retirés : aucun écran ne les affichait, leurs libellés étaient écrits en
  * français dans le code, et aucun n'était sourcé. Un chiffre revient ici le
  * jour où il peut être vérifié.
  *
- * Les descriptions (`shortDescription`, `fullDescription`) ont été retirées de
- * ces données : aucun composant ne les lisait, l'affichage passe par les
- * traductions. Garder une seconde version française ici, c'était garantir
- * qu'elle diverge un jour de celle que les visiteurs lisent.
+ * Les descriptions sont dans les traductions (`projects_data`), seule source
+ * affichée : une seconde version ici finirait par diverger.
  */
 export const PROJECTS: Project[] = [
   {
-    slug: 'challenger-app',
-    i18nKey: 'challenger',
-    title: 'Challenger App',
-    category: 'desktop',
-    coverImage: '/images_projets/challenger00.webp',
-    images: ['/images_projets/challenger00.webp', '/images_projets/challenger_04.webp', '/images_projets/challenger_01.webp', '/images_projets/challenger_02.webp', '/images_projets/challenger_03.webp'],
-    techStack: ['Dart', 'Flutter'],
-    githubUrl: 'https://github.com/J-kalvin007',
+    slug: 'atelier-du-terroir',
+    i18nKey: 'atelier',
+    title: 'Atelier du Terroir',
+    category: 'web',
+    // Captures du site en production (pages publiques).
+    coverImage: '/images_projets/atelier_01.webp',
+    images: ['/images_projets/atelier_01.webp', '/images_projets/atelier_02.webp', '/images_projets/atelier_03.webp', '/images_projets/atelier_04.webp', '/images_projets/atelier_05.webp'],
+    techStack: ['Python', 'Django', 'Django REST Framework', 'Next.js', 'TypeScript', 'PostgreSQL', 'Redis', 'Celery', 'Docker', 'Traefik', 'Stripe', 'PayDunya', 'Linux', 'Git'],
+    liveUrl: 'https://atelierduterroir.dealandconsulting.com',
     featured: true,
-    year: '2024',
   },
   {
-    slug: 'Sheem!',
-    i18nKey: 'sheem',
-    title: 'Sheem!',
+    // Le nom du produit est « Shemm » (shemm.live) ; il était orthographié « Sheem! ».
+    slug: 'shemm',
+    i18nKey: 'shemm',
+    title: 'Shemm',
     category: 'mobile',
     coverImage: '/images_projets/event_09.webp',
     images: ['/images_projets/event_04.webp', '/images_projets/event_13.webp', '/images_projets/event_12.webp', '/images_projets/event_02.webp', '/images_projets/event_05.webp'],
-    techStack: ['Flutter', 'Django', 'PostgreSQL', 'QR Code', 'Mobile Money', 'Docker'],
-    githubUrl: 'https://github.com/J-kalvin007',
+    techStack: ['Flutter', 'Dart', 'Python', 'Django', 'Django REST Framework', 'PostgreSQL', 'PayDunya', 'Android', 'iOS', 'Git'],
+    liveUrl: 'https://shemm.live/',
     featured: true,
     year: '2026',
   },
   {
-    slug: 'mboashop-ecommerce',
-    i18nKey: 'mboashop',
-    title: 'MboaShop & Dashboard',
-    category: 'web',
-    coverImage: '/images_projets/shop_04.webp',
-    images: ['/images_projets/shop_04.webp', '/images_projets/shop_01.webp', '/images_projets/shop_02.webp', '/images_projets/shop_03.webp'],
-    techStack: ['Django', 'HTML/CSS', 'PostgreSQL', 'Stripe', 'Docker', 'Next.js', 'Tailwind CSS'],
-    githubUrl: 'https://github.com/J-kalvin007',
+    // Le nom du produit est « Green Challenger » (gchallenger.com) ; il portait
+    // le même titre que le logiciel Windows « Challenger App ».
+    slug: 'green-challenger',
+    i18nKey: 'green',
+    title: 'Green Challenger',
+    category: 'saas',
+    coverImage: '/images_projets/greenChallenger00.webp',
+    images: ['/images_projets/greenChallenger00.webp', '/images_projets/greenChallenger_08.webp', '/images_projets/greenChallenger_02.webp', '/images_projets/greenChallenger_06.webp', '/images_projets/greenChallenger_07.webp', '/images_projets/greenChallenger_03.webp'],
+    techStack: ['Python', 'Django', 'Django REST Framework', 'Flutter', 'Dart', 'Next.js', 'TypeScript', 'PostgreSQL', 'Isar', 'Stripe', 'Docker', 'Git'],
+    liveUrl: 'https://gchallenger.com/',
     featured: true,
-    year: '2024',
+    year: '2025',
   },
   {
     slug: 'myriade-groupe',
@@ -108,6 +116,30 @@ export const PROJECTS: Project[] = [
     year: '2025',
   },
   {
+    slug: 'mboashop-ecommerce',
+    i18nKey: 'mboashop',
+    title: 'MboaShop & Dashboard',
+    category: 'web',
+    coverImage: '/images_projets/shop_04.webp',
+    images: ['/images_projets/shop_04.webp', '/images_projets/shop_01.webp', '/images_projets/shop_02.webp', '/images_projets/shop_03.webp'],
+    techStack: ['Django', 'HTML/CSS', 'PostgreSQL', 'Stripe', 'Docker', 'Next.js', 'Tailwind CSS'],
+    githubUrl: 'https://github.com/J-kalvin007',
+    featured: false,
+    year: '2024',
+  },
+  {
+    slug: 'challenger-app',
+    i18nKey: 'challenger',
+    title: 'Challenger App',
+    category: 'desktop',
+    coverImage: '/images_projets/challenger00.webp',
+    images: ['/images_projets/challenger00.webp', '/images_projets/challenger_04.webp', '/images_projets/challenger_01.webp', '/images_projets/challenger_02.webp', '/images_projets/challenger_03.webp'],
+    techStack: ['Dart', 'Flutter'],
+    githubUrl: 'https://github.com/J-kalvin007',
+    featured: false,
+    year: '2024',
+  },
+  {
     slug: 'stock-manager',
     i18nKey: 'stock',
     title: 'Stock Manager Pro',
@@ -115,18 +147,6 @@ export const PROJECTS: Project[] = [
     coverImage: '/images_projets/stockManager_02.webp',
     images: ['/images_projets/stockManager_01.webp', '/images_projets/stockManager_02.webp', '/images_projets/stockManager_03.webp'],
     techStack: ['React.js', 'Node.js', 'Prisma ORM', 'WebSocket', 'Chart.js'],
-    githubUrl: 'https://github.com/J-kalvin007',
-    featured: false,
-    year: '2025',
-  },
-  {
-    slug: 'green-Challenger',
-    i18nKey: 'green',
-    title: 'Challenger App',
-    category: 'platform',
-    coverImage: '/images_projets/greenChallenger00.webp',
-    images: ['/images_projets/greenChallenger00.webp', '/images_projets/greenChallenger_08.webp', '/images_projets/greenChallenger_02.webp', '/images_projets/greenChallenger_06.webp', '/images_projets/greenChallenger_07.webp', '/images_projets/greenChallenger_03.webp'],
-    techStack: ['Python', 'Django', 'PostgreSQL', 'D3.js', 'Docker', 'Next.js', 'Tailwind CSS', 'Flutter'],
     githubUrl: 'https://github.com/J-kalvin007',
     featured: false,
     year: '2025',
@@ -144,7 +164,7 @@ export const PROJECTS: Project[] = [
     year: '2025',
   },
   {
-    slug: 'Lotus',
+    slug: 'lotus-pro',
     i18nKey: 'lotus',
     title: 'Lotus pro',
     category: 'web',
@@ -159,7 +179,7 @@ export const PROJECTS: Project[] = [
 
 export const FEATURED_PROJECTS = PROJECTS.filter((p) => p.featured);
 
-/** Ancre d'un projet sur la page Projets : `/projets#projet-sheem`. */
+/** Ancre d'un projet sur la page Projets : `/projets#projet-shemm`. */
 export const projectAnchor = (project: Project): string => `projet-${project.i18nKey}`;
 
 /**

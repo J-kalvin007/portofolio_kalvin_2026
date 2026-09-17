@@ -2,10 +2,17 @@
    SKILLS DATA — Grouped by category
    ═══════════════════════════════════════════════ */
 
+/**
+ * Une compétence du relevé de l'accueil.
+ *
+ * @remarks Le nom doit être **identique** à celui employé dans les stacks des
+ * projets (`lib/data/projects.ts → techStack`) : c'est lui qui sert à compter
+ * les projets qui l'utilisent. Les anciens champs `icon` et `level` (niveau
+ * sur 5) ont été retirés : aucun écran ne les affichait, et une note auto-
+ * attribuée n'apprend rien à un recruteur, contrairement au nombre de projets.
+ */
 export interface Skill {
   name: string;
-  icon: string; // path to SVG or icon name
-  level: number; // 1-5
 }
 
 export interface SkillCategory {
@@ -22,38 +29,44 @@ export const SKILLS: SkillCategory[] = [
   {
     key: 'frontend',
     skills: [
-      { name: 'React.js', icon: '/svg/react_02.svg', level: 4 },
-      { name: 'Next.js', icon: '/svg/next_02.svg', level: 4 },
-      { name: 'TypeScript', icon: '/svg/typescript.svg', level: 4 },
-      { name: 'Tailwind CSS', icon: '/svg/tailwind.svg', level: 4 },
-      { name: 'Flutter', icon: '/svg/flutter.svg', level: 4 },
+      { name: 'Next.js' },
+      { name: 'TypeScript' },
+      { name: 'React.js' },
+      { name: 'Tailwind CSS' },
+      { name: 'Flutter' },
+      { name: 'Dart' },
     ],
   },
   {
     key: 'backend',
     skills: [
-      { name: 'Node.js', icon: '/svg/node.svg', level: 4 },
-      { name: 'Django', icon: '/svg/django.svg', level: 4 },
-      { name: 'Python', icon: '/svg/python_02.svg', level: 4 },
-      { name: '.NET', icon: '/svg/dotnet.svg', level: 3 },
+      { name: 'Python' },
+      { name: 'Django' },
+      { name: 'Django REST Framework' },
+      { name: 'Celery' },
+      { name: 'Stripe' },
+      { name: 'PayDunya' },
+      { name: 'Node.js' },
+      { name: '.NET' },
     ],
   },
   {
     key: 'database',
     skills: [
-      { name: 'PostgreSQL', icon: '/svg/postgresql.svg', level: 4 },
-      { name: 'Supabase', icon: '/svg/supabase.svg', level: 3 },
-      { name: 'Redis', icon: '/svg/redis.svg', level: 2 },
+      { name: 'PostgreSQL' },
+      { name: 'Redis' },
+      { name: 'Isar' },
+      { name: 'Supabase' },
     ],
   },
   {
     key: 'devops',
     skills: [
-      { name: 'Docker', icon: '/svg/docker.svg', level: 3 },
-      { name: 'Git', icon: '/svg/github.svg', level: 4 },
-      // { name: 'CI/CD', icon: '/svg/github.svg', level: 2 },
-      { name: 'Vercel', icon: '/svg/vercel.svg', level: 3 },
-      { name: 'Linux', icon: '/svg/linux_02.svg', level: 3 },
+      { name: 'Docker' },
+      { name: 'Traefik' },
+      { name: 'Linux' },
+      { name: 'Git' },
+      { name: 'Vercel' },
     ],
   },
 ];
