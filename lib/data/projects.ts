@@ -67,11 +67,18 @@ export const PROJECTS: Project[] = [
     coverImage: '/images_projets/challenger00.webp',
     images: ['/images_projets/challenger00.webp', '/images_projets/challenger_04.webp', '/images_projets/challenger_01.webp', '/images_projets/challenger_02.webp', '/images_projets/challenger_03.webp'],
     techStack: ['Dart', 'Flutter'],
+<<<<<<< HEAD
     githubUrl: 'https://github.com/J-kalvin007',
+=======
+    // githubUrl: 'https://gchallenger.com',
+    liveUrl: 'https://www.gchallenger.com/',
+    metrics: [{ label: 'Utilisateurs', value: '20+' }, { label: 'Événements', value: '20+' }],
+>>>>>>> 9ceb0326881fd46210a7e89028991f3abf6b1532
     featured: true,
     year: '2024',
   },
   {
+<<<<<<< HEAD
     slug: 'Sheem!',
     i18nKey: 'sheem',
     title: 'Sheem!',
@@ -80,10 +87,24 @@ export const PROJECTS: Project[] = [
     images: ['/images_projets/event_04.webp', '/images_projets/event_13.webp', '/images_projets/event_12.webp', '/images_projets/event_02.webp', '/images_projets/event_05.webp'],
     techStack: ['Flutter', 'Django', 'PostgreSQL', 'QR Code', 'Mobile Money', 'Docker'],
     githubUrl: 'https://github.com/J-kalvin007',
+=======
+    slug: 'Shemm!',
+    title: 'Shemm!',
+    category: 'Application Mobile',
+    shortDescription: 'Application mobile Android et IOS de gestion événementielle avec vente de billets, paiement mobile, génération de QR codes et tableau de bord administrateur.',
+    fullDescription: 'Application mobile Android et IOS de gestion événementielle avec vente de billets, paiement mobile, génération de QR codes et tableau de bord administrateur.',
+    coverImage: '/images_projets/event_09.jpg',
+    images: ['/images_projets/event_04.jpg', '/images_projets/event_13.jpg', '/images_projets/event_12.jpg', '/images_projets/event_02.jpg', '/images_projets/event_05.jpg',],
+    techStack: ['Flutter', 'Django', 'PostgreSQL', 'QR Code', 'Mobile Money', 'Docker'],
+    // githubUrl: 'https://shemm.live',
+    liveUrl: 'https://shemm.live',
+    metrics: [{ label: 'Utilisateurs', value: '100+' }, { label: 'Événements', value: '50+' }],
+>>>>>>> 9ceb0326881fd46210a7e89028991f3abf6b1532
     featured: true,
     year: '2026',
   },
   {
+<<<<<<< HEAD
     slug: 'mboashop-ecommerce',
     i18nKey: 'mboashop',
     title: 'MboaShop & Dashboard',
@@ -92,8 +113,21 @@ export const PROJECTS: Project[] = [
     images: ['/images_projets/shop_04.webp', '/images_projets/shop_01.webp', '/images_projets/shop_02.webp', '/images_projets/shop_03.webp'],
     techStack: ['Django', 'HTML/CSS', 'PostgreSQL', 'Stripe', 'Docker', 'Next.js', 'Tailwind CSS'],
     githubUrl: 'https://github.com/J-kalvin007',
+=======
+    slug: 'Atelier du terroir',
+    title: 'Atelier du Terroir - Ferme solime',
+    category: 'Application Web',
+    shortDescription: 'Site e-commerce profesionnel et complet avec panier dynamique, paiement intégré et dashboard admin et client.',
+    fullDescription: 'Plateforme e-commerce full-stack avec catalogue riche, panier dynamique, paiement multi-canal et dashboard analytics.',
+    coverImage: '/images_projets/shop_04.jpg',
+    images: ['/images_projets/shop_04.jpg', '/images_projets/shop_01.jpg', '/images_projets/shop_02.jpg', '/images_projets/shop_03.jpg',],
+    techStack: ['Django', "HTML/CSS", 'PostgreSQL', 'Stripe', 'Docker', "Next.js", "Tailwind CSS", "PayDunya"],
+    // githubUrl: 'https://atelierterroirsolime.vercel.app/',
+    liveUrl: 'https://atelierterroirsolime.vercel.app/',
+    metrics: [{ label: 'Produits', value: '2000+' }, { label: 'Commandes/mois', value: '30+' }],
+>>>>>>> 9ceb0326881fd46210a7e89028991f3abf6b1532
     featured: true,
-    year: '2024',
+    year: '2026',
   },
   {
     slug: 'myriade-groupe',
@@ -123,13 +157,24 @@ export const PROJECTS: Project[] = [
     slug: 'green-Challenger',
     i18nKey: 'green',
     title: 'Challenger App',
+<<<<<<< HEAD
     category: 'platform',
     coverImage: '/images_projets/greenChallenger00.webp',
     images: ['/images_projets/greenChallenger00.webp', '/images_projets/greenChallenger_08.webp', '/images_projets/greenChallenger_02.webp', '/images_projets/greenChallenger_06.webp', '/images_projets/greenChallenger_07.webp', '/images_projets/greenChallenger_03.webp'],
     techStack: ['Python', 'Django', 'PostgreSQL', 'D3.js', 'Docker', 'Next.js', 'Tailwind CSS', 'Flutter'],
     githubUrl: 'https://github.com/J-kalvin007',
+=======
+    category: 'Mobile + Web + API',
+    shortDescription: 'Plateforme de gestion complète de plantation et suivi des activités.',
+    fullDescription: 'Plateforme complète de gestion de plantation et suivi des activités avec pipeline de données, API RESTful et visualisations interactives.',
+    coverImage: '/images_projets/greenChallenger00.jpeg',
+    images: ['/images_projets/greenChallenger00.jpeg', '/images_projets/greenChallenger_08.jpg', '/images_projets/greenChallenger_02.jpg', '/images_projets/greenChallenger_06.jpg', '/images_projets/greenChallenger_07.jpg', '/images_projets/greenChallenger_03.jpg'],
+    techStack: ['Python', 'Django', 'PostgreSQL', 'D3.js', 'Docker', "Next.js", "Tailwind CSS", "Flutter"],
+    // githubUrl: 'https://github.com/J-kalvin007',
+    githubUrl: 'https://www.gchallenger.com/',
+>>>>>>> 9ceb0326881fd46210a7e89028991f3abf6b1532
     featured: false,
-    year: '2025',
+    year: '2025 - 2026',
   },
   {
     slug: 'locamanager',
@@ -147,11 +192,22 @@ export const PROJECTS: Project[] = [
     slug: 'Lotus',
     i18nKey: 'lotus',
     title: 'Lotus pro',
+<<<<<<< HEAD
     category: 'web',
     coverImage: '/images_projets/lotus_01.webp',
     images: ['/images_projets/lotus_01.webp', '/images_projets/lotus_04.webp', '/images_projets/lotus_03.webp', '/images_projets/lotus_05.webp', '/images_projets/lotus_06.webp'],
     techStack: ['Next.js', 'Prisma ORM', 'Docker', 'Chart.js', 'Tailwind CSS'],
     githubUrl: 'https://github.com/J-kalvin007',
+=======
+    category: 'Application Web',
+    shortDescription: 'Plateforme multi-tenant de gestion complète de gestion complete de magasins et boutiques.',
+    fullDescription: 'Plateforme multi-tenant complète de gestion de promotion maganisiniere avec pipeline de données, API RESTful et visualisations interactives.',
+    coverImage: '/images_projets/lotus_01.jpg',
+    images: ['/images_projets/lotus_01.jpg', '/images_projets/lotus_04.jpg', '/images_projets/lotus_03.jpg', '/images_projets/lotus_05.jpg', '/images_projets/lotus_06.jpg'],
+    techStack: ["Next.js", 'Prisma ORM', 'Docker', "Chart.js", "Tailwind CSS"],
+    // githubUrl: 'https://www.lgi-logiciel.net/',
+    liveUrl: 'https://www.lgi-logiciel.net/',
+>>>>>>> 9ceb0326881fd46210a7e89028991f3abf6b1532
     featured: false,
     year: '2026',
   },

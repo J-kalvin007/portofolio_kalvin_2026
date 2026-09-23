@@ -48,10 +48,19 @@ import { Link } from '@/i18n/navigation';
 import FadeIn from '@/components/animations/FadeIn';
 import MagneticWrapper from '@/components/animations/MagneticWrapper';
 import StardustCursor from '@/components/animations/StardustCursor';
+<<<<<<< HEAD
 import type { TimelineItem } from '@/lib/data/experience';
 import type { Testimonial } from '@/lib/data/testimonials';
 import { AnimatedCounter, ScrollWord, MarqueeRow } from './AboutAnimations';
 import TimelineCard from './TimelineCard';
+=======
+import TypewriterText from '../../components/TypewriterText';
+import MarqueeRow from '../../components/MarqueeRow';
+import FeaturedProjectCard from '../../components/FeaturedProjectCard ';
+// ⚠️ L'espace avant l'extension est intentionnellement conservé : le fichier
+// s'appelle littéralement « FeaturedProjectCard .tsx ». Renommer les deux
+// (fichier + import) est vivement recommandé — voir la note de livraison.
+>>>>>>> 9ceb0326881fd46210a7e89028991f3abf6b1532
 
 /* ═══════════════════════════════════════════════════════════════════════════
    ▌ TOKENS DE LA PAGE
