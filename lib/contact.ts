@@ -22,6 +22,17 @@ export const CONTACT_LIMITS = {
 } as const;
 
 /**
+ * Format d'adresse e-mail accepté, par le formulaire comme par l'API.
+ *
+ * C'est le motif qu'applique Zod à `z.string().email()` (`regexes.email`,
+ * Zod 4). Il est déclaré ici pour que le formulaire valide les adresses sans
+ * embarquer Zod dans le navigateur (environ 70 Ko compressés), et que l'API
+ * l'applique explicitement : une adresse acceptée à l'écran l'est aussi par le
+ * serveur, même si Zod change un jour son motif par défaut.
+ */
+export const EMAIL_PATTERN = /^(?!\.)(?!.*\.\.)([A-Za-z0-9_'+\-.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9-]*\.)+[A-Za-z]{2,}$/;
+
+/**
  * Nom du champ « pot de miel » : invisible pour les humains, rempli par les
  * robots qui complètent tous les champs d'un formulaire. L'API répond « succès »
  * sans rien envoyer lorsqu'il arrive rempli.

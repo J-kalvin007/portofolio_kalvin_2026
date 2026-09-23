@@ -16,7 +16,7 @@ import { pageMetadata } from '@/lib/seo';
 import ContactCta from '@/components/sections/ContactCta';
 import PageHeader from '@/components/ui/PageHeader';
 import { BUTTON_PRIMARY, LINK_SECONDARY } from '@/components/ui/styles';
-import { CareerLedger, MethodSection, ProfileCard, RecommendationsSection } from './components/AboutSections';
+import { CareerLedger, MethodSection, ProfileCard, ProfileSection, RecommendationsSection } from './components/AboutSections';
 
 export async function generateMetadata({ params }: LocaleParams): Promise<Metadata> {
   const locale = await resolveLocale(params);
@@ -53,6 +53,7 @@ export default async function AboutPage({ params }: LocaleParams) {
       />
       <CareerLedger />
       <MethodSection />
+      <ProfileSection />
       <RecommendationsSection />
       <ContactCta />
     </>

@@ -20,19 +20,38 @@
 import { useTranslations } from 'next-intl';
 import type { Project } from '@/lib/data/projects';
 import { ARCHITECTURES } from '@/lib/data/architectures';
-import { layoutArchitecture, type PlacedNode } from '@/lib/architecture/layout';
+import { DIMENSION_LINE_HEIGHT, layoutArchitecture, type PlacedNode } from '@/lib/architecture/layout';
 import ArchitectureFigure from './ArchitectureFigure';
 import './architecture.css';
 
 /** Rayon d'angle des boîtes, et des acteurs (forme de pastille). */
 const BOX_RADIUS = 6;
 
+/** Longueur maximale d'une ligne de la cote de stack, en caractères. */
+const STACK_LINE_MAX = 72;
+
+/**
+ * Répartit la stack sur plusieurs lignes, sans couper un nom de technologie :
+ * une stack de quatorze technologies ne tient pas sur la largeur du schéma.
+ */
+function stackLines(techStack: string[]): string[] {
+  const lines: string[] = [];
+  for (const tech of techStack) {
+    const last = lines[lines.length - 1];
+    const candidate = last === undefined ? tech : `${last} · ${tech}`;
+    if (last !== undefined && candidate.length <= STACK_LINE_MAX) lines[lines.length - 1] = candidate;
+    else lines.push(tech);
+  }
+  return lines.map((line) => line.toUpperCase());
+}
+
 export default function ArchitectureDiagram({ project }: { project: Project }) {
   const t = useTranslations('architecture');
   const tCategories = useTranslations('project.categories');
 
   const architecture = ARCHITECTURES[project.i18nKey];
-  const layout = layoutArchitecture(architecture);
+  const stack = stackLines(project.techStack);
+  const layout = layoutArchitecture(architecture, stack.length);
   const markerId = `arch-arrow-${project.i18nKey}`;
 
   const nodeLabel = (node: PlacedNode) => t(`nodes.${node.label}`);
@@ -43,7 +62,7 @@ export default function ArchitectureDiagram({ project }: { project: Project }) {
       <figcaption className="arch-caption">
         <span>{t('caption')}</span>
         <strong>{project.title}</strong>
-        <span>{tCategories(project.category)} · {project.year}</span>
+        <span>{[tCategories(project.category), project.year].filter(Boolean).join(' · ')}</span>
       </figcaption>
 
       <div className="arch-scroll">
@@ -133,7 +152,11 @@ export default function ArchitectureDiagram({ project }: { project: Project }) {
               d={`M ${layout.dimension.x1} ${layout.dimension.y} H ${layout.dimension.x2} M ${layout.dimension.x1} ${layout.dimension.y - 6} V ${layout.dimension.y + 6} M ${layout.dimension.x2} ${layout.dimension.y - 6} V ${layout.dimension.y + 6}`}
             />
             <text x={layout.width / 2} y={layout.dimension.y + 4} textAnchor="middle">
-              {project.techStack.join(' · ').toUpperCase()}
+              {stack.map((line, index) => (
+                <tspan key={line} x={layout.width / 2} dy={index === 0 ? 0 : DIMENSION_LINE_HEIGHT}>
+                  {line}
+                </tspan>
+              ))}
             </text>
           </g>
         </svg>
