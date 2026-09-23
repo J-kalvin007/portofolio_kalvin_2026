@@ -97,30 +97,25 @@
   border-top: 1px dashed var(--ds-paper-line);
 }
 
-/* Tampon, posé en travers du coin de la photo */
+/* Tampon, en bas à droite de la fiche. Posé sur la photo, il débordait sur le
+   nom : sa largeur dépend de la langue (« Disponible », « Available »). */
 .idc-stamp {
-  position: absolute;
-  top: 8.4rem;
-  left: 3.1rem;
-  margin: 0;
+  justify-self: end;
+  margin: 0.25rem 0.4rem 0 0;
   padding: 0.3rem 0.5rem 0.25rem 0.7rem;
   border: 3px double var(--ds-stamp);
   border-radius: 0.3rem;
-  background: color-mix(in srgb, var(--ds-paper) 55%, transparent);
   color: var(--ds-stamp);
   font-size: 0.75rem;
   font-weight: 800;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  transform: rotate(-9deg);
+  transform: rotate(-7deg);
+  mix-blend-mode: multiply;
 }
 
 @media (max-width: 380px) {
   .idc-head {
     grid-template-columns: 6rem minmax(0, 1fr);
-  }
-  .idc-stamp {
-    top: 6.6rem;
-    left: 1.6rem;
   }
 }

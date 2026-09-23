@@ -17,7 +17,7 @@ import type { Transporter } from 'nodemailer';
 import { z } from 'zod';
 import { escapeHtml } from '@/lib/html-escape';
 import { SITE_URL, SITE_NAME } from '@/lib/site';
-import { CONTACT_LIMITS, CONTACT_MAX_BODY_BYTES, HONEYPOT_FIELD } from '@/lib/contact';
+import { CONTACT_LIMITS, CONTACT_MAX_BODY_BYTES, EMAIL_PATTERN, HONEYPOT_FIELD } from '@/lib/contact';
 
 /**
  * `nodemailer` ouvre des sockets TCP : il ne peut pas tourner sur le runtime Edge.
@@ -147,7 +147,8 @@ function stripHeaderInjection(s: string): string {
 const contactSchema = z.object({
   // Limites importées de lib/contact.ts : identiques à celles du formulaire.
   name: z.string().min(CONTACT_LIMITS.nameMin).max(CONTACT_LIMITS.nameMax),
-  email: z.string().email(),
+  // Même motif que le formulaire (lib/contact.ts).
+  email: z.string().regex(EMAIL_PATTERN),
   subject: z.string().min(CONTACT_LIMITS.subjectMin).max(CONTACT_LIMITS.subjectMax),
   message: z.string().min(CONTACT_LIMITS.messageMin).max(CONTACT_LIMITS.messageMax),
 

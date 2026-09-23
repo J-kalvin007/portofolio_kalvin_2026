@@ -51,11 +51,16 @@ docker-compose.yml
 Le standard de l'industrie s'appelle le **"Multi-Stage Build"**. L'idée est de créer plusieurs "machines" temporaires pour compiler le code, puis de ne garder que le résultat final dans une machine vierge.
 
 **Template Next.js Production (Ultra-Optimisé) :**
+
+> ⚠️ **Version de Node.js.** Ce modèle utilisait `node:18-alpine`. Next.js 16
+> exige Node.js 20.9 ou plus récent : avec Node 18, la construction échoue à
+> `RUN npm run build`. Node 24 est la version LTS active et celle avec
+> laquelle le build de ce projet est validé (voir le [Dockerfile](Dockerfile)).
 ```dockerfile
 # ---------------------------------------------------------
 # ÉTAPE 1 : INSTALLATION DES DÉPENDANCES (Le Cache)
 # ---------------------------------------------------------
-FROM node:18-alpine AS deps
+FROM node:24-alpine AS deps
 WORKDIR /app
 # On copie uniquement les fichiers "cadenas" pour optimiser le cache
 COPY package.json package-lock.json ./
@@ -64,7 +69,7 @@ RUN npm ci
 # ---------------------------------------------------------
 # ÉTAPE 2 : LE CONSTRUCTEUR (Le Compilateur)
 # ---------------------------------------------------------
-FROM node:18-alpine AS builder
+FROM node:24-alpine AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
@@ -76,7 +81,7 @@ RUN npm run build
 # ---------------------------------------------------------
 # ÉTAPE 3 : LA PRODUCTION (Le Runner Sécurisé)
 # ---------------------------------------------------------
-FROM node:18-alpine AS runner
+FROM node:24-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1

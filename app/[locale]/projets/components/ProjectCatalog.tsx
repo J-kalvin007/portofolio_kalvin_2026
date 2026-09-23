@@ -20,6 +20,7 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { useTranslations } from 'next-intl';
 import type { ProjectCategory } from '@/lib/data/projects';
+import Arrow from '@/components/ui/Arrow';
 import { COLUMN_HEADING, FOCUS_RING, OVERLINE } from '@/components/ui/styles';
 
 export interface CatalogEntry {
@@ -134,15 +135,19 @@ export default function ProjectCatalog({ entries, categories }: ProjectCatalogPr
           <p className={COLUMN_HEADING}>{t('index')}</p>
           {index}
         </nav>
-        <details className="mt-6 rounded-control border border-line px-4 py-2 lg:hidden">
-          <summary className={`cursor-pointer py-1 text-[0.9375rem] font-semibold text-ink ${FOCUS_RING}`}>
+        <details className="group/index mt-6 rounded-control border border-line px-4 py-2 lg:hidden">
+          <summary
+            className={`flex cursor-pointer list-none items-center justify-between gap-3 py-1 text-[0.9375rem] font-semibold text-ink
+                        [&::-webkit-details-marker]:hidden ${FOCUS_RING}`}
+          >
             {t('index')} ({shown.length})
+            <Arrow direction="down" className="text-ink-muted transition-transform duration-(--motion-fast) group-open/index:rotate-180" />
           </summary>
           <nav aria-label={t('indexLabel')}>{index}</nav>
         </details>
       </aside>
 
-      <ol ref={listRef} className="grid scroll-mt-24 gap-block" aria-label={t('overline')}>
+      <ol ref={listRef} className="grid gap-block" aria-label={t('overline')}>
         {entries.map((entry) => (
           <li key={entry.anchor} hidden={!isShown(entry)}>
             {entry.content}

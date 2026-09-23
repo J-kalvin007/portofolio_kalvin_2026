@@ -48,6 +48,9 @@ const BOTTOM_MARGIN = 20;
 /** Marge latérale de la cote. */
 const SIDE_MARGIN = 24;
 
+/** Interligne du texte de la cote, quand la stack tient sur plusieurs lignes. */
+export const DIMENSION_LINE_HEIGHT = 15;
+
 /* ═══════════════════════════════════════════════════════════════════════════
    ▌ TYPES DU RÉSULTAT
    ═══════════════════════════════════════════════════════════════════════════ */
@@ -101,7 +104,11 @@ export interface ArchitectureLayout {
    ▌ CALCUL
    ═══════════════════════════════════════════════════════════════════════════ */
 
-export function layoutArchitecture(architecture: Architecture): ArchitectureLayout {
+/**
+ * @param stackLineCount Nombre de lignes du texte de la cote (une stack longue
+ * est répartie sur plusieurs lignes) : la hauteur du schéma en tient compte.
+ */
+export function layoutArchitecture(architecture: Architecture, stackLineCount = 1): ArchitectureLayout {
   /* ── 1. Boîtes, ordonnées de gauche à droite puis de haut en bas ────────── */
   const sorted = [...architecture.nodes].sort((a, b) => a.x - b.x || a.y - b.y);
   const nodes: PlacedNode[] = sorted.map((node, order) => ({
@@ -271,7 +278,7 @@ export function layoutArchitecture(architecture: Architecture): ArchitectureLayo
 
   return {
     width: VIEW_WIDTH,
-    height: dimensionY + BOTTOM_MARGIN,
+    height: dimensionY + BOTTOM_MARGIN + (Math.max(1, stackLineCount) - 1) * DIMENSION_LINE_HEIGHT,
     nodes,
     edges,
     zones,

@@ -38,7 +38,7 @@ import './globals.css'; // Essentiel pour avoir Tailwind actif si le layout plan
 const GLOBAL_ERROR_MESSAGES = {
   fr: {
     title: 'Erreur système',
-    message: "L'application n'a pas pu se charger correctement. Réessayez — si le problème persiste, revenez dans quelques instants.",
+    message: "L’application n’a pas pu se charger correctement. Réessayez — si le problème persiste, revenez dans quelques instants.",
   },
   en: {
     title: 'System error',

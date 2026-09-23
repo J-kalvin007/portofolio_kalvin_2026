@@ -7,12 +7,13 @@
  * @architecture
  * Seul îlot client de la page Contact. Conserve intégralement le contrat
  * établi avec l'API (`lib/contact.ts`, `app/api/sendEmail/route.ts`) :
- *  - mêmes limites de longueur que le serveur (validation Zod traduite) ;
+ *  - mêmes limites de longueur et même motif d'e-mail que le serveur, avec
+ *    des messages traduits (validation native de react-hook-form) ;
  *  - champ « pot de miel » hors écran, hors tabulation, masqué aux lecteurs
  *    d'écran, envoyé vide par un humain ;
  *  - langue de l'interface transmise (`locale`), pour une réponse dans la
  *    même langue ;
- *  - `noValidate` : les messages traduits de Zod remplacent les bulles natives.
+ *  - `noValidate` : les messages traduits remplacent les bulles du navigateur.
  *
  * Changements par rapport à l'ancienne version : plus de framer-motion, de
  * reflet doré ni de notification flottante. Le résultat de l'envoi s'affiche
@@ -23,11 +24,9 @@
 
 import { useState, type ReactNode } from 'react';
 import { CheckCircle2, Loader2, X, XCircle } from 'lucide-react';
-import { useForm, useWatch, type Control } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
+import { useForm, useWatch, type Control, type RegisterOptions } from 'react-hook-form';
 import { useLocale, useTranslations } from 'next-intl';
-import { CONTACT_LIMITS, HONEYPOT_FIELD } from '@/lib/contact';
+import { CONTACT_LIMITS, EMAIL_PATTERN, HONEYPOT_FIELD } from '@/lib/contact';
 import { BUTTON_PRIMARY, FOCUS_RING } from '@/components/ui/styles';
 
 type ContactFormData = { name: string; email: string; subject: string; message: string; [HONEYPOT_FIELD]?: string };
@@ -50,19 +49,30 @@ export default function ContactForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [notice, setNotice] = useState<Notice | null>(null);
 
-  const contactSchema = z.object({
-    // Mêmes limites que l'API : un formulaire valide à l'écran l'est aussi côté serveur.
-    name: z.string().min(CONTACT_LIMITS.nameMin, t('validation.nameMin')).max(CONTACT_LIMITS.nameMax, t('validation.nameMax', { max: CONTACT_LIMITS.nameMax })),
-    email: z.string().email(t('validation.emailInvalid')),
-    subject: z.string().min(CONTACT_LIMITS.subjectMin, t('validation.subjectMin')).max(CONTACT_LIMITS.subjectMax, t('validation.subjectMax', { max: CONTACT_LIMITS.subjectMax })),
-    message: z.string().min(CONTACT_LIMITS.messageMin, t('validation.messageMin')).max(CONTACT_LIMITS.messageMax, t('validation.messageMax')),
-    // Pot de miel : jamais validé côté client (un robot ne doit recevoir aucun signal).
-    [HONEYPOT_FIELD]: z.string().optional(),
+  /*
+   * Règles de validation — mêmes limites et même motif d'e-mail que l'API
+   * (lib/contact.ts) : un formulaire valide à l'écran l'est aussi côté serveur.
+   *
+   * Validation native de react-hook-form plutôt qu'un schéma Zod : pour quatre
+   * champs, Zod et son adaptateur ajoutaient environ 70 Ko compressés à la page
+   * (dont les messages de Zod dans toutes les langues). L'API, elle, garde Zod.
+   * `required` porte le même message que la longueur minimale : un champ vide
+   * est un champ trop court.
+   */
+  const lengthRules = (min: number, max: number, minMessage: string, maxMessage: string): RegisterOptions<ContactFormData> => ({
+    required: minMessage,
+    minLength: { value: min, message: minMessage },
+    maxLength: { value: max, message: maxMessage },
   });
+  const rules = {
+    name: lengthRules(CONTACT_LIMITS.nameMin, CONTACT_LIMITS.nameMax, t('validation.nameMin'), t('validation.nameMax', { max: CONTACT_LIMITS.nameMax })),
+    email: { required: t('validation.emailInvalid'), pattern: { value: EMAIL_PATTERN, message: t('validation.emailInvalid') } },
+    subject: lengthRules(CONTACT_LIMITS.subjectMin, CONTACT_LIMITS.subjectMax, t('validation.subjectMin'), t('validation.subjectMax', { max: CONTACT_LIMITS.subjectMax })),
+    message: lengthRules(CONTACT_LIMITS.messageMin, CONTACT_LIMITS.messageMax, t('validation.messageMin'), t('validation.messageMax')),
+  } satisfies Record<FieldName, RegisterOptions<ContactFormData>>;
 
-  const { register, handleSubmit, formState: { errors }, reset, control } = useForm<ContactFormData>({
-    resolver: zodResolver(contactSchema),
-  });
+  // Pot de miel : aucune règle (un robot ne doit recevoir aucun signal).
+  const { register, handleSubmit, formState: { errors }, reset, control } = useForm<ContactFormData>();
 
   const onSubmit = async (data: ContactFormData) => {
     setIsSubmitting(true);
@@ -111,7 +121,7 @@ export default function ContactForm() {
               maxLength={CONTACT_LIMITS.nameMax}
               placeholder={t('form.namePlaceholder')}
               className={FIELD}
-              {...register('name')}
+              {...register('name', rules.name)}
             />
           </Field>
           <Field number="02" name="email" label={t('form.email')} error={errors.email?.message}>
@@ -122,7 +132,7 @@ export default function ContactForm() {
               inputMode="email"
               placeholder={t('form.emailPlaceholder')}
               className={FIELD}
-              {...register('email')}
+              {...register('email', rules.email)}
             />
           </Field>
         </div>
@@ -135,7 +145,7 @@ export default function ContactForm() {
             maxLength={CONTACT_LIMITS.subjectMax}
             placeholder={t('form.subjectPlaceholder')}
             className={FIELD}
-            {...register('subject')}
+            {...register('subject', rules.subject)}
           />
         </Field>
 
@@ -152,7 +162,7 @@ export default function ContactForm() {
             maxLength={CONTACT_LIMITS.messageMax}
             placeholder={t('form.messagePlaceholder')}
             className={`${FIELD} resize-y`}
-            {...register('message')}
+            {...register('message', rules.message)}
           />
         </Field>
 
