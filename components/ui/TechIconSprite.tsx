@@ -55,7 +55,7 @@ export default function TechIconSprite({ names }: TechIconSpriteProps) {
               ? { fill: 'none', stroke: 'currentColor', strokeWidth: 1.9, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const }
               : { fill: 'currentColor', fillRule: icon.fillRule })}
           >
-            {icon.scale ? <g transform={`scale(${icon.scale})`}>{shapes}</g> : shapes}
+            {icon.transform ? <g transform={icon.transform}>{shapes}</g> : shapes}
           </symbol>
         );
       })}

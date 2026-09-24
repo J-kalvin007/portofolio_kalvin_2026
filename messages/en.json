@@ -61,7 +61,13 @@
     "index": "Contents",
     "indexLabel": "Project contents",
     "sheetNumber": "Project {number}/{total}",
-    "closeDetails": "Close the project sheet"
+    "closeDetails": "Close the project sheet",
+    "descriptionColumn": "Description",
+    "pauseHint": "Hover to pause",
+    "readDossier": "Read the full sheet",
+    "dossierTitle": "Full sheet",
+    "previousProject": "Previous project",
+    "nextProject": "Next project"
   },
   "about_page": {
     "overline": "About",

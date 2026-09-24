@@ -15,7 +15,7 @@
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { resolveLocale, type LocaleParams } from '@/i18n/params';
-import { PROJECTS, PROJECT_CATEGORIES, projectAnchor } from '@/lib/data/projects';
+import { PROJECTS, PROJECT_CATEGORIES, projectAnchor, repositoryUrl } from '@/lib/data/projects';
 import { padNumber } from '@/lib/format';
 import { pageMetadata } from '@/lib/seo';
 import ProjectDetail from '@/components/project/ProjectDetail';
@@ -57,8 +57,15 @@ export default async function ProjectsPage({ params }: LocaleParams) {
       year: project.year,
       cover: project.coverImage,
       summary: tData(`${project.i18nKey}.short`),
+      /* La description longue et les captures partent aussi en données : la
+         scène de la modale les met en mouvement côté navigateur, sans rien
+         avoir à recharger à l'ouverture. */
+      description: tData(`${project.i18nKey}.full`),
+      images: [...new Set([project.coverImage, ...project.images])],
       techStack: project.techStack,
       isLive: Boolean(project.liveUrl),
+      liveUrl: project.liveUrl,
+      repository: repositoryUrl(project),
       detail: <ProjectDetail project={project} />,
     };
   });
