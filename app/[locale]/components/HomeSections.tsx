@@ -26,6 +26,7 @@ import ProjectTicket from '@/components/project/ProjectTicket';
 import Arrow from '@/components/ui/Arrow';
 import SectionHead from '@/components/ui/SectionHead';
 import TechIcon from '@/components/ui/TechIcon';
+import TechIconSprite from '@/components/ui/TechIconSprite';
 import { BUTTON_PRIMARY, COLUMN_HEADING, CONTAINER, LINK_SECONDARY, OVERLINE } from '@/components/ui/styles';
 import ProfileReceipt from './ProfileReceipt';
 
@@ -122,6 +123,8 @@ export function StackSection() {
     <section id="competences" aria-labelledby="stack-title" className="border-y border-line bg-surface py-section">
       <div className={CONTAINER}>
         <SectionHead id="stack-title" overline={t('overline')} title={t('title')} description={t('description')} />
+        {/* Réserve des logos : chaque tracé une seule fois pour toute la page. */}
+        <TechIconSprite names={SKILLS.flatMap((group) => group.skills.map((skill) => skill.name))} />
         <div className="grid gap-x-10 gap-y-12 sm:grid-cols-2 xl:grid-cols-4">
           {SKILLS.map((group) => (
             <div key={group.key}>

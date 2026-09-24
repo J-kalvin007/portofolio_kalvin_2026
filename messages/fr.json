@@ -59,7 +59,9 @@
     "filterAll": "Tous",
     "shown": "{count, plural, =0 {Aucun projet affiché} one {# projet affiché} other {# projets affichés}}",
     "index": "Sommaire",
-    "indexLabel": "Sommaire des projets"
+    "indexLabel": "Sommaire des projets",
+    "sheetNumber": "Projet {number}/{total}",
+    "closeDetails": "Fermer la fiche du projet"
   },
   "about_page": {
     "overline": "À propos",
