@@ -448,13 +448,21 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   ▌ MODALE DE DÉTAIL
+   ▌ MODALE DE DÉTAIL — plein écran
    ───────────────────────────────────────────────────────────────────────────
-   Les fiches complètes sont dans le HTML dès le départ (référencement, et
-   lecture possible sans JavaScript) ; elles sont simplement masquées. Sans
-   JavaScript, l'ancre `#projet-…` d'une carte révèle sa fiche en pleine page
-   grâce à `:target` — la règle est neutralisée dès que le composant a posé
-   `data-js`, pour ne pas entrer en conflit avec la modale.
+   La modale occupe tout l'écran et se lit en deux temps :
+
+     1. LA SCÈNE — barre d'identité, puis trois colonnes qui tiennent dans un
+        écran : la description qui descend, les captures au centre, les
+        technologies qui montent (`scene.css`).
+     2. LE DOSSIER — le contenu complet, rendu par le serveur : description,
+        réalisations, technologies et schéma d'architecture.
+
+   Les neuf dossiers sont dans le HTML dès le départ — référencement, et
+   lecture possible sans JavaScript — et simplement masqués. Sans JavaScript,
+   l'ancre `#projet-…` d'une carte révèle son dossier en pleine page grâce à
+   `:target` ; la règle est neutralisée dès que le composant a posé `data-js`,
+   pour ne pas entrer en conflit avec la modale.
    ═══════════════════════════════════════════════════════════════════════════ */
 
 .pj-modal {
@@ -465,11 +473,11 @@
   position: fixed;
   inset: 0;
   z-index: 90;
-  display: grid;
-  place-items: center;
-  padding: clamp(0.5rem, 2vw, 2rem);
+  display: block;
 }
 
+/* Voile : visible pendant la seule apparition de la scène, qui le recouvre
+   ensuite entièrement. C'est lui qui évite de voir la page nue à travers. */
 .pj-veil {
   position: absolute;
   inset: 0;
@@ -486,57 +494,155 @@
   }
 }
 
-.pj-panel {
-  position: relative;
-  width: min(64rem, 100%);
-  max-height: min(92svh, 100%);
+/* ── Le plateau : tout l'écran, un seul défilement ───────────────────────── */
+
+.pj-stage {
+  /* Hauteur de la barre d'identité, déclarée une seule fois : l'écran de scène
+     s'y accorde exactement, sans nombre magique dispersé dans la feuille. */
+  --pj-bar-h: 4.25rem;
+
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
   overflow-y: auto;
   overscroll-behavior: contain;
-  border: 1px solid var(--ds-line);
-  border-radius: var(--radius-panel);
   background: var(--ds-canvas);
-  box-shadow: var(--shadow-e3);
-  animation: pj-panel-in var(--motion-slow) var(--ease-emphasized) both;
+  animation: pj-stage-in var(--motion-base) var(--ease-emphasized) both;
 }
-@keyframes pj-panel-in {
+@keyframes pj-stage-in {
   from {
     opacity: 0;
-    transform: translateY(22px) scale(0.985);
   }
   to {
     opacity: 1;
-    transform: none;
   }
 }
-.pj-panel:focus-visible {
+.pj-stage:focus-visible {
   outline: none;
 }
 
-/* En-tête collant : le titre et la fermeture restent atteignables. */
-.pj-panel-head {
+/* ── Barre d'identité : collante, toujours lisible ───────────────────────── */
+
+.pj-stage-head {
   position: sticky;
   top: 0;
-  z-index: 2;
+  z-index: 3;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  padding: 0.85rem 1rem 0.85rem clamp(1.25rem, 3vw, 2.5rem);
+  flex: none;
+  min-height: var(--pj-bar-h);
+  padding: 0.55rem clamp(0.75rem, 2vw, 1.5rem);
   border-bottom: 1px solid var(--ds-line);
-  background: color-mix(in srgb, var(--ds-canvas) 88%, transparent);
+  background: color-mix(in srgb, var(--ds-canvas) 90%, transparent);
   backdrop-filter: blur(10px);
 }
 
-.pj-panel-eyebrow {
-  margin: 0;
-  color: var(--ds-ink-muted);
-  font-size: 0.6875rem;
-  font-weight: 600;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  font-variant-numeric: tabular-nums;
+.pj-stage-id {
+  display: flex;
+  align-items: baseline;
+  gap: 0.7rem;
+  min-width: 0; /* autorise la troncature du titre plutôt que le débordement */
 }
 
+.pj-stage-number {
+  flex: none;
+  color: var(--ds-ink-muted);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.pj-stage-title {
+  margin: 0;
+  overflow: hidden;
+  color: var(--ds-ink);
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pj-stage-stamp {
+  flex: none;
+  border: 1px solid var(--ds-brand);
+  border-radius: 0.3rem;
+  padding: 0.1rem 0.45rem;
+  color: var(--ds-brand-text);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+@media (max-width: 30rem) {
+  /* Sur un écran étroit, le titre passe avant le tampon. */
+  .pj-stage-stamp {
+    display: none;
+  }
+}
+
+.pj-stage-tools {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: none;
+}
+
+/* Liens d'action, au gabarit de la barre. Ils sont répétés en bas du dossier :
+   c'est un appel à l'action, pas un doublon — le visiteur ne doit jamais avoir
+   à remonter pour ouvrir le produit. */
+.pj-stage-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: 1px solid var(--ds-line-strong);
+  border-radius: var(--radius-control);
+  padding: 0.45rem 0.85rem;
+  color: var(--ds-ink);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  white-space: nowrap;
+  transition:
+    border-color var(--motion-fast) var(--ease-emphasized),
+    background-color var(--motion-fast) var(--ease-emphasized);
+}
+.pj-stage-link:hover {
+  border-color: var(--ds-ink);
+  background: var(--ds-surface-sunken);
+}
+.pj-stage-link--primary {
+  border-color: var(--ds-brand);
+  background: var(--ds-brand);
+  color: var(--ds-brand-ink);
+}
+.pj-stage-link--primary:hover {
+  border-color: var(--ds-brand);
+  background: var(--ds-brand);
+  filter: brightness(1.08);
+}
+.pj-stage-link svg {
+  display: inline-block;
+}
+@media (max-width: 52rem) {
+  /* Les deux liens restent accessibles dans le dossier, juste en dessous. */
+  .pj-stage-link {
+    display: none;
+  }
+}
+
+/* Passage au projet précédent ou suivant, sans repasser par la grille. */
+.pj-stage-steps {
+  display: flex;
+  gap: 0.25rem;
+  margin-inline: 0.15rem;
+}
+
+.pj-stage-step,
 .pj-close {
   display: grid;
   place-items: center;
@@ -553,30 +659,141 @@
     border-color var(--motion-fast) var(--ease-emphasized),
     background-color var(--motion-fast) var(--ease-emphasized);
 }
+.pj-stage-step:hover:not(:disabled),
 .pj-close:hover {
   border-color: var(--ds-line-strong);
   background: var(--ds-surface-sunken);
   color: var(--ds-ink);
 }
+.pj-stage-step:focus-visible,
 .pj-close:focus-visible {
   outline: 2px solid var(--ds-focus);
   outline-offset: 2px;
 }
+.pj-stage-step:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.pj-stage-step svg,
 .pj-close svg {
   display: inline-block;
 }
 
-/* ── Fiche : contenu rendu par le serveur (ProjectDetail.tsx) ───────────── */
+/* ── Premier écran : la scène, exactement une hauteur de fenêtre ─────────── */
 
-/* Masquage par classe : voir le commentaire de `ProjectShowcase`. L'attribut
-   `hidden` serait plus court, mais le navigateur l'impose au point qu'aucune
-   règle ne peut le lever — la règle `:target` ci-dessous n'aurait alors jamais
-   pu s'appliquer. */
+.pj-stage-screen {
+  position: relative;
+  flex: none;
+  padding-bottom: 3.25rem; /* bande réservée à l'invitation à lire le dossier */
+}
+@media (min-width: 64rem) {
+  .pj-stage-screen {
+    height: calc(100svh - var(--pj-bar-h));
+  }
+}
+
+.pj-stage-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0.5rem auto 0;
+  border: 1px solid var(--ds-line);
+  border-radius: 999px;
+  padding: 0.4rem 0.95rem;
+  background: var(--ds-surface);
+  color: var(--ds-ink-soft);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    color var(--motion-fast) var(--ease-emphasized),
+    border-color var(--motion-fast) var(--ease-emphasized);
+}
+.pj-stage-more:hover {
+  border-color: var(--ds-line-strong);
+  color: var(--ds-ink);
+}
+.pj-stage-more:focus-visible {
+  outline: 2px solid var(--ds-focus);
+  outline-offset: 2px;
+}
+.pj-stage-more svg {
+  display: inline-block;
+}
+@media (min-width: 64rem) {
+  .pj-stage-more {
+    position: absolute;
+    left: 50%;
+    bottom: 0.7rem;
+    margin: 0;
+    /* Le balancement doit conserver le centrage : les images clés portent donc
+       la translation horizontale en plus du mouvement vertical. */
+    animation: pj-stage-more-bob 2.8s ease-in-out 1.4s infinite;
+  }
+}
+@keyframes pj-stage-more-bob {
+  0%,
+  100% {
+    transform: translate(-50%, 0);
+  }
+  50% {
+    transform: translate(-50%, 5px);
+  }
+}
+
+/* ── Second écran : le dossier ───────────────────────────────────────────── */
+
+.pj-stage-dossier {
+  width: 100%;
+  max-width: 78rem;
+  flex: none;
+  margin-inline: auto;
+  /* La barre d'identité flotte au-dessus du contenu : sans cette marge,
+     « Lire le dossier » amenait le titre de section pile sous la barre, qui le
+     recouvrait. */
+  scroll-margin-top: calc(var(--pj-bar-h) + 0.75rem);
+  padding-bottom: clamp(2rem, 6vh, 4rem);
+}
+
+.pj-dossier-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  margin: 0 clamp(1.25rem, 3vw, 2.5rem);
+  padding-top: clamp(1rem, 3vh, 2rem);
+  color: var(--ds-ink-muted);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.pj-dossier-eyebrow::after {
+  content: '';
+  height: 1px;
+  flex: 1;
+  background: var(--ds-line);
+}
+
+/* Un dossier fermé est masqué par une CLASSE, et non par l'attribut `hidden` :
+   Chrome applique ce dernier avec une priorité qu'aucune règle d'auteur ne peut
+   lever, pas même en `!important`, ce qui rendait le repli `:target` (sans
+   JavaScript) inopérant. Dans les deux cas, `display: none` retire bien le
+   dossier de l'arbre d'accessibilité. */
 .pj-detail-wrap--closed {
   display: none;
 }
 
-/* Sans JavaScript : l'ancre révèle la fiche, en pleine page. */
+/* La galerie du dossier ne sert qu'aux moteurs de recherche et aux visiteurs
+   sans JavaScript : dès que la scène est montée, le carrousel montre les mêmes
+   captures, en plus grand et avec l'agrandissement plein écran. */
+.pj-modal[data-js] .pj-detail .tk-gallery {
+  display: none;
+}
+
+/* ── Sans JavaScript : le dossier s'affiche en pleine page ───────────────── */
+
 .pj-modal:not([data-js]) .pj-detail-wrap:target {
   display: block;
 }
@@ -586,15 +803,17 @@
   padding: 0;
   margin-top: 2rem;
 }
-.pj-modal:not([data-js]):has(.pj-detail-wrap:target) .pj-panel {
-  width: 100%;
-  max-height: none;
+.pj-modal:not([data-js]):has(.pj-detail-wrap:target) .pj-stage {
+  position: static;
+  display: block;
+  overflow: visible;
+  background: none;
   animation: none;
 }
-.pj-modal:not([data-js]) .pj-veil {
+.pj-modal:not([data-js]) .pj-veil,
+.pj-modal:not([data-js]) .pj-stage-head {
   display: none;
 }
-
 .pj-detail {
   display: grid;
   gap: clamp(1.5rem, 3vw, 2.25rem);
@@ -751,12 +970,21 @@
   .pj-card:hover {
     transform: none;
   }
-  .pj-panel,
+  .pj-stage,
   .pj-veil,
   .pj-piece,
   .pj-scan,
+  .pj-stage-more,
   .pj-cell[data-phase='in'] .pj-card {
     animation: none;
+  }
+  /* Les images clés du balancement portaient aussi le centrage horizontal :
+     sans elles, il faut le rétablir — et seulement là où l'invitation est
+     posée en absolu. */
+  @media (min-width: 64rem) {
+    .pj-stage-more {
+      transform: translateX(-50%);
+    }
   }
   .pj-scan {
     display: none;

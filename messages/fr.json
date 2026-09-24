@@ -61,7 +61,13 @@
     "index": "Sommaire",
     "indexLabel": "Sommaire des projets",
     "sheetNumber": "Projet {number}/{total}",
-    "closeDetails": "Fermer la fiche du projet"
+    "closeDetails": "Fermer la fiche du projet",
+    "descriptionColumn": "Description",
+    "pauseHint": "Survolez pour figer",
+    "readDossier": "Lire le dossier",
+    "dossierTitle": "Le dossier",
+    "previousProject": "Projet précédent",
+    "nextProject": "Projet suivant"
   },
   "about_page": {
     "overline": "À propos",

@@ -27,10 +27,11 @@
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
 import Image from 'next/image';
 import { useTranslations } from 'next-intl';
-import { X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import type { ProjectCategory } from '@/lib/data/projects';
 import Arrow from '@/components/ui/Arrow';
 import ProjectCard, { SHATTER_DURATION_MS, type ProjectCardData, type ShatterPhase } from '@/components/project/ProjectCard';
+import ProjectScene from '@/components/project/ProjectScene';
 import { COLUMN_HEADING, FOCUS_RING, OVERLINE } from '@/components/ui/styles';
 import { useIsClient } from '@/hooks/useClientSnapshot';
 import '@/components/project/showcase.css';
@@ -39,7 +40,15 @@ export interface ShowcaseEntry extends ProjectCardData {
   category: string;
   /** Clé de catégorie, pour le filtre (la carte affiche le libellé traduit). */
   categoryKey: ProjectCategory;
-  /** Fiche complète, rendue par le serveur. */
+  /** Description longue : c'est elle qui défile dans la colonne de gauche. */
+  description: string;
+  /** Captures du projet, couverture comprise et sans doublon. */
+  images: string[];
+  /** Produit en ligne, s'il existe. */
+  liveUrl?: string;
+  /** Dépôt public, s'il en existe un. */
+  repository?: string;
+  /** Dossier complet, rendu par le serveur. */
   detail: ReactNode;
 }
 
@@ -82,6 +91,7 @@ const readAnchorFromUrl = () => window.location.hash.slice(1);
 
 export default function ProjectShowcase({ entries, categories }: ProjectShowcaseProps) {
   const t = useTranslations('projects_page');
+  const tProject = useTranslations('project');
   const isClient = useIsClient();
 
   const [filter, setFilter] = useState<Filter>('all');
@@ -91,7 +101,8 @@ export default function ProjectShowcase({ entries, categories }: ProjectShowcase
   const [current, setCurrent] = useState<string | null>(null);
 
   const gridRef = useRef<HTMLUListElement>(null);
-  const panelRef = useRef<HTMLDivElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const dossierRef = useRef<HTMLDivElement>(null);
   const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
 
   /** Les minuteries en cours sont annulées avant d'en poser de nouvelles. */
@@ -112,6 +123,7 @@ export default function ProjectShowcase({ entries, categories }: ProjectShowcase
   /* ── Fiche ouverte ──────────────────────────────────────────────────────── */
   const urlAnchor = useSyncExternalStore(subscribeToOpenChanges, readAnchorFromUrl, () => '');
   const openEntry = entries.find((entry) => entry.anchor === urlAnchor) ?? null;
+  const isOpen = openEntry !== null;
 
   const openProject = useCallback((anchor: string) => {
     window.history.pushState({ pjModal: anchor }, '', `#${anchor}`);
@@ -219,9 +231,31 @@ export default function ProjectShowcase({ entries, categories }: ProjectShowcase
      ▌ MODALE — défilement, focus et clavier
      ═══════════════════════════════════════════════════════════════════════ */
 
+  /* ── Passage d'un projet à l'autre, sans repasser par la grille ───────────
+     Les voisins sont ceux de la grille telle qu'elle est filtrée : la modale
+     parcourt exactement ce que le visiteur voit.
+
+     `replaceState` et non `pushState` : l'ouverture a déjà empilé une entrée
+     d'historique, et une seule pression sur « retour » doit toujours refermer
+     la modale — pas rejouer un à un les projets consultés. */
+  const position = openEntry ? displayed.findIndex((entry) => entry.anchor === openEntry.anchor) : -1;
+  const previousEntry = position > 0 ? displayed[position - 1] : null;
+  const nextEntry = position >= 0 && position < displayed.length - 1 ? displayed[position + 1] : null;
+
+  const goToProject = useCallback((entry: ShowcaseEntry | null) => {
+    if (!entry) return;
+    window.history.replaceState({ pjModal: entry.anchor }, '', `#${entry.anchor}`);
+    window.dispatchEvent(new Event(OPEN_CHANGED));
+  }, []);
+
+  /** Fait défiler la modale jusqu'au dossier, sous la scène. */
+  const showDossier = () => {
+    dossierRef.current?.scrollIntoView({ block: 'start', behavior: prefersLessMotion() ? 'auto' : 'smooth' });
+  };
+
   /* Défilement de la page verrouillé, largeur de barre compensée. */
   useEffect(() => {
-    if (!openEntry) return;
+    if (!isOpen) return;
 
     const { body, documentElement } = document;
     const scrollbarWidth = window.innerWidth - documentElement.clientWidth;
@@ -235,24 +269,30 @@ export default function ProjectShowcase({ entries, categories }: ProjectShowcase
       body.style.overflow = previousOverflow;
       body.style.paddingRight = previousPadding;
     };
-  }, [openEntry]);
+  }, [isOpen]);
 
-  /* Focus déplacé dans la fiche, puis rendu à la carte à la fermeture. */
+  /* Focus déplacé dans la modale, puis rendu à la carte à la fermeture.
+     L'effet ne dépend que de l'ouverture, et non du projet affiché : sans
+     cela, passer au projet suivant reprendrait le focus au bouton « suivant »
+     à chaque pression, et il faudrait le retrouver à la tabulation. */
   useEffect(() => {
-    if (!openEntry) return;
+    if (!isOpen) return;
 
     const previouslyFocused = document.activeElement as HTMLElement | null;
-    const panel = panelRef.current;
-    panel?.focus({ preventScroll: true });
-    // Chaque fiche s'ouvre à son début, même après une longue lecture.
-    if (panel) panel.scrollTop = 0;
+    stageRef.current?.focus({ preventScroll: true });
 
     return () => previouslyFocused?.focus?.({ preventScroll: true });
-  }, [openEntry]);
+  }, [isOpen]);
 
-  /* `Échap` ferme, `Tab` tourne en boucle dans la fiche. */
+  /* Chaque projet s'ouvre à son début, même après une longue lecture du
+     précédent. */
   useEffect(() => {
-    if (!openEntry) return;
+    if (stageRef.current) stageRef.current.scrollTop = 0;
+  }, [urlAnchor]);
+
+  /* `Échap` ferme, `Tab` tourne en boucle dans la modale. */
+  useEffect(() => {
+    if (!isOpen) return;
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
@@ -262,7 +302,7 @@ export default function ProjectShowcase({ entries, categories }: ProjectShowcase
       }
       if (event.key !== 'Tab') return;
 
-      const focusables = panelRef.current?.querySelectorAll<HTMLElement>(
+      const focusables = stageRef.current?.querySelectorAll<HTMLElement>(
         'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
       );
       if (!focusables || focusables.length === 0) return;
@@ -281,7 +321,7 @@ export default function ProjectShowcase({ entries, categories }: ProjectShowcase
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [openEntry, closeProject]);
+  }, [isOpen, closeProject]);
 
   /* ═══════════════════════════════════════════════════════════════════════
      ▌ RENDU
@@ -390,51 +430,111 @@ export default function ProjectShowcase({ entries, categories }: ProjectShowcase
         </ul>
       </div>
 
-      {/* ── Modale ─────────────────────────────────────────────────────────
-          `data-js` neutralise le repli sans JavaScript (règles `:target`).
-          Le clic hors du panneau referme. */}
-      <div
-        className="pj-modal"
-        data-js={isClient ? '' : undefined}
-        data-open={openEntry ? '' : undefined}
-        onClick={(event) => {
-          if (!(event.target as HTMLElement).closest('.pj-panel')) closeProject();
-        }}
-      >
+      {/* ── Modale plein écran ─────────────────────────────────────────────
+          Deux temps : la scène (une hauteur d'écran), puis le dossier complet.
+          `data-js` neutralise le repli sans JavaScript (règles `:target`). */}
+      <div className="pj-modal" data-js={isClient ? '' : undefined} data-open={isOpen ? '' : undefined}>
         <div className="pj-veil" aria-hidden="true" />
 
         <div
-          ref={panelRef}
-          className="pj-panel"
+          ref={stageRef}
+          className="pj-stage"
           role="dialog"
           aria-modal="true"
           aria-label={openEntry ? openEntry.title : undefined}
           tabIndex={-1}
         >
-          <div className="pj-panel-head">
-            <p className="pj-panel-eyebrow">
-              {openEntry ? t('sheetNumber', { number: openEntry.number, total }) : t('overline')}
-            </p>
-            <button type="button" className="pj-close" onClick={closeProject} aria-label={t('closeDetails')}>
-              <X className="h-4 w-4" aria-hidden="true" />
-            </button>
-          </div>
+          {/* Barre d'identité : collante, elle ne quitte jamais l'écran. */}
+          <header className="pj-stage-head">
+            <div className="pj-stage-id">
+              <p className="pj-stage-number">
+                {openEntry ? t('sheetNumber', { number: openEntry.number, total }) : t('overline')}
+              </p>
+              {openEntry && <p className="pj-stage-title">{openEntry.title}</p>}
+              {openEntry?.isLive && <span className="pj-stage-stamp">{tProject('inProduction')}</span>}
+            </div>
 
-          {/* Une fiche fermée est masquée par une CLASSE, et non par l'attribut
+            <div className="pj-stage-tools">
+              {openEntry?.liveUrl && (
+                <a className="pj-stage-link pj-stage-link--primary" href={openEntry.liveUrl} target="_blank" rel="noopener noreferrer">
+                  {tProject('liveSite')} <Arrow direction="up-right" />
+                  <span className="sr-only"> {tProject('newTab')}</span>
+                </a>
+              )}
+              {openEntry?.repository && (
+                <a className="pj-stage-link" href={openEntry.repository} target="_blank" rel="noopener noreferrer">
+                  {tProject('sourceCode')} <Arrow direction="up-right" />
+                  <span className="sr-only"> {tProject('newTab')}</span>
+                </a>
+              )}
+
+              {isOpen && displayed.length > 1 && (
+                <div className="pj-stage-steps">
+                  <button
+                    type="button"
+                    className="pj-stage-step"
+                    onClick={() => goToProject(previousEntry)}
+                    disabled={!previousEntry}
+                    aria-label={t('previousProject')}
+                  >
+                    <ChevronLeft className="h-4 w-4" aria-hidden="true" />
+                  </button>
+                  <button
+                    type="button"
+                    className="pj-stage-step"
+                    onClick={() => goToProject(nextEntry)}
+                    disabled={!nextEntry}
+                    aria-label={t('nextProject')}
+                  >
+                    <ChevronRight className="h-4 w-4" aria-hidden="true" />
+                  </button>
+                </div>
+              )}
+
+              <button type="button" className="pj-close" onClick={closeProject} aria-label={t('closeDetails')}>
+                <X className="h-4 w-4" aria-hidden="true" />
+              </button>
+            </div>
+          </header>
+
+          {/* Écran 1 — la scène, montée pour le seul projet ouvert : aucune
+              capture d'un projet fermé n'est téléchargée. La clé la remonte à
+              neuf quand on passe au projet suivant, si bien que les entrées
+              rejouent et que le carrousel repart de la première capture. */}
+          {openEntry && (
+            <div className="pj-stage-screen">
+              <ProjectScene
+                key={openEntry.anchor}
+                title={openEntry.title}
+                description={openEntry.description}
+                images={openEntry.images}
+                techStack={openEntry.techStack}
+              />
+              <button type="button" className="pj-stage-more" onClick={showDossier}>
+                {t('readDossier')} <Arrow direction="down" />
+              </button>
+            </div>
+          )}
+
+          {/* Écran 2 — le dossier complet, rendu par le serveur.
+              Un dossier fermé est masqué par une CLASSE, et non par l'attribut
               `hidden` : Chrome applique ce dernier avec une priorité qu'aucune
               règle d'auteur ne peut lever, pas même en `!important`, ce qui
               rendait le repli `:target` (sans JavaScript) inopérant. Dans les
-              deux cas, `display: none` retire bien la fiche de l'arbre
+              deux cas, `display: none` retire bien le dossier de l'arbre
               d'accessibilité. */}
-          {entries.map((entry) => (
-            <div
-              key={entry.anchor}
-              id={entry.anchor}
-              className={`pj-detail-wrap${entry.anchor === openEntry?.anchor ? '' : ' pj-detail-wrap--closed'}`}
-            >
-              {entry.detail}
-            </div>
-          ))}
+          <div className="pj-stage-dossier" ref={dossierRef}>
+            {openEntry && <p className="pj-dossier-eyebrow">{t('dossierTitle')}</p>}
+            {entries.map((entry) => (
+              <div
+                key={entry.anchor}
+                id={entry.anchor}
+                className={`pj-detail-wrap${entry.anchor === openEntry?.anchor ? '' : ' pj-detail-wrap--closed'}`}
+              >
+                {entry.detail}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </>

@@ -1,10 +1,11 @@
 /**
  * @file tech-icons.ts
- * @description Logos des technologies de la section « Les outils, par usage »,
- * en tracés vectoriels prêts à être insérés dans le HTML.
+ * @description Logos des technologies, en tracés vectoriels prêts à être
+ * insérés dans le HTML (section « Les outils, par usage » de l'accueil, cartes
+ * et fiches de la page Projets, colonne de technologies des scènes).
  *
  * @architecture
- * Tous les tracés sont dessinés sur la même grille de 24 × 24 et peints avec
+ * Tous les tracés sont ramenés à la même grille de 24 × 24 et peints avec
  * `currentColor` : une seule taille, une seule épaisseur optique, et la couleur
  * suit le thème (le dossier `public/svg` contient des logos noirs codés en dur,
  * invisibles en thème sombre). Les tracés sont insérés dans la page, et non
@@ -15,11 +16,16 @@
  * - Marques officielles : tracés issus de simple-icons, publiés sous CC0 1.0
  *   (domaine public). Les marques elles-mêmes appartiennent à leurs
  *   propriétaires ; elles ne servent ici qu'à désigner la technologie.
- * - `Django REST Framework` : aucune marque officielle publiée. Pictogramme
- *   « API » de `public/svg/rest-api.svg`, remis à l'échelle.
- * - `PayDunya` et `Isar` : aucune marque officielle publiée non plus. Glyphes
- *   neutres dessinés pour ce site (paiement mobile, base de données locale) —
- *   ce ne sont pas leurs logos.
+ * - Pictogrammes de `public/svg` (SVG Repo) pour les technologies sans marque
+ *   dans simple-icons : `Django REST Framework`, `Prisma ORM`, `Framer Motion`,
+ *   `WebSocket`, `Chart.js`. Ils sont remis à l'échelle depuis leur grille
+ *   d'origine (voir `transform`).
+ * - `PayDunya`, `Isar`, `HTML/CSS` et `SEO` : glyphes neutres dessinés pour ce
+ *   site (paiement mobile, base de données locale, balisage, recherche) — ce ne
+ *   sont pas leurs logos.
+ * - `Android` et `iOS` n'ont volontairement aucun tracé : leurs marques ne sont
+ *   pas reproduites ici. Les composants affichent alors une pastille portant
+ *   l'initiale, ce qui est honnête et reste lisible.
  *
  * Fichier généré ; pour ajouter une technologie, ajouter son tracé ici et son
  * nom dans `lib/data/skills.ts` (les deux doivent correspondre exactement).
@@ -28,8 +34,12 @@
 export interface TechIconShape {
   /** Tracés SVG, sur une grille de 24 × 24. */
   paths: string[];
-  /** Facteur appliqué quand la source n'était pas dessinée sur cette grille. */
-  scale?: number;
+  /**
+   * Transformation appliquée aux tracés quand la source n'était pas dessinée
+   * sur cette grille (`scale(…)`, et `translate(…)` si son `viewBox` ne
+   * commençait pas à l'origine).
+   */
+  transform?: string;
   /** `evenodd` pour les glyphes creux (contours, anneaux). */
   fillRule?: 'evenodd';
   /** Glyphe dessiné en traits plutôt qu'en surfaces pleines. */
@@ -160,9 +170,41 @@ export const TECH_ICONS: Record<string, TechIconShape> = {
   },
   'Django REST Framework': {
     /* public/svg/rest-api.svg */
-    scale: 1.2,
+    transform: 'scale(1.2)',
     paths: [
       'M16 13c-1.3 0-2.4.8-2.8 2H9c0-.7-.2-1.3-.5-1.8l7.1-7.3c.3 0 .6.1.9.1C17.9 6 19 4.9 19 3.5S17.9 1 16.5 1 14 2.1 14 3.5c0 .3.1.7.2 1l-7 7.2c-.6-.5-1.4-.7-2.2-.7V6.8C6.2 6.4 7 5.3 7 4c0-1.7-1.3-3-3-3S1 2.3 1 4c0 1.3.8 2.4 2 2.8v4.7c-1.2.7-2 2-2 3.4 0 2.2 1.8 4 4 4 1.5 0 2.8-.8 3.4-2h4.7c.4 1.1 1.5 2 2.8 2 1.6 0 3-1.3 3-3C19 14.3 17.6 13 16 13z',
+    ],
+  },
+  'Prisma ORM': {
+    /* public/svg/prisma.svg */
+    transform: 'scale(0.75)',
+    fillRule: 'evenodd',
+    paths: [
+      'M25.21,24.21,12.739,27.928a.525.525,0,0,1-.667-.606L16.528,5.811a.43.43,0,0,1,.809-.094l8.249,17.661A.6.6,0,0,1,25.21,24.21Zm2.139-.878L17.8,2.883h0A1.531,1.531,0,0,0,16.491,2a1.513,1.513,0,0,0-1.4.729L4.736,19.648a1.592,1.592,0,0,0,.018,1.7l5.064,7.909a1.628,1.628,0,0,0,1.83.678l14.7-4.383a1.6,1.6,0,0,0,1-2.218Z',
+    ],
+  },
+  'Framer Motion': {
+    /* public/svg/framer-motion.svg */
+    transform: 'scale(0.5505) translate(-3.7, -3.7)',
+    paths: [
+      'm47.3 3.7v21.8l-10.9 10.9-10.9 10.9-10.9-10.9 10.9-10.9v.1-.1z',
+      'm47.3 25.5v21.8l-10.9-10.9z',
+      'm25.5 25.5-10.9 10.9-10.9 10.9v-43.6l10.9 10.9z',
+    ],
+  },
+  'WebSocket': {
+    /* public/svg/websocket.svg */
+    transform: 'scale(0.0938) translate(0, 31.5)',
+    paths: [
+      'M192.440223,144.644612 L224.220111,144.644612 L224.220111,68.3393384 L188.415329,32.5345562 L165.943007,55.0068785 L192.440223,81.5040943 L192.440223,144.644612 L192.440223,144.644612 Z M224.303963,160.576482 L178.017688,160.576482 L113.451687,160.576482 L86.954471,134.079266 L98.1906322,122.843105 L120.075991,144.728464 L165.104487,144.728464 L120.746806,100.286931 L132.06682,88.9669178 L176.4245,133.324599 L176.4245,88.2961022 L154.622994,66.4945955 L165.775303,55.3422863 L110.684573,0 L56.3485097,0 L56.3485097,0 L0,0 L31.6960367,31.6960367 L31.6960367,31.7798886 L31.8637406,31.7798886 L97.4359646,31.7798886 L120.662954,55.0068785 L86.7029152,88.9669178 L63.4759253,65.7399279 L63.4759253,47.7117589 L31.6960367,47.7117589 L31.6960367,78.9046839 L86.7029152,133.911562 L64.3144448,156.300033 L100.119227,192.104815 L154.45529,192.104815 L256,192.104815 L256,192.104815 L224.303963,160.576482 L224.303963,160.576482 Z',
+    ],
+  },
+  'Chart.js': {
+    /* public/svg/chart.svg */
+    transform: 'scale(1.5)',
+    paths: [
+      'M7 0.0618896V9H15.9381C15.446 12.9463 12.0796 16 8 16C3.58172 16 0 12.4183 0 8C0 3.92038 3.05369 0.553988 7 0.0618896Z',
+      'M9 0.0618897V7H15.9381C15.4869 3.38128 12.6187 0.513137 9 0.0618897Z',
     ],
   },
   'PayDunya': {
@@ -180,6 +222,24 @@ export const TECH_ICONS: Record<string, TechIconShape> = {
       'M12 2C7.6 2 4 3.34 4 5s3.6 3 8 3 8-1.34 8-3-3.6-3-8-3Z',
       'M20 8.7c-1.9 1-4.8 1.6-8 1.6s-6.1-.6-8-1.6V12c0 1.66 3.6 3 8 3s8-1.34 8-3V8.7Z',
       'M20 15.7c-1.9 1-4.8 1.6-8 1.6s-6.1-.6-8-1.6V19c0 1.66 3.6 3 8 3s8-1.34 8-3v-3.3Z',
+    ],
+  },
+  'HTML/CSS': {
+    /* glyphe neutre (balisage) */
+    stroke: true,
+    paths: [
+      'M9.2 7.6 5.4 12l3.8 4.4',
+      'M14.8 7.6 18.6 12l-3.8 4.4',
+      'M13 6.6l-2 10.8',
+    ],
+  },
+  'SEO': {
+    /* glyphe neutre (recherche et progression) */
+    stroke: true,
+    paths: [
+      'M10.4 4.4a6 6 0 1 0 0 12 6 6 0 0 0 0-12Z',
+      'M14.9 14.9 20 20',
+      'M7.7 11.9l1.9-2.1 1.7 1.5 2-2.5',
     ],
   },
 };
