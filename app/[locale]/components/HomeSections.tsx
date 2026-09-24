@@ -25,6 +25,7 @@ import { padNumber } from '@/lib/format';
 import ProjectTicket from '@/components/project/ProjectTicket';
 import Arrow from '@/components/ui/Arrow';
 import SectionHead from '@/components/ui/SectionHead';
+import TechIcon from '@/components/ui/TechIcon';
 import { BUTTON_PRIMARY, COLUMN_HEADING, CONTAINER, LINK_SECONDARY, OVERLINE } from '@/components/ui/styles';
 import ProfileReceipt from './ProfileReceipt';
 
@@ -130,7 +131,10 @@ export function StackSection() {
                   const count = TECH_USAGE.get(skill.name) ?? 0;
                   return (
                     <li key={skill.name} className="hm-skill">
-                      <span className="font-semibold text-ink">{skill.name}</span>
+                      <span className="hm-skill-name">
+                        <TechIcon name={skill.name} className="hm-skill-icon" />
+                        {skill.name}
+                      </span>
                       <span className="hm-skill-leader" aria-hidden="true" />
                       <span className={`whitespace-nowrap tabular-nums ${count > 0 ? 'text-ink-soft' : 'text-ink-muted'} text-caption`}>
                         {t('usage', { count })}

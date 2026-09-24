@@ -216,6 +216,36 @@
   align-items: baseline;
   gap: 0.5rem;
 }
+.hm-skill-name {
+  font-weight: 600;
+  color: var(--ds-ink);
+  /* Évite un dernier mot seul sur sa ligne (« Django REST Framework »). */
+  text-wrap: pretty;
+}
+/* Logo dans le fil du texte : sa taille suit celle du nom, sa couleur le thème.
+   `vertical-align` le pose sur la ligne d'écriture (voir TechIcon.tsx). */
+.hm-skill-icon {
+  /* Indispensable : la base de Tailwind met les `svg` en `display: block`, ce
+     qui renvoie le logo sur sa propre ligne, au-dessus du nom. */
+  display: inline-block;
+  width: 1.15em;
+  height: 1.15em;
+  margin-right: 0.5rem;
+  vertical-align: -0.22em;
+  /* Un ton plus présent que `ink-muted` : les logos fins (Git, Traefik) restent
+     lisibles sur le fond sombre, sans concurrencer le nom en gras. */
+  color: var(--ds-ink-soft);
+  transition: color var(--motion-base) var(--ease-emphasized),
+    transform var(--motion-base) var(--ease-emphasized);
+}
+/* Le survol n'est qu'un agrément : la ligne n'est pas cliquable, et la couleur
+   de marque n'est jamais la seule à porter l'information. */
+@media (hover: hover) {
+  .hm-skill:hover .hm-skill-icon {
+    color: var(--ds-brand-text);
+    transform: scale(1.12);
+  }
+}
 .hm-skill-leader {
   flex: 1;
   min-width: 0.75rem;
