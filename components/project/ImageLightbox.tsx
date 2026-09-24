@@ -1,4 +1,3 @@
-
 "use client";
 
 import { AnimatePresence, motion, useMotionValue, useReducedMotion, useTransform, type PanInfo } from "framer-motion";
@@ -22,6 +21,9 @@ const DISMISS_DISTANCE_THRESHOLD = 140;
 
 /** Amplitude du couplage geste vertical → opacité / échelle. */
 const DISMISS_FADE_RANGE = 320;
+
+/** Déplacement (px) au-delà duquel un clic est traité comme un glissement. */
+const CLICK_DRAG_TOLERANCE = 8;
 
 /** Courbe d'entrée/sortie — décélération franche, sans rebond. */
 const EASE_OUT_EXPO = [0.16, 1, 0.3, 1] as const;
@@ -70,6 +72,38 @@ const ImageLightbox = ({ title, images, currentIndex, onClose, onNext, onPrev, o
 
     const shouldReduceMotion = useReducedMotion();
     const containerRef = useRef<HTMLDivElement>(null);
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       ▌ FERMETURE AU CLIC DANS LE VIDE
+       Le cadre centré occupe presque tout l'écran et retenait le clic sur
+       toute sa surface : seule une mince bordure autour fermait la
+       visionneuse. Désormais, seuls l'image et les commandes le retiennent —
+       cliquer n'importe où ailleurs referme.
+
+       Le déplacement du pointeur est mesuré : un glissement (navigation ou
+       geste de fermeture) se termine souvent hors de l'image, et ne doit pas
+       être pris pour un clic dans le vide.
+       ═══════════════════════════════════════════════════════════════════════ */
+    const pointerOrigin = useRef<{ x: number; y: number } | null>(null);
+
+    const rememberPointer = useCallback((event: React.PointerEvent) => {
+        pointerOrigin.current = { x: event.clientX, y: event.clientY };
+    }, []);
+
+    const closeOnVoidClick = useCallback(
+        (event: React.MouseEvent) => {
+            const origin = pointerOrigin.current;
+            const travelled = origin ? Math.hypot(event.clientX - origin.x, event.clientY - origin.y) : 0;
+
+            // L'image et les commandes portent `data-lightbox-keep` : un clic sur
+            // elles ne ferme pas. Un glissement non plus, où qu'il se termine.
+            if ((event.target as HTMLElement).closest('[data-lightbox-keep]')) return;
+            if (travelled > CLICK_DRAG_TOLERANCE) return;
+
+            onClose();
+        },
+        [onClose],
+    );
 
     /* ── Portail : monté uniquement côté client ────────────────────────────── */
     const isMounted = useIsClient();
@@ -222,7 +256,11 @@ const ImageLightbox = ({ title, images, currentIndex, onClose, onNext, onPrev, o
             exit={{ opacity: 0 }}
             transition={{ duration: 0.28, ease: EASE_OUT_EXPO }}
             className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-8 outline-none"
-            onClick={onClose}
+            /* La fermeture est décidée ici, à la racine : tous les clics y
+               passent, y compris ceux du rail de vignettes, qui est hors du
+               cadre de l'image. */
+            onPointerDown={rememberPointer}
+            onClick={closeOnVoidClick}
         >
             {/* ── Fond : sa densité suit le geste de fermeture ──────────────── */}
             <motion.div
@@ -234,7 +272,6 @@ const ImageLightbox = ({ title, images, currentIndex, onClose, onNext, onPrev, o
             {/* Conteneur principal de l'image avec animation de transition */}
             <motion.div
                 className="relative w-full h-full max-w-6xl max-h-[90vh] flex items-center justify-center cursor-grab active:cursor-grabbing touch-none"
-                onClick={(e) => e.stopPropagation()}
                 drag={shouldReduceMotion ? false : true}
                 dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
                 dragElastic={0.1}
@@ -253,6 +290,8 @@ const ImageLightbox = ({ title, images, currentIndex, onClose, onNext, onPrev, o
                         src={images[currentIndex]}
                         alt={tGallery('screenshotAlt', { title, position: currentIndex + 1 })}
                         draggable={false}
+                        /* Cliquer l'image ne ferme pas : seul le vide autour ferme. */
+                        data-lightbox-keep=""
                         variants={shouldReduceMotion ? undefined : slideVariants}
                         initial={shouldReduceMotion ? { opacity: 0 } : "enter"}
                         animate={shouldReduceMotion ? { opacity: 1 } : "center"}
@@ -268,6 +307,7 @@ const ImageLightbox = ({ title, images, currentIndex, onClose, onNext, onPrev, o
                     <>
                         <button
                             onClick={onPrev}
+                            data-lightbox-keep=""
                             className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 p-3 rounded-full
                                        bg-black/40 hover:bg-black/70 backdrop-blur-md border border-white/10
                                        text-white transition-[background-color,transform] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]
@@ -294,6 +334,7 @@ const ImageLightbox = ({ title, images, currentIndex, onClose, onNext, onPrev, o
 
                         <button
                             onClick={onNext}
+                            data-lightbox-keep=""
                             className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 p-3 rounded-full
                                        bg-black/40 hover:bg-black/70 backdrop-blur-md border border-white/10
                                        text-white transition-[background-color,transform] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]
@@ -321,7 +362,7 @@ const ImageLightbox = ({ title, images, currentIndex, onClose, onNext, onPrev, o
                 )}
 
                 {/* Compteur d'images et bouton de fermeture */}
-                <div className="absolute bottom-4 right-4">
+                <div className="absolute bottom-4 right-4" data-lightbox-keep="">
                     {/* Affichage du compteur d'images et du bouton de fermeture groupés */}
                     <div className="flex items-center gap-3 bg-black/50 backdrop-blur-md border border-white/10 px-4 py-2 rounded-full text-white">
                         {/* Compteur d'images — `tabular-nums` fige la largeur, le bloc ne tressaute pas */}
@@ -367,7 +408,7 @@ const ImageLightbox = ({ title, images, currentIndex, onClose, onNext, onPrev, o
                     className="absolute bottom-4 left-1/2 -translate-x-1/2 hidden md:flex items-center gap-2
                                p-2 rounded-2xl bg-black/40 backdrop-blur-md border border-white/10 max-w-[70vw] overflow-x-auto
                                [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-                    onClick={(e) => e.stopPropagation()}
+                    data-lightbox-keep=""
                 >
                     {images.map((source, position) => (
                         <button

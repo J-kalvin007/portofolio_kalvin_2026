@@ -1,0 +1,93 @@
+/**
+ * logotype.css — perforation de reçu + nom sur deux lignes (voir Logotype.tsx).
+ *
+ * Feuille non « layered » : elle passe donc après les utilitaires Tailwind et
+ * n'a pas besoin d'`!important` pour tenir ses valeurs.
+ */
+
+.lg {
+  display: inline-flex;
+  align-items: stretch;
+  gap: 0.55rem;
+  /* Le logotype ne se coupe jamais en deux, même dans une barre étroite. */
+  flex: none;
+}
+
+/* ── Bord perforé ──────────────────────────────────────────────────────────
+   Une colonne de carrés bleus, obtenue par un seul dégradé répété : aucun
+   élément supplémentaire dans le HTML, aucune image à charger. Les trous sont
+   arrondis par la taille (3 px) plutôt que par un `border-radius`, invisible à
+   cette échelle. */
+.lg-perf {
+  width: 3px;
+  align-self: stretch;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    var(--ds-brand) 0 3px,
+    transparent 3px 6px
+  );
+  /* Les carrés partent du haut du prénom et s'arrêtent au bas du nom. */
+  background-position: 0 1px;
+  transition: background-image var(--motion-base) var(--ease-emphasized);
+}
+
+.lg-name {
+  display: grid;
+  gap: 0.1rem;
+}
+
+/* Prénom : petites capitales très espacées, comme une mention de reçu. */
+.lg-first {
+  font-size: 0.5625rem;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--ds-ink-muted);
+  transition: color var(--motion-fast) var(--ease-emphasized);
+}
+
+/* Nom de famille : c'est lui qu'on retient, donc lui qui domine. */
+.lg-last {
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 0.95;
+  letter-spacing: -0.015em;
+  color: var(--ds-ink);
+}
+
+/* ── Survol : le ticket se « détache » ─────────────────────────────────────
+   La perforation passe au bleu du tampon et le prénom rejoint la couleur du
+   nom. Deux propriétés, aucun déplacement : la barre de navigation reste
+   stable. */
+.lg:hover .lg-perf,
+a:focus-visible .lg-perf {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    var(--ds-stamp) 0 3px,
+    transparent 3px 5px
+  );
+}
+.lg:hover .lg-first {
+  color: var(--ds-ink-soft);
+}
+
+/* ── Pied de page : même dessin, plus d'air ───────────────────────────────── */
+.lg--footer {
+  gap: 0.75rem;
+}
+.lg--footer .lg-perf {
+  width: 4px;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    var(--ds-brand) 0 4px,
+    transparent 4px 8px
+  );
+}
+.lg--footer .lg-first {
+  font-size: 0.6875rem;
+  letter-spacing: 0.34em;
+}
+.lg--footer .lg-last {
+  font-size: 1.5rem;
+}

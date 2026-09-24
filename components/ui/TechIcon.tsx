@@ -3,20 +3,26 @@
  * @description Logo d'une technologie, inséré dans le texte.
  *
  * @architecture
- * Composant serveur : le tracé part dans le HTML, il n'y a ni requête d'image,
- * ni JavaScript, ni temps d'attente avant l'affichage. Le logo est peint avec
+ * Composant serveur : le logo part dans le HTML, il n'y a ni requête d'image,
+ * ni JavaScript, ni temps d'attente avant l'affichage. Il est peint avec
  * `currentColor` et mesuré en `em` : il suit la couleur et la taille du texte
  * qui l'entoure, dans les deux thèmes.
  *
- * `vertical-align` le pose sur la ligne d'écriture plutôt que sur le bas de la
- * ligne : le logo reste collé au premier mot du nom, même quand celui-ci passe
- * à la ligne (« Django REST Framework »).
+ * Le tracé lui-même n'est pas répété ici : il vit dans la réserve de la page
+ * (`TechIconSprite`), et chaque logo n'en porte qu'une référence de quelques
+ * octets. Sans cela, la page Projets embarquait une centaine de tracés
+ * complets — près de 40 Ko compressés.
  *
- * Les tracés et leur provenance sont dans `tech-icons.ts`. Une technologie
- * sans tracé n'affiche rien — mieux qu'un carré vide ou un logo approximatif.
+ * ⚠️ La réserve doit être rendue une fois dans la page, sinon les logos
+ * n'affichent rien : `<use>` ne peut pointer que sur un symbole présent.
+ *
+ * `vertical-align` (dans les feuilles des pages) pose le logo sur la ligne
+ * d'écriture plutôt que sur le bas de la ligne : il reste collé au premier mot
+ * du nom, même quand celui-ci passe à la ligne.
  */
 
 import { TECH_ICONS } from './tech-icons';
+import { techSymbolId } from './techSymbolId';
 
 interface TechIconProps {
   /** Nom exact de la technologie, tel qu'il figure dans `lib/data/skills.ts`. */
@@ -25,31 +31,20 @@ interface TechIconProps {
 }
 
 export default function TechIcon({ name, className = '' }: TechIconProps) {
-  const icon = TECH_ICONS[name];
-  if (!icon) return null;
-
-  // La règle de remplissage est posée sur chaque tracé, et non sur le `svg` :
-  // héritée depuis la racine, elle n'était pas appliquée par le navigateur.
-  const shapes = icon.paths.map((d, index) => <path key={index} d={d} fillRule={icon.fillRule} />);
-
-  // Les glyphes en traits (`stroke`) ne dépendent d'aucune règle de remplissage :
-  // c'est plus sûr pour un dessin fin affiché à 18 px.
-  const painting = icon.stroke
-    ? ({ fill: 'none', stroke: 'currentColor', strokeWidth: 1.9, strokeLinecap: 'round', strokeLinejoin: 'round' } as const)
-    : ({ fill: 'currentColor' } as const);
+  // Une technologie sans tracé n'affiche rien — mieux qu'un carré vide.
+  if (!(name in TECH_ICONS)) return null;
 
   return (
     <svg
       viewBox="0 0 24 24"
       width="1em"
       height="1em"
-      {...painting}
       /* Décoratif : le nom de la technologie est juste à côté, en texte. */
       aria-hidden="true"
       focusable="false"
       className={className}
     >
-      {icon.scale ? <g transform={`scale(${icon.scale})`}>{shapes}</g> : shapes}
+      <use href={`#${techSymbolId(name)}`} />
     </svg>
   );
 }

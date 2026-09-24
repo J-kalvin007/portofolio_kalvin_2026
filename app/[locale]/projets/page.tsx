@@ -1,12 +1,15 @@
 /**
  * @file projets/page.tsx
- * @description Page Projets — direction « Reçu ».
+ * @description Page Projets.
  *
  * @architecture
- * Composant **serveur**. Chaque projet est une fiche complète : toutes ses
- * captures, sa description, sa stack et son schéma d'architecture animé.
- * Seuls le filtre et le sommaire (`ProjectCatalog`), les galeries et
- * l'animation des schémas s'exécutent dans le navigateur.
+ * Composant **serveur**. Il prépare, pour chaque projet, les données de sa
+ * carte et sa fiche complète (`ProjectDetail`), puis confie l'affichage à
+ * `ProjectShowcase` : filtre, sommaire, grille de cartes et modale de détail.
+ *
+ * Les fiches partent donc dans le HTML de la page : leur texte est indexable,
+ * et l'ouverture d'une fiche ne déclenche aucun chargement. Seuls le filtre,
+ * les galeries et l'animation des schémas s'exécutent dans le navigateur.
  */
 
 import type { Metadata } from 'next';
@@ -15,10 +18,11 @@ import { resolveLocale, type LocaleParams } from '@/i18n/params';
 import { PROJECTS, PROJECT_CATEGORIES, projectAnchor } from '@/lib/data/projects';
 import { padNumber } from '@/lib/format';
 import { pageMetadata } from '@/lib/seo';
-import ProjectTicket from '@/components/project/ProjectTicket';
+import ProjectDetail from '@/components/project/ProjectDetail';
 import PageHeader from '@/components/ui/PageHeader';
+import TechIconSprite from '@/components/ui/TechIconSprite';
 import { CONTAINER } from '@/components/ui/styles';
-import ProjectCatalog, { type CatalogEntry } from './components/ProjectCatalog';
+import ProjectShowcase, { type ShowcaseEntry } from './components/ProjectShowcase';
 
 export async function generateMetadata({ params }: LocaleParams): Promise<Metadata> {
   const locale = await resolveLocale(params);
@@ -39,14 +43,25 @@ export default async function ProjectsPage({ params }: LocaleParams) {
 
   const t = await getTranslations({ locale, namespace: 'projects_page' });
   const tProject = await getTranslations({ locale, namespace: 'project' });
+  const tData = await getTranslations({ locale, namespace: 'projects_data' });
 
-  const entries: CatalogEntry[] = PROJECTS.map((project, position) => ({
-    anchor: projectAnchor(project),
-    category: project.category,
-    number: padNumber(position + 1),
-    title: project.title,
-    content: <ProjectTicket project={project} variant="full" headingLevel="h2" />,
-  }));
+  const entries: ShowcaseEntry[] = PROJECTS.map((project, position) => {
+    const number = padNumber(position + 1);
+
+    return {
+      anchor: projectAnchor(project),
+      number,
+      title: project.title,
+      category: tProject(`categories.${project.category}`),
+      categoryKey: project.category,
+      year: project.year,
+      cover: project.coverImage,
+      summary: tData(`${project.i18nKey}.short`),
+      techStack: project.techStack,
+      isLive: Boolean(project.liveUrl),
+      detail: <ProjectDetail project={project} />,
+    };
+  });
 
   const categories = PROJECT_CATEGORIES.map((key) => ({ key, label: tProject(`categories.${key}`) }));
 
@@ -54,7 +69,9 @@ export default async function ProjectsPage({ params }: LocaleParams) {
     <>
       <PageHeader overline={t('overline')} title={t('title')} lead={t('lead', { count: PROJECTS.length })} />
       <div className={`${CONTAINER} pb-section pt-block`}>
-        <ProjectCatalog entries={entries} categories={categories} />
+        {/* Réserve des logos : les cartes et les neuf fiches y puisent. */}
+        <TechIconSprite />
+        <ProjectShowcase entries={entries} categories={categories} />
       </div>
     </>
   );

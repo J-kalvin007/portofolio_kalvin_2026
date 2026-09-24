@@ -18,6 +18,11 @@ import { useCallback, useState } from 'react';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import { useTranslations } from 'next-intl';
+/* Les styles de la galerie voyagent avec son balisage : la feuille était
+   importée par le billet de projet seulement, et la galerie se retrouvait sans
+   dimensions partout ailleurs — son image, posée en `fill`, débordait alors sur
+   tout son conteneur. */
+import './project.css';
 
 /** Visionneuse chargée au premier clic seulement (voir LightboxLayer). */
 const LightboxLayer = dynamic(() => import('./LightboxLayer'), { ssr: false });

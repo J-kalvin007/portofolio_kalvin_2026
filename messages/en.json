@@ -59,7 +59,9 @@
     "filterAll": "All",
     "shown": "{count, plural, =0 {No project shown} one {# project shown} other {# projects shown}}",
     "index": "Contents",
-    "indexLabel": "Project contents"
+    "indexLabel": "Project contents",
+    "sheetNumber": "Project {number}/{total}",
+    "closeDetails": "Close the project sheet"
   },
   "about_page": {
     "overline": "About",

@@ -19,6 +19,7 @@ import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import { CONTACT, SOCIAL_LINKS } from '@/lib/site';
 import Arrow from '@/components/ui/Arrow';
+import Logotype from './Logotype';
 import './footer.css';
 
 const COLUMN_HEADING = 'border-b border-ink pb-3 text-caption font-bold uppercase tracking-[0.1em] text-ink';
@@ -60,9 +61,7 @@ export default function Footer() {
         <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)_minmax(0,1.3fr)_minmax(0,0.8fr)] lg:gap-10">
           {/* Identité */}
           <div className="grid content-start gap-3">
-            <p className="text-subheading font-extrabold uppercase leading-none tracking-[0.06em]">
-              K<span className="text-brand-text">·</span>Takoudjou
-            </p>
+            <Logotype size="footer" />
             <p className="max-w-[34ch] text-caption text-ink-soft">{t('description')}</p>
           </div>
 
