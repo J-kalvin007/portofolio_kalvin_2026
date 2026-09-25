@@ -18,6 +18,7 @@ import { z } from 'zod';
 import { escapeHtml } from '@/lib/html-escape';
 import { SITE_URL, SITE_NAME } from '@/lib/site';
 import { CONTACT_LIMITS, CONTACT_MAX_BODY_BYTES, EMAIL_PATTERN, HONEYPOT_FIELD } from '@/lib/contact';
+import { clientIdentifier, createRateLimiter } from '@/lib/rate-limit';
 
 /**
  * `nodemailer` ouvre des sockets TCP : il ne peut pas tourner sur le runtime Edge.
@@ -27,68 +28,21 @@ import { CONTACT_LIMITS, CONTACT_MAX_BODY_BYTES, EMAIL_PATTERN, HONEYPOT_FIELD }
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   ▌ LIMITATION DE DÉBIT
+/* ════════════════════════════════════════════════════════════════════════════
+   ▐ LIMITATION DE DÉBIT
    ───────────────────────────────────────────────────────────────────────────
    Le point d'entrée était totalement ouvert. Un script trivial pouvait le
    marteler et, en quelques minutes, atteindre le quota d'envoi SMTP de Gmail
    (500 messages par jour) — quota dépassé, le compte cesse d'émettre pour
    24 heures, y compris pour votre courrier personnel.
 
-   ⚠️ Cette implémentation garde son état en mémoire du processus. Sur une
-   plateforme sans serveur, chaque instance a donc son propre compteur, et
-   l'état disparaît au refroidissement. Elle arrête les floods naïfs, pas un
-   attaquant déterminé. Pour une protection réelle, adosser ce compteur à un
-   magasin partagé (Vercel KV, Upstash Redis) — la signature de
-   `isRateLimited` est prévue pour ce remplacement.
+   L'algorithme vit désormais dans `lib/rate-limit.ts` : la route des
+   rendez-vous applique le même, avec un quota qui lui est propre. Ses limites
+   (état en mémoire du processus, donc par instance) y sont documentées.
    ═══════════════════════════════════════════════════════════════════════════ */
 
-/** Fenêtre d'observation glissante. */
-const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000; // 1 heure
-
-/** Nombre de messages autorisés par adresse IP et par fenêtre. */
-const RATE_LIMIT_MAX_REQUESTS = 5;
-
-/** Au-delà de ce nombre d'IP suivies, on purge les entrées expirées. */
-const RATE_LIMIT_CLEANUP_THRESHOLD = 500;
-
-/** Horodatages des requêtes récentes, indexés par adresse IP. */
-const requestTimestamps = new Map<string, number[]>();
-
-/** Extrait l'adresse cliente derrière le proxy de la plateforme. */
-function getClientIdentifier(request: NextRequest): string {
-  const forwardedFor = request.headers.get('x-forwarded-for');
-  if (forwardedFor) return forwardedFor.split(',')[0].trim();
-
-  return request.headers.get('x-real-ip') ?? 'unknown';
-}
-
-/** Purge les IP dont toutes les requêtes sont sorties de la fenêtre. */
-function pruneExpiredEntries(now: number): void {
-  for (const [identifier, timestamps] of requestTimestamps) {
-    const stillRelevant = timestamps.filter((t) => now - t < RATE_LIMIT_WINDOW_MS);
-    if (stillRelevant.length === 0) requestTimestamps.delete(identifier);
-    else requestTimestamps.set(identifier, stillRelevant);
-  }
-}
-
-/** Retourne `true` si l'appelant a épuisé son quota, et le délai avant réouverture. */
-function isRateLimited(identifier: string): { limited: boolean; retryAfterSeconds: number } {
-  const now = Date.now();
-
-  if (requestTimestamps.size > RATE_LIMIT_CLEANUP_THRESHOLD) pruneExpiredEntries(now);
-
-  const recent = (requestTimestamps.get(identifier) ?? []).filter((t) => now - t < RATE_LIMIT_WINDOW_MS);
-
-  if (recent.length >= RATE_LIMIT_MAX_REQUESTS) {
-    const oldest = Math.min(...recent);
-    return { limited: true, retryAfterSeconds: Math.ceil((RATE_LIMIT_WINDOW_MS - (now - oldest)) / 1000) };
-  }
-
-  recent.push(now);
-  requestTimestamps.set(identifier, recent);
-  return { limited: false, retryAfterSeconds: 0 };
-}
+/** Cinq messages par heure et par adresse IP. */
+const limiter = createRateLimiter({ windowMs: 60 * 60 * 1000, max: 5 });
 
 /* ═══════════════════════════════════════════════════════════════════════════
    ▌ RÉPONSES LOCALISÉES
@@ -218,7 +172,7 @@ export async function POST(request: NextRequest) {
 
   try {
     /* ── 0. Quota par adresse IP ────────────────────────────────────────── */
-    const { limited, retryAfterSeconds } = isRateLimited(getClientIdentifier(request));
+    const { limited, retryAfterSeconds } = limiter.check(clientIdentifier(request));
 
     if (limited) {
       return NextResponse.json(
