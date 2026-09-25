@@ -135,6 +135,223 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
+   ▌ EN-TÊTE DE PAGE
+   ───────────────────────────────────────────────────────────────────────────
+   Même signature que les sections : le surtitre est suivi d'un filet. Ici il se
+   trace une fois, à l'ouverture — l'en-tête est déjà à l'écran, une apparition
+   au défilement n'aurait rien à révéler.
+
+   Le sélecteur s'appuie sur `text-overline`, le rôle typographique du système
+   de design : c'est la seule marque stable du surtitre dans un composant
+   partagé par trois pages.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.ab-page-head .text-overline {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+.ab-page-head .text-overline::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  max-width: 22rem;
+  background: var(--ds-line);
+  transform-origin: left center;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ab-page-head .text-overline::after {
+    animation: ab-draw 900ms var(--ease-emphasized) 120ms both;
+  }
+}
+
+/* Trois faits, en pied d'en-tête, séparés par des filets verticaux. */
+.ab-facts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 1.25rem;
+  margin: 1.75rem 0 0;
+  padding: 1rem 0 0;
+  border-top: 1px dashed var(--ds-line);
+  list-style: none;
+  color: var(--ds-ink-muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.ab-facts li {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+/* Le filet vertical sépare deux faits, jamais après le dernier. */
+.ab-facts li:not(:last-child)::after {
+  content: '';
+  width: 1px;
+  height: 0.85rem;
+  background: var(--ds-line);
+}
+/* Le tampon de disponibilité garde l'encre de marque du site. */
+.ab-facts li:nth-child(2) {
+  color: var(--ds-brand-text);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ▌ PORTRAIT — de la fiche au plein écran
+   ───────────────────────────────────────────────────────────────────────────
+   La vignette est un bouton : le curseur l'annonce, une pastille apparaît au
+   survol, et le clic confie l'agrandissement à la transition de vue du
+   navigateur (voir `PortraitViewer.tsx`).
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.idc-photo {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  cursor: zoom-in;
+}
+.idc-photo:focus-visible {
+  outline: 2px solid var(--ds-stamp);
+  outline-offset: 3px;
+}
+
+.idc-photo-hint {
+  position: absolute;
+  right: 0.35rem;
+  bottom: 0.35rem;
+  display: grid;
+  place-items: center;
+  width: 1.65rem;
+  height: 1.65rem;
+  border-radius: 0.35rem;
+  background: color-mix(in srgb, var(--ds-paper-ink) 78%, transparent);
+  color: var(--ds-paper);
+  opacity: 0;
+  transform: translateY(4px);
+  transition:
+    opacity var(--motion-fast) var(--ease-emphasized),
+    transform var(--motion-fast) var(--ease-emphasized);
+}
+.idc-photo-hint svg {
+  display: block;
+}
+@media (hover: hover) {
+  .idc-photo:hover .idc-photo-hint {
+    opacity: 1;
+    transform: none;
+  }
+}
+.idc-photo:focus-visible .idc-photo-hint {
+  opacity: 1;
+  transform: none;
+}
+
+/* ── La vue plein écran ──────────────────────────────────────────────────── */
+
+.pv {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  display: grid;
+  place-items: center;
+  padding: clamp(1rem, 4vw, 3rem);
+  cursor: zoom-out;
+}
+
+.pv-veil {
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, #05070a 86%, transparent);
+  backdrop-filter: blur(14px);
+}
+
+/* Le cadre reprend le rapport exact du fichier (720 × 1080) : la photo n'est
+   ni recadrée ni déformée, et le mouvement d'agrandissement reste une pure
+   mise à l'échelle. */
+.pv-frame {
+  position: relative;
+  height: min(88svh, 52rem);
+  aspect-ratio: 2 / 3;
+  max-width: 100%;
+  margin: 0;
+  overflow: hidden;
+  border-radius: var(--radius-card);
+  background: var(--ds-surface-sunken);
+  box-shadow: var(--shadow-e3);
+}
+/* L'image est posée à la main : la vue plein écran sert le fichier d'origine,
+   sans passer par le composant d'images (voir `PortraitViewer.tsx`). */
+.pv-frame img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pv-close {
+  position: absolute;
+  top: clamp(0.75rem, 3vw, 1.5rem);
+  right: clamp(0.75rem, 3vw, 1.5rem);
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 1px solid color-mix(in srgb, #ffffff 24%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, #05070a 60%, transparent);
+  color: #ffffff;
+  cursor: pointer;
+  transition: background-color var(--motion-fast) var(--ease-emphasized);
+}
+.pv-close:hover {
+  background: color-mix(in srgb, #05070a 85%, transparent);
+}
+.pv-close:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+.pv-close svg {
+  display: block;
+}
+
+/* Sans transition de vue (Firefox à ce jour), l'ouverture se contente d'un
+   fondu : la fonction est la même, seul le mouvement manque. */
+@media (prefers-reduced-motion: no-preference) {
+  .pv-veil {
+    animation: ab-fade var(--motion-base) linear both;
+  }
+  .pv-frame,
+  .pv-close {
+    animation: ab-fade var(--motion-base) var(--ease-emphasized) both;
+  }
+}
+@keyframes ab-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ── Le mouvement lui-même ───────────────────────────────────────────────────
+   Le navigateur interpole la position, la taille et le cadrage entre les deux
+   états du portrait. On ne règle ici que le tempo — et on empêche le reste de
+   la page de participer : seule la photo doit bouger. */
+::view-transition-group(portrait) {
+  animation-duration: 560ms;
+  animation-timing-function: var(--ease-emphasized);
+}
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
    ▌ FICHE D'IDENTITÉ
    ───────────────────────────────────────────────────────────────────────────
    Un badge de papier, accroché par une attache, posé de travers sur la page.

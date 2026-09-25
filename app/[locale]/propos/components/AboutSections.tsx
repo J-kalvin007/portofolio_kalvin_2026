@@ -23,9 +23,9 @@
  * pas un observateur, pas un écouteur, pas un octet de JavaScript.
  */
 
-import Image from 'next/image';
 import { useMessages, useTranslations } from 'next-intl';
 import SectionHead from '@/components/ui/SectionHead';
+import PortraitViewer from './PortraitViewer';
 import { COLUMN_HEADING, CONTAINER } from '@/components/ui/styles';
 import { padNumber } from '@/lib/format';
 import '@/components/ui/receipt.css';
@@ -51,15 +51,8 @@ export function ProfileCard() {
       <div className="idc-clip" aria-hidden="true" />
       <div className="idc-paper">
         <div className="idc-head">
-          <div className="idc-photo">
-            <Image
-              src="/images/Kalvin.webp"
-              alt={t('portraitAlt')}
-              fill
-              priority
-              sizes="(max-width: 380px) 96px, 120px"
-            />
-          </div>
+          {/* La photo s'agrandit en plein écran au clic (voir PortraitViewer). */}
+          <PortraitViewer src="/images/Kalvin.webp" alt={t('portraitAlt')} />
           <div>
             <p className="idc-name">Kalvin Takoudjou</p>
             <p className="idc-role">{t('role')}</p>
