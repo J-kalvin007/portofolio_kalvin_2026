@@ -1,12 +1,363 @@
 /**
  * @file about.css
- * @description Fiche d'identité de la page À propos : un badge de papier,
- * accroché par une attache, avec le portrait, les informations clés et le
- * tampon « Disponible ».
+ * @description Habillage de la page À propos : la fiche d'identité, le registre
+ * du parcours, les principes de méthode, les colonnes de profil et les
+ * recommandations sur papier.
  *
- * Même vocabulaire que le reçu de l'accueil (papier, pointillés, tampon),
- * avec un objet différent. Toutes les valeurs viennent du système de design.
+ * @architecture
+ * Feuille **hors couche Tailwind** : importée par son composant, elle l'emporte
+ * sur les utilitaires sans aucun `!important`. Toutes les valeurs viennent des
+ * rôles du système de design (`app/design-system.css`) — la page suit donc le
+ * thème clair comme le thème sombre sans une seule couleur écrite en dur.
+ *
+ * @remarks **Le parti pris : du papier, pas des effets.**
+ * Rien ici n'est peint en dégradé, souligné d'un liseré coloré ou posé sur un
+ * halo. L'effet vient de la typographie (chiffres évidés, filets qui se
+ * tracent), du rythme (marges, pointillés, tampons) et du mouvement lié au
+ * défilement — le vocabulaire du reçu, poussé plus loin.
+ *
+ * @remarks **Le mouvement ne coûte pas une ligne de JavaScript.**
+ * Les apparitions sont pilotées par la position des éléments dans la fenêtre
+ * (`animation-timeline: view()`), une capacité du navigateur lui-même. La page
+ * reste un composant serveur : aucun observateur, aucun écouteur, aucun script.
+ * Les règles sont doublement gardées — par `@supports`, pour que les
+ * navigateurs qui l'ignorent affichent simplement le contenu, et par
+ * `prefers-reduced-motion`, pour qui demande moins de mouvement.
  */
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ▌ APPARITIONS LIÉES AU DÉFILEMENT
+   ───────────────────────────────────────────────────────────────────────────
+   Trois gestes, réutilisés partout :
+     `ab-rise`  — le bloc monte et se révèle ;
+     `ab-draw`  — un filet se trace de la gauche vers la droite ;
+     `ab-ink`   — un repère carré s'encre.
+
+   La plage est exprimée en `cover` : elle vaut aussi bien pour un bloc de
+   trois lignes que pour une entrée de parcours plus haute que l'écran. Le
+   contenu est **visible par défaut** : si le navigateur ne connaît pas ces
+   règles, il ne se passe rien, et rien ne manque.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@keyframes ab-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes ab-draw {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes ab-ink {
+  from {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .ab-rise,
+    .ab-entry,
+    .ab-principle,
+    .ab-quote-cell {
+      animation-name: ab-rise;
+      animation-fill-mode: both;
+      animation-timing-function: linear;
+      animation-timeline: view();
+      animation-range: cover 2% cover 24%;
+    }
+
+    /* Les trois papiers arrivent l'un après l'autre : le décalage se règle sur
+       la plage, et non sur un délai — un délai se déclencherait au chargement,
+       même hors de l'écran. */
+    .ab-quote-cell:nth-child(2) {
+      animation-range: cover 6% cover 28%;
+    }
+    .ab-quote-cell:nth-child(3) {
+      animation-range: cover 10% cover 32%;
+    }
+
+    .ab-head > p:first-of-type::after,
+    .ab-entry::after,
+    .ab-principle::before {
+      animation-name: ab-draw;
+      animation-fill-mode: both;
+      animation-timing-function: linear;
+      animation-timeline: view();
+      animation-range: cover 2% cover 26%;
+    }
+
+    .ab-mark {
+      animation-name: ab-ink;
+      animation-fill-mode: both;
+      animation-timing-function: linear;
+      animation-timeline: view();
+      animation-range: cover 4% cover 22%;
+    }
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ▌ EN-TÊTE DE SECTION — le filet d'en-tête
+   Le surtitre est suivi d'un filet qui se trace à l'approche : la signature
+   commune des quatre sections de la page.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Le filet est porté par le surtitre lui-même : `SectionHead` est partagé par
+   tout le site, et rien n'y est ajouté pour cette page. */
+.ab-head > p:first-of-type {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+.ab-head > p:first-of-type::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--ds-line);
+  transform-origin: left center;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ▌ EN-TÊTE DE PAGE
+   ───────────────────────────────────────────────────────────────────────────
+   Même signature que les sections : le surtitre est suivi d'un filet. Ici il se
+   trace une fois, à l'ouverture — l'en-tête est déjà à l'écran, une apparition
+   au défilement n'aurait rien à révéler.
+
+   Le sélecteur s'appuie sur `text-overline`, le rôle typographique du système
+   de design : c'est la seule marque stable du surtitre dans un composant
+   partagé par trois pages.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.ab-page-head .text-overline {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+.ab-page-head .text-overline::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  max-width: 22rem;
+  background: var(--ds-line);
+  transform-origin: left center;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ab-page-head .text-overline::after {
+    animation: ab-draw 900ms var(--ease-emphasized) 120ms both;
+  }
+}
+
+/* Trois faits, en pied d'en-tête, séparés par des filets verticaux. */
+.ab-facts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 1.25rem;
+  margin: 1.75rem 0 0;
+  padding: 1rem 0 0;
+  border-top: 1px dashed var(--ds-line);
+  list-style: none;
+  color: var(--ds-ink-muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.ab-facts li {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+/* Le filet vertical sépare deux faits, jamais après le dernier. */
+.ab-facts li:not(:last-child)::after {
+  content: '';
+  width: 1px;
+  height: 0.85rem;
+  background: var(--ds-line);
+}
+/* Le tampon de disponibilité garde l'encre de marque du site. */
+.ab-facts li:nth-child(2) {
+  color: var(--ds-brand-text);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ▌ PORTRAIT — de la fiche au plein écran
+   ───────────────────────────────────────────────────────────────────────────
+   La vignette est un bouton : le curseur l'annonce, une pastille apparaît au
+   survol, et le clic confie l'agrandissement à la transition de vue du
+   navigateur (voir `PortraitViewer.tsx`).
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.idc-photo {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  cursor: zoom-in;
+}
+.idc-photo:focus-visible {
+  outline: 2px solid var(--ds-stamp);
+  outline-offset: 3px;
+}
+
+.idc-photo-hint {
+  position: absolute;
+  right: 0.35rem;
+  bottom: 0.35rem;
+  display: grid;
+  place-items: center;
+  width: 1.65rem;
+  height: 1.65rem;
+  border-radius: 0.35rem;
+  background: color-mix(in srgb, var(--ds-paper-ink) 78%, transparent);
+  color: var(--ds-paper);
+  opacity: 0;
+  transform: translateY(4px);
+  transition:
+    opacity var(--motion-fast) var(--ease-emphasized),
+    transform var(--motion-fast) var(--ease-emphasized);
+}
+.idc-photo-hint svg {
+  display: block;
+}
+@media (hover: hover) {
+  .idc-photo:hover .idc-photo-hint {
+    opacity: 1;
+    transform: none;
+  }
+}
+.idc-photo:focus-visible .idc-photo-hint {
+  opacity: 1;
+  transform: none;
+}
+
+/* ── La vue plein écran ──────────────────────────────────────────────────── */
+
+.pv {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  display: grid;
+  place-items: center;
+  padding: clamp(1rem, 4vw, 3rem);
+  cursor: zoom-out;
+}
+
+.pv-veil {
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, #05070a 86%, transparent);
+  backdrop-filter: blur(14px);
+}
+
+/* Le cadre reprend le rapport exact du fichier (720 × 1080) : la photo n'est
+   ni recadrée ni déformée, et le mouvement d'agrandissement reste une pure
+   mise à l'échelle. */
+.pv-frame {
+  position: relative;
+  height: min(88svh, 52rem);
+  aspect-ratio: 2 / 3;
+  max-width: 100%;
+  margin: 0;
+  overflow: hidden;
+  border-radius: var(--radius-card);
+  background: var(--ds-surface-sunken);
+  box-shadow: var(--shadow-e3);
+}
+/* L'image est posée à la main : la vue plein écran sert le fichier d'origine,
+   sans passer par le composant d'images (voir `PortraitViewer.tsx`). */
+.pv-frame img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pv-close {
+  position: absolute;
+  top: clamp(0.75rem, 3vw, 1.5rem);
+  right: clamp(0.75rem, 3vw, 1.5rem);
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 1px solid color-mix(in srgb, #ffffff 24%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, #05070a 60%, transparent);
+  color: #ffffff;
+  cursor: pointer;
+  transition: background-color var(--motion-fast) var(--ease-emphasized);
+}
+.pv-close:hover {
+  background: color-mix(in srgb, #05070a 85%, transparent);
+}
+.pv-close:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+.pv-close svg {
+  display: block;
+}
+
+/* Sans transition de vue (Firefox à ce jour), l'ouverture se contente d'un
+   fondu : la fonction est la même, seul le mouvement manque. */
+@media (prefers-reduced-motion: no-preference) {
+  .pv-veil {
+    animation: ab-fade var(--motion-base) linear both;
+  }
+  .pv-frame,
+  .pv-close {
+    animation: ab-fade var(--motion-base) var(--ease-emphasized) both;
+  }
+}
+@keyframes ab-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ── Le mouvement lui-même ───────────────────────────────────────────────────
+   Le navigateur interpole la position, la taille et le cadrage entre les deux
+   états du portrait. On ne règle ici que le tempo — et on empêche le reste de
+   la page de participer : seule la photo doit bouger. */
+::view-transition-group(portrait) {
+  animation-duration: 560ms;
+  animation-timing-function: var(--ease-emphasized);
+}
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ▌ FICHE D'IDENTITÉ
+   ───────────────────────────────────────────────────────────────────────────
+   Un badge de papier, accroché par une attache, posé de travers sur la page.
+   Même vocabulaire que le reçu de l'accueil (papier, pointillés, tampon), avec
+   un objet différent.
+   ═══════════════════════════════════════════════════════════════════════════ */
 
 .idc {
   position: relative;
@@ -16,9 +367,36 @@
   padding-top: 1.25rem;
   transform: rotate(-1.2deg);
   filter: drop-shadow(0 1px 1px hsl(var(--ds-shadow-color) / 0.1)) drop-shadow(0 18px 24px hsl(var(--ds-shadow-color) / 0.18));
+  transition: transform var(--motion-slow) var(--ease-emphasized);
 }
 .dark .idc {
   filter: drop-shadow(0 1px 1px hsl(var(--ds-shadow-color) / 0.6)) drop-shadow(0 20px 28px hsl(var(--ds-shadow-color) / 0.7));
+}
+
+/* Le badge se pose : il arrive légèrement plus incliné et se stabilise. Une
+   seule fois, à l'ouverture de la page. */
+@media (prefers-reduced-motion: no-preference) {
+  .idc {
+    animation: idc-settle 900ms var(--ease-emphasized) both;
+  }
+}
+@keyframes idc-settle {
+  from {
+    opacity: 0;
+    transform: rotate(-4.5deg) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: rotate(-1.2deg);
+  }
+}
+
+/* Au survol, il se redresse presque : le geste d'un badge qu'on regarde de
+   plus près. */
+@media (hover: hover) {
+  .idc:hover {
+    transform: rotate(-0.3deg) translateY(-3px);
+  }
 }
 
 /* Attache du badge */
@@ -97,30 +475,505 @@
   border-top: 1px dashed var(--ds-paper-line);
 }
 
-/* Tampon, posé en travers du coin de la photo */
+/* Tampon, en bas à droite de la fiche. Posé sur la photo, il débordait sur le
+   nom : sa largeur dépend de la langue (« Disponible », « Available »). */
 .idc-stamp {
-  position: absolute;
-  top: 8.4rem;
-  left: 3.1rem;
-  margin: 0;
+  justify-self: end;
+  margin: 0.25rem 0.4rem 0 0;
   padding: 0.3rem 0.5rem 0.25rem 0.7rem;
   border: 3px double var(--ds-stamp);
   border-radius: 0.3rem;
-  background: color-mix(in srgb, var(--ds-paper) 55%, transparent);
   color: var(--ds-stamp);
   font-size: 0.75rem;
   font-weight: 800;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  transform: rotate(-9deg);
+  transform: rotate(-7deg);
+  mix-blend-mode: multiply;
 }
 
 @media (max-width: 380px) {
   .idc-head {
     grid-template-columns: 6rem minmax(0, 1fr);
   }
-  .idc-stamp {
-    top: 6.6rem;
-    left: 1.6rem;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ▌ PARCOURS — le registre
+   ───────────────────────────────────────────────────────────────────────────
+   La forme est celle d'un registre tenu à la main : la période occupe la marge
+   de gauche, le poste et ses missions la colonne de texte, et un filet
+   pointillé sépare deux lignes. La période **reste en place** pendant la
+   lecture d'une entrée longue : on sait toujours de quelle année on parle.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.ab-ledger {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ab-entry {
+  position: relative;
+  display: grid;
+  gap: 0.6rem;
+  padding: 1.75rem 0;
+}
+
+/* Filet de séparation, tracé à l'approche. Il est posé en bas de chaque
+   entrée plutôt qu'en bordure : une bordure ne peut pas s'animer, un filet
+   oui. */
+.ab-entry::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 1px;
+  background: var(--ds-line);
+  transform-origin: left center;
+}
+
+@media (min-width: 48rem) {
+  .ab-entry {
+    grid-template-columns: 10.5rem minmax(0, 1fr);
+    gap: 0.6rem 2rem;
+    align-items: start;
+  }
+}
+/* Trois colonnes seulement quand la troisième peut encore recevoir deux
+   colonnes de missions : en dessous, le texte se hachait en quatre mots par
+   ligne. */
+@media (min-width: 64rem) {
+  .ab-entry {
+    grid-template-columns: 10.5rem minmax(13rem, 18rem) minmax(0, 1fr);
+    column-gap: 2.5rem;
+  }
+}
+
+/* La période colle sous la barre de navigation pendant la lecture. */
+.ab-period {
+  margin: 0;
+  color: var(--ds-ink-muted);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+}
+@media (min-width: 48rem) {
+  .ab-period {
+    position: sticky;
+    top: 6rem;
+    align-self: start;
+  }
+}
+
+.ab-post {
+  display: grid;
+  gap: 0.25rem;
+}
+
+/* Repère carré : le même tampon que les puces du site, aligné sur le titre. */
+.ab-post-title {
+  position: relative;
+  margin: 0;
+  padding-left: 1.05rem;
+  color: var(--ds-ink);
+  font-size: 1.0625rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+.ab-mark {
+  position: absolute;
+  left: 0;
+  top: 0.52em;
+  width: 0.45rem;
+  height: 0.45rem;
+  background: var(--ds-ink);
+  transition: background-color var(--motion-base) var(--ease-emphasized);
+}
+
+.ab-post-place {
+  margin: 0;
+  padding-left: 1.05rem;
+  color: var(--ds-ink-soft);
+  font-size: 0.8125rem;
+}
+
+.ab-body {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.ab-text {
+  max-width: 62ch;
+  margin: 0;
+  color: var(--ds-ink-soft);
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  text-wrap: pretty;
+}
+
+/* Missions : une liste pointée serrée, sur deux colonnes quand la place le
+   permet — huit lignes en colonne unique repoussaient la suite de la page. */
+.ab-tasks {
+  display: grid;
+  gap: 0.5rem 2rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--ds-ink-soft);
+  font-size: 0.8125rem;
+  line-height: 1.6;
+}
+@media (min-width: 80rem) {
+  .ab-tasks {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.ab-tasks li {
+  position: relative;
+  padding-left: 1rem;
+  text-wrap: pretty;
+}
+.ab-tasks li::before {
+  content: '';
+  position: absolute;
+  left: 0.1rem;
+  top: 0.62em;
+  width: 0.3rem;
+  height: 0.3rem;
+  background: var(--ds-brand);
+}
+
+/* Survol : la ligne du registre s'éclaire, comme sous une règle de lecture. */
+@media (hover: hover) {
+  .ab-entry {
+    transition: background-color var(--motion-base) var(--ease-emphasized);
+  }
+  .ab-entry:hover {
+    background: var(--ds-surface);
+    /* Le fond déborde de la mesure du texte : sans ces marges négatives, la
+       bande s'arrêterait pile sur les lettres. */
+    box-shadow: -1rem 0 0 var(--ds-surface), 1rem 0 0 var(--ds-surface);
+  }
+  .ab-entry:hover .ab-mark {
+    background: var(--ds-brand);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ▌ MÉTHODE — quatre principes
+   ───────────────────────────────────────────────────────────────────────────
+   Le numéro est composé en chiffres **évidés**, à la manière d'un folio
+   imprimé : présent, lisible, et sans jamais voler la vedette au titre.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.ab-method {
+  display: grid;
+  gap: 2.5rem 3rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+@media (min-width: 48rem) {
+  .ab-method {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.ab-principle {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.5rem 1.25rem;
+  align-items: start;
+  /* Deux principes côte à côte ont la même hauteur : sans cela, le plus court
+     étirait ses propres rangées pour combler l'écart, et son texte décrochait du
+     titre. */
+  align-content: start;
+  padding-top: 1.5rem;
+}
+/* Filet supérieur, tracé à l'approche (voir `.ab-entry::after`). */
+.ab-principle::before {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: 1px;
+  background: var(--ds-ink);
+  transform-origin: left center;
+}
+
+.ab-principle-num {
+  grid-row: span 2;
+  /* Le chiffre est composé bien plus grand que le titre : cette remontée aligne
+     leurs hauteurs de capitale, et non leurs boîtes. */
+  margin: -0.12em 0 0;
+  color: var(--ds-ink-faint);
+  font-size: clamp(2.5rem, 5vw, 3.5rem);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.05em;
+  line-height: 0.9;
+  transition: color var(--motion-base) var(--ease-emphasized);
+}
+/* Chiffres évidés là où le navigateur sait les dessiner ; pleins et discrets
+   partout ailleurs (sans cette garde, ils seraient invisibles). */
+@supports (-webkit-text-stroke: 1px black) {
+  .ab-principle-num {
+    color: transparent;
+    -webkit-text-stroke: 1.25px var(--ds-line-strong);
+    transition: -webkit-text-stroke-color var(--motion-base) var(--ease-emphasized);
+  }
+}
+
+.ab-principle-title {
+  margin: 0;
+  color: var(--ds-ink);
+  font-size: 1.0625rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+.ab-principle-text {
+  max-width: 52ch;
+  margin: 0;
+  grid-column: 2;
+  color: var(--ds-ink-soft);
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  text-wrap: pretty;
+}
+
+@media (hover: hover) {
+  .ab-principle:hover .ab-principle-num {
+    color: var(--ds-brand-text);
+  }
+}
+@supports (-webkit-text-stroke: 1px black) {
+  @media (hover: hover) {
+    .ab-principle:hover .ab-principle-num {
+      color: transparent;
+      -webkit-text-stroke-color: var(--ds-brand);
+    }
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ▌ PROFIL — langues, atouts, centres d'intérêt
+   ───────────────────────────────────────────────────────────────────────────
+   Chaque ligne est composée comme une ligne de reçu : l'intitulé à gauche, la
+   valeur à droite, et une conduite de points entre les deux. C'est la même
+   écriture que le relevé de compétences de l'accueil.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.ab-rows {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ab-row {
+  display: grid;
+  gap: 0.3rem;
+  padding: 1rem 0;
+  border-bottom: 1px dashed var(--ds-line);
+}
+.ab-row:first-child {
+  padding-top: 0.85rem;
+}
+
+.ab-row-head {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  margin: 0;
+}
+
+.ab-row-name {
+  color: var(--ds-ink);
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+
+/* Conduite de points, étirée sur l'espace restant. */
+.ab-leader {
+  flex: 1;
+  height: 1px;
+  min-width: 1.5rem;
+  transform: translateY(-0.28em);
+  background-image: radial-gradient(circle at 1px 50%, var(--ds-line-strong) 1px, transparent 1.2px);
+  background-size: 6px 2px;
+  background-repeat: repeat-x;
+}
+
+.ab-row-level {
+  flex: none;
+  color: var(--ds-brand-text);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+/* Numéro de ligne, dans la marge : il donne le rythme sans ajouter de trait. */
+.ab-row-num {
+  flex: none;
+  color: var(--ds-ink-faint);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.1em;
+  transition: color var(--motion-base) var(--ease-emphasized);
+}
+
+.ab-row-note {
+  max-width: 46ch;
+  margin: 0;
+  color: var(--ds-ink-soft);
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  text-wrap: pretty;
+}
+
+@media (hover: hover) {
+  .ab-row:hover .ab-row-num {
+    color: var(--ds-brand-text);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ▌ RECOMMANDATIONS — trois papiers agrafés
+   ───────────────────────────────────────────────────────────────────────────
+   Les trois citations sont posées de travers, chacune de son propre angle, et
+   agrafées en haut à gauche. Au survol, le papier se redresse et se soulève :
+   le geste de celui qui prend une feuille pour la lire.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.ab-quotes {
+  display: grid;
+  gap: 1.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+@media (min-width: 64rem) {
+  .ab-quotes {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.5rem;
+  }
+}
+
+.ab-quote-cell {
+  display: grid;
+}
+
+.ab-quote {
+  position: relative;
+  display: grid;
+  gap: 1.5rem;
+  align-content: space-between;
+  height: 100%;
+  margin: 0;
+  padding: 1.75rem 1.5rem 1.4rem;
+  border-radius: var(--radius-card);
+  background: var(--ds-paper);
+  color: var(--ds-paper-ink);
+  box-shadow: var(--shadow-e1);
+  transform: rotate(var(--ab-tilt, -1.1deg));
+  transition:
+    transform var(--motion-base) var(--ease-emphasized),
+    box-shadow var(--motion-base) var(--ease-emphasized);
+}
+.ab-quote-cell:nth-child(2) .ab-quote {
+  --ab-tilt: 0.85deg;
+}
+.ab-quote-cell:nth-child(3) .ab-quote {
+  --ab-tilt: -0.55deg;
+}
+
+@media (hover: hover) {
+  .ab-quote:hover {
+    transform: rotate(0deg) translateY(-4px);
+    box-shadow: var(--shadow-e2);
+  }
+}
+
+/* Agrafe : deux traits d'encre, comme l'attache du badge. */
+.ab-quote-staple {
+  position: absolute;
+  top: 0.85rem;
+  left: 1.5rem;
+  width: 1.15rem;
+  height: 0.3rem;
+  border-radius: 0.1rem;
+  background: var(--ds-paper-ink);
+  opacity: 0.75;
+  transform: rotate(-24deg);
+}
+.ab-quote-staple::after {
+  content: '';
+  position: absolute;
+  left: 0.1rem;
+  top: 0.42rem;
+  width: 1.15rem;
+  height: 0.3rem;
+  border-radius: 0.1rem;
+  background: inherit;
+  transform: rotate(6deg);
+}
+
+.ab-quote-text {
+  margin: 1rem 0 0;
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  text-wrap: pretty;
+}
+.ab-quote-text p {
+  margin: 0;
+}
+
+.ab-quote-by {
+  border-top: 1px dashed var(--ds-paper-line);
+  padding-top: 0.9rem;
+}
+.ab-quote-author {
+  margin: 0;
+  font-size: 0.9375rem;
+  font-weight: 700;
+}
+.ab-quote-role {
+  margin: 0.25rem 0 0;
+  color: var(--ds-paper-muted);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ▌ MOUVEMENT RÉDUIT
+   Aucune apparition, aucun redressement, aucune pose : les blocs sont là,
+   simplement.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@media (prefers-reduced-motion: reduce) {
+  .idc,
+  .ab-rise,
+  .ab-entry,
+  .ab-principle,
+  .ab-quote-cell,
+  .ab-head > p:first-of-type::after,
+  .ab-mark {
+    animation: none;
+  }
+  .idc,
+  .ab-quote,
+  .ab-entry,
+  .ab-principle-num,
+  .ab-row-num,
+  .ab-mark {
+    transition: none;
   }
 }

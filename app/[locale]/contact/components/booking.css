@@ -1,0 +1,545 @@
+/**
+ * @file booking.css
+ * @description Prise de rendez-vous : calendrier, créneaux, formulaire
+ * (voir `BookingCalendar.tsx`).
+ *
+ * @architecture
+ * Feuille **hors couche Tailwind** : importée par son composant, elle l'emporte
+ * sur les utilitaires sans `!important`. Toutes les valeurs viennent des rôles
+ * du système de design — aucune couleur n'est écrite en dur, aucun dégradé,
+ * aucun halo : l'objet est un carnet de rendez-vous, pas une vitrine.
+ *
+ * Les trois étapes sont numérotées comme les lignes d'un reçu, et tiennent
+ * côte à côte sur grand écran : le visiteur voit d'un coup d'œil ce qu'on lui
+ * demande, au lieu de le découvrir en faisant défiler.
+ */
+
+.bk {
+  display: grid;
+  gap: clamp(1.5rem, 3vw, 2.25rem);
+  /* La section vit dans une colonne, à côté des coordonnées : sa largeur n'a
+     rien à voir avec celle de la fenêtre. Les ruptures ci-dessous interrogent
+     donc **le conteneur**, seule mesure fidèle à la place disponible. */
+  container-type: inline-size;
+  container-name: booking;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ▌ EN-TÊTE
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.bk-head {
+  display: grid;
+  gap: 0.6rem;
+  max-width: 46ch;
+}
+.bk-title {
+  margin: 0;
+  color: var(--ds-ink);
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  text-wrap: balance;
+}
+.bk-lead {
+  margin: 0;
+  color: var(--ds-ink-soft);
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  text-wrap: pretty;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ▌ LES TROIS PANNEAUX
+   ───────────────────────────────────────────────────────────────────────────
+   Empilés sur téléphone ; date et heure côte à côte dès qu'il y a la place ;
+   les trois de front sur grand écran.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.bk-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-areas: 'date' 'time' 'form';
+}
+/* Deux panneaux de front, le formulaire dessous. */
+@container booking (min-width: 34rem) {
+  .bk-grid {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    grid-template-areas: 'date time' 'form form';
+  }
+}
+/* Pas de variante à trois colonnes : la page plafonne à 72 rem, dont 22 rem
+   pour les coordonnées — la section dispose de 688 px, quelle que soit la
+   taille de l'écran. Un formulaire coincé dans le tiers restant verrait ses
+   étiquettes se chevaucher. */
+
+.bk-panel {
+  display: grid;
+  align-content: start;
+  gap: 0.9rem;
+  padding: clamp(1rem, 2vw, 1.4rem);
+  border: 1px solid var(--ds-line);
+  border-radius: var(--radius-card);
+  background: var(--ds-surface);
+}
+.bk-panel:nth-child(1) {
+  grid-area: date;
+}
+.bk-panel:nth-child(2) {
+  grid-area: time;
+}
+.bk-form {
+  grid-area: form;
+}
+
+/* Intitulé d'étape : le numéro, puis la consigne. */
+.bk-step {
+  display: flex;
+  align-items: baseline;
+  gap: 0.55rem;
+  margin: 0;
+  color: var(--ds-ink);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.bk-step-num {
+  color: var(--ds-ink-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+.bk-empty {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  color: var(--ds-ink-muted);
+  font-size: 0.875rem;
+  text-wrap: pretty;
+}
+.bk-empty svg {
+  display: inline-block;
+}
+
+.bk-link {
+  align-self: start;
+  border: 0;
+  border-bottom: 1px solid var(--ds-line-strong);
+  padding: 0 0 1px;
+  background: none;
+  color: var(--ds-ink);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color var(--motion-fast) var(--ease-emphasized), color var(--motion-fast) var(--ease-emphasized);
+}
+.bk-link:hover {
+  border-color: var(--ds-brand-text);
+  color: var(--ds-brand-text);
+}
+.bk-link:focus-visible {
+  outline: 2px solid var(--ds-focus);
+  outline-offset: 2px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ▌ CALENDRIER
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.bk-month {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+.bk-month-name {
+  margin: 0;
+  color: var(--ds-ink);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  /* Les noms de mois arrivent en minuscules dans les deux langues. */
+}
+.bk-month-step {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  flex: none;
+  border: 1px solid var(--ds-line);
+  border-radius: 999px;
+  background: var(--ds-canvas);
+  color: var(--ds-ink-soft);
+  cursor: pointer;
+  transition: border-color var(--motion-fast) var(--ease-emphasized), color var(--motion-fast) var(--ease-emphasized);
+}
+.bk-month-step:hover:not(:disabled) {
+  border-color: var(--ds-line-strong);
+  color: var(--ds-ink);
+}
+.bk-month-step:focus-visible {
+  outline: 2px solid var(--ds-focus);
+  outline-offset: 2px;
+}
+.bk-month-step:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.bk-month-step svg {
+  display: block;
+}
+
+.bk-cal {
+  display: grid;
+  gap: 0.25rem;
+}
+.bk-cal-row {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 0.25rem;
+}
+.bk-cal-head {
+  padding-bottom: 0.15rem;
+  border-bottom: 1px solid var(--ds-line);
+  color: var(--ds-ink-faint);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+/* Un jour : un carré. Disponible, il porte un point ; retenu, il est encré. */
+.bk-day {
+  position: relative;
+  display: grid;
+  place-items: center;
+  gap: 0.1rem;
+  aspect-ratio: 1;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 0.5rem;
+  background: none;
+  color: var(--ds-ink);
+  font-size: 0.8125rem;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition:
+    background-color var(--motion-fast) var(--ease-emphasized),
+    border-color var(--motion-fast) var(--ease-emphasized),
+    color var(--motion-fast) var(--ease-emphasized);
+}
+.bk-day:hover:not(:disabled) {
+  border-color: var(--ds-line-strong);
+  background: var(--ds-canvas);
+}
+.bk-day:focus-visible {
+  outline: 2px solid var(--ds-focus);
+  outline-offset: 1px;
+}
+/* Jour sans créneau : présent, lisible, mais hors d'atteinte. */
+.bk-day:disabled {
+  color: var(--ds-ink-faint);
+  cursor: default;
+}
+.bk-day[data-outside] {
+  opacity: 0.45;
+}
+.bk-day[aria-pressed='true'] {
+  border-color: var(--ds-ink);
+  background: var(--ds-ink);
+  color: var(--ds-canvas);
+}
+
+.bk-day-num {
+  line-height: 1;
+}
+/* Le carré du tampon, repris partout sur le site. */
+.bk-day-dot {
+  width: 0.25rem;
+  height: 0.25rem;
+  background: var(--ds-brand);
+}
+.bk-day[aria-pressed='true'] .bk-day-dot {
+  background: var(--ds-canvas);
+}
+
+.bk-zone {
+  margin: 0;
+  color: var(--ds-ink-muted);
+  font-size: 0.6875rem;
+  letter-spacing: 0.04em;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ▌ CRÉNEAUX
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.bk-chosen-day {
+  margin: 0;
+  color: var(--ds-ink);
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.bk-slots {
+  display: grid;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+  max-height: 22rem;
+  overflow-y: auto;
+  list-style: none;
+  overscroll-behavior: contain;
+}
+/* Deux colonnes de créneaux : les dix d'une journée tiennent alors sous les
+   yeux, là où une seule colonne en cachait la moitié derrière un défilement. */
+@container booking (min-width: 40rem) {
+  .bk-slots {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.bk-slot {
+  display: grid;
+  gap: 0.1rem;
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid var(--ds-line);
+  border-radius: var(--radius-control);
+  background: var(--ds-canvas);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background-color var(--motion-fast) var(--ease-emphasized),
+    border-color var(--motion-fast) var(--ease-emphasized),
+    color var(--motion-fast) var(--ease-emphasized);
+}
+.bk-slot:hover {
+  border-color: var(--ds-line-strong);
+}
+.bk-slot:focus-visible {
+  outline: 2px solid var(--ds-focus);
+  outline-offset: 2px;
+}
+.bk-slot[aria-pressed='true'] {
+  border-color: var(--ds-brand);
+  background: var(--ds-brand);
+  color: var(--ds-brand-ink);
+}
+
+.bk-slot-time {
+  color: var(--ds-ink);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.bk-slot-length,
+.bk-slot-yours {
+  color: var(--ds-ink-muted);
+  font-size: 0.6875rem;
+}
+.bk-slot[aria-pressed='true'] .bk-slot-time,
+.bk-slot[aria-pressed='true'] .bk-slot-length,
+.bk-slot[aria-pressed='true'] .bk-slot-yours {
+  color: var(--ds-brand-ink);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ▌ FORMULAIRE
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.bk-fields {
+  display: grid;
+  gap: 0.9rem;
+}
+@container booking (min-width: 30rem) {
+  .bk-fields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.bk-field {
+  display: grid;
+  align-content: start;
+  gap: 0.35rem;
+}
+.bk-field-label {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  color: var(--ds-ink);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.bk-field-hint {
+  color: var(--ds-ink-faint);
+  font-size: 0.6875rem;
+  font-weight: 500;
+}
+.bk-field-error {
+  margin: 0;
+  color: var(--ds-danger);
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+/* Canaux : quatre pastilles, une seule retenue. */
+.bk-channels {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.bk-channel-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.35rem;
+}
+.bk-channel {
+  display: inline-flex;
+  cursor: pointer;
+}
+/* Le bouton radio reste dans le document — il porte le focus et l'état — mais
+   il est effacé visuellement : c'est la pastille qui le montre. */
+.bk-channel input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.bk-channel span {
+  display: inline-block;
+  border: 1px solid var(--ds-line);
+  border-radius: 999px;
+  padding: 0.35rem 0.75rem;
+  background: var(--ds-canvas);
+  color: var(--ds-ink-soft);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  transition:
+    background-color var(--motion-fast) var(--ease-emphasized),
+    border-color var(--motion-fast) var(--ease-emphasized),
+    color var(--motion-fast) var(--ease-emphasized);
+}
+.bk-channel:hover span {
+  border-color: var(--ds-line-strong);
+  color: var(--ds-ink);
+}
+.bk-channel input:checked + span {
+  border-color: var(--ds-ink);
+  background: var(--ds-ink);
+  color: var(--ds-canvas);
+}
+.bk-channel input:focus-visible + span {
+  outline: 2px solid var(--ds-focus);
+  outline-offset: 2px;
+}
+
+/* Récapitulatif : la souche du billet, juste avant l'envoi. */
+.bk-recap {
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.75rem 0;
+  border-top: 1px dashed var(--ds-line);
+  border-bottom: 1px dashed var(--ds-line);
+}
+.bk-recap-label {
+  margin: 0;
+  color: var(--ds-ink-muted);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.bk-recap-value {
+  margin: 0;
+  color: var(--ds-ink);
+  font-size: 0.9375rem;
+  font-weight: 700;
+}
+
+.bk-error {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0.5rem 0 0;
+  color: var(--ds-danger);
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+.bk-error svg {
+  display: inline-block;
+}
+
+.bk-honeypot {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ▌ DEMANDE ENVOYÉE
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.bk-done {
+  display: grid;
+  justify-items: start;
+  gap: 0.5rem;
+  padding: clamp(1.25rem, 3vw, 2rem);
+  border: 1px solid var(--ds-line);
+  border-radius: var(--radius-card);
+  background: var(--ds-surface);
+}
+.bk-done-icon {
+  width: 1.75rem;
+  height: 1.75rem;
+  color: var(--ds-success);
+}
+.bk-done-title {
+  margin: 0.25rem 0 0;
+  color: var(--ds-ink);
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+.bk-done-slot {
+  margin: 0;
+  color: var(--ds-brand-text);
+  font-size: 1rem;
+  font-weight: 700;
+}
+.bk-done-text {
+  max-width: 48ch;
+  margin: 0.35rem 0 0;
+  color: var(--ds-ink-soft);
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  text-wrap: pretty;
+}
+.bk-done-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.75rem;
+}
+
+/* Les dates arrivent en minuscules d'`Intl` (« lundi 28 septembre »). Seule la
+   première lettre prend la majuscule : `text-transform: capitalize` en mettait
+   une à chaque mot, ce que le français ne fait pas. */
+.bk-month-name::first-letter,
+.bk-chosen-day::first-letter,
+.bk-recap-value::first-letter,
+.bk-done-slot::first-letter {
+  text-transform: uppercase;
+}

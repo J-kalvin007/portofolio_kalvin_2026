@@ -89,6 +89,13 @@
   /* Anneau de focus clavier — le bleu du tampon (7,2:1) */
   --ds-focus: #1f3bcc;
 
+  /* Motif de fond : un carré de 2 px tous les 40 px, à peine visible. C'est le
+     tampon carré du site, réduit à la taille d'un grain de papier — assez pour
+     que le fond cesse d'être une surface morte, trop peu pour qu'on le
+     remarque avant de le chercher. */
+  --ds-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Crect width='2' height='2' fill='%2311161d' fill-opacity='0.055'/%3E%3C/svg%3E");
+
+
   /* Couleur d'ombre : une seule source de lumière, en haut, teintée d'encre */
   --ds-shadow-color: 214deg 26% 9%;
 }
@@ -131,6 +138,11 @@
   --ds-annotation: #e0c35a;
 
   --ds-success: #4ade80;
+
+  /* Sur fond sombre, l'encre du grain s'inverse : un carré clair, un peu plus
+     marqué (un point sombre sur du sombre ne se verrait pas). */
+  --ds-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Crect width='2' height='2' fill='%23e7eaed' fill-opacity='0.07'/%3E%3C/svg%3E");
+
   --ds-danger: #f87171;
 
   --ds-focus: #9aabff;

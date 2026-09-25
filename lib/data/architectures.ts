@@ -10,18 +10,18 @@ import type { ProjectI18nKey } from '@/lib/data/projects';
  * @description Schéma d'architecture de chaque projet, rendu sous son billet
  * par `components/architecture/ArchitectureDiagram`.
  *
- * @remarks **À valider par Kalvin avant publication.** Ces schémas ont été
- * reconstitués à partir des seules informations présentes dans le projet : la
- * stack déclarée (`lib/data/projects.ts → techStack`) et la description de
- * chaque projet (`messages/*.json → projects_data`). Aucun composant n'a été
- * inventé hors de ces sources, mais la répartition des technologies entre
- * composants reste une déduction. Un recruteur technique peut poser des
- * questions sur ces schémas : ils doivent refléter l'architecture réelle.
+ * @remarks **Sources.** Les schémas d'Atelier du Terroir, Shemm et Green
+ * Challenger suivent les descriptions détaillées fournies par Kalvin. Les
+ * autres ont été reconstitués à partir de la stack déclarée
+ * (`lib/data/projects.ts → techStack`) et de la description de chaque projet
+ * (`messages/*.json → projects_data`) : **à valider par Kalvin**. Un recruteur
+ * technique peut poser des questions sur ces schémas : ils doivent refléter
+ * l'architecture réelle.
  *
  * **Comment modifier un schéma.** Chaque composant a une position (`x`, `y`)
  * dans une zone de 820 unités de large. Trois colonnes sont prévues :
- * `x = 24`, `322` et `620` ; les rangées usuelles sont `y = 36`, `96`, `164`
- * et `232`. Les liaisons sont tracées automatiquement (`lib/architecture/layout.ts`).
+ * `x = 24`, `322` et `620` ; les rangées usuelles sont `y = 36`, `164` et `292`
+ * (ou `96` et `232` pour centrer une colonne de deux). Les liaisons sont tracées automatiquement (`lib/architecture/layout.ts`).
  * Les libellés sont des clés du catalogue `architecture` : en ajouter un
  * nouveau suppose d'ajouter la traduction dans `messages/fr.json` et `en.json`.
  */
@@ -77,6 +77,38 @@ const C2 = 620;
  * impossible : ajouter un projet sans schéma est une erreur de compilation.
  */
 export const ARCHITECTURES: Record<ProjectI18nKey, Architecture> = {
+  /*
+   * E-commerce de produits biologiques — d'après la description de Kalvin :
+   * interface Next.js / TypeScript, back-office, API Django / DRF, PostgreSQL,
+   * wallet interne, Celery et Redis, paiements Stripe et PayDunya (webhooks),
+   * reverse proxy Traefik, médias et sauvegardes, le tout sous Docker.
+   */
+  atelier: {
+    nodes: [
+      { id: 'shop', kind: 'client', label: 'storefront', tech: 'Next.js · TypeScript', x: C0, y: 36 },
+      { id: 'admin', kind: 'client', label: 'backOffice', x: C0, y: 164 },
+      { id: 'pay', kind: 'external', label: 'payments', tech: 'Stripe · PayDunya', x: C0, y: 292 },
+      { id: 'proxy', kind: 'service', label: 'reverseProxy', tech: 'Traefik', x: C1, y: 36 },
+      { id: 'api', kind: 'service', label: 'restApi', tech: 'Django · DRF', x: C1, y: 164 },
+      { id: 'jobs', kind: 'service', label: 'asyncJobs', tech: 'Celery · Redis', x: C1, y: 292 },
+      { id: 'wallet', kind: 'service', label: 'wallet', x: C2, y: 36 },
+      { id: 'db', kind: 'data', label: 'database', tech: 'PostgreSQL', x: C2, y: 164 },
+      { id: 'backups', kind: 'data', label: 'backupStorage', x: C2, y: 292 },
+    ],
+    edges: [
+      { from: 'shop', to: 'proxy', label: 'orders' },
+      { from: 'admin', to: 'proxy', label: 'management' },
+      { from: 'proxy', to: 'api', label: 'requests' },
+      { from: 'api', to: 'wallet', label: 'balances' },
+      { from: 'api', to: 'db', label: 'data' },
+      { from: 'api', to: 'jobs', label: 'tasks' },
+      // Le prestataire notifie l'API (webhooks) du résultat de chaque paiement.
+      { from: 'pay', to: 'api', label: 'webhooks' },
+      { from: 'db', to: 'backups', label: 'backedUp' },
+    ],
+    zones: [{ name: 'Docker · Linux', nodes: ['proxy', 'api', 'jobs', 'wallet', 'db', 'backups'] }],
+  },
+
   /* Logiciel Windows de pointage — stack : Dart, Flutter */
   challenger: {
     nodes: [
@@ -93,22 +125,28 @@ export const ARCHITECTURES: Record<ProjectI18nKey, Architecture> = {
     zones: [{ name: 'Windows', nodes: ['clock', 'hours', 'sheets'] }],
   },
 
-  /* Billetterie mobile — stack : Flutter, Django, PostgreSQL, QR Code, Mobile Money, Docker */
-  sheem: {
+  /*
+   * Billetterie digitale — d'après la description de Kalvin : application
+   * Flutter (Android, iOS), backend Django / DRF, PostgreSQL, paiements
+   * Mobile Money PayDunya, back-office des organisateurs, scan et validation
+   * des billets à l'entrée, statistiques.
+   */
+  shemm: {
     nodes: [
-      { id: 'app', kind: 'client', label: 'mobileApp', tech: 'Flutter', x: C0, y: 96 },
-      { id: 'admin', kind: 'client', label: 'adminDashboard', x: C0, y: 232 },
-      { id: 'api', kind: 'service', label: 'api', tech: 'Django', x: C1, y: 164 },
-      { id: 'momo', kind: 'external', label: 'mobileMoney', x: C2, y: 36 },
-      { id: 'db', kind: 'data', label: 'database', tech: 'PostgreSQL', x: C2, y: 232 },
+      { id: 'app', kind: 'client', label: 'mobileApp', tech: 'Flutter · Dart', x: C0, y: 36 },
+      { id: 'scan', kind: 'client', label: 'ticketControl', x: C0, y: 164 },
+      { id: 'admin', kind: 'client', label: 'organizerOffice', x: C0, y: 292, width: 212 },
+      { id: 'api', kind: 'service', label: 'restApi', tech: 'Django · DRF', x: C1, y: 164 },
+      { id: 'pay', kind: 'external', label: 'mobileMoney', tech: 'PayDunya', x: C2, y: 36 },
+      { id: 'db', kind: 'data', label: 'database', tech: 'PostgreSQL', x: C2, y: 164 },
     ],
     edges: [
-      { from: 'app', to: 'api', label: 'tickets' },
-      { from: 'admin', to: 'api', label: 'management' },
-      { from: 'api', to: 'momo', label: 'payment' },
+      { from: 'app', to: 'api', label: 'purchase' },
+      { from: 'scan', to: 'api', label: 'validation' },
+      { from: 'admin', to: 'api', label: 'eventsStats' },
+      { from: 'api', to: 'pay', label: 'payment' },
       { from: 'api', to: 'db', label: 'data' },
     ],
-    zones: [{ name: 'Docker', nodes: ['api', 'db'] }],
   },
 
   /* E-commerce — stack : Django, HTML/CSS, PostgreSQL, Stripe, Docker, Next.js, Tailwind CSS */
@@ -165,22 +203,29 @@ export const ARCHITECTURES: Record<ProjectI18nKey, Architecture> = {
     ],
   },
 
-  /* Gestion de plantation — stack : Python, Django, PostgreSQL, D3.js, Docker, Next.js, Tailwind CSS, Flutter */
+  /*
+   * SaaS agricole multi-tenant — d'après la description de Kalvin : plateforme
+   * web Next.js, application terrain Flutter offline-first avec base locale
+   * Isar, synchronisation avec le cloud, backend Django / DRF, PostgreSQL,
+   * abonnements Stripe, Docker.
+   */
   green: {
     nodes: [
-      { id: 'field', kind: 'client', label: 'fieldApp', tech: 'Flutter', x: C0, y: 96 },
-      { id: 'dash', kind: 'client', label: 'dashboard', tech: 'Next.js · D3.js', x: C0, y: 232 },
-      { id: 'api', kind: 'service', label: 'restApi', tech: 'Django', x: C1, y: 164 },
-      { id: 'pipeline', kind: 'service', label: 'dataPipeline', tech: 'Python', x: C2, y: 36 },
-      { id: 'db', kind: 'data', label: 'database', tech: 'PostgreSQL', x: C2, y: 232 },
+      { id: 'web', kind: 'client', label: 'webPlatform', tech: 'Next.js · TypeScript', x: C0, y: 36 },
+      { id: 'field', kind: 'client', label: 'fieldApp', tech: 'Flutter · Dart', x: C0, y: 164 },
+      { id: 'local', kind: 'data', label: 'localDb', tech: 'Isar', x: C0, y: 292 },
+      { id: 'api', kind: 'service', label: 'restApi', tech: 'Django · DRF', x: C1, y: 164 },
+      { id: 'db', kind: 'data', label: 'database', tech: 'PostgreSQL', x: C2, y: 36 },
+      { id: 'stripe', kind: 'external', label: 'subscriptions', tech: 'Stripe', x: C2, y: 292 },
     ],
     edges: [
-      { from: 'field', to: 'api', label: 'fieldData' },
-      { from: 'dash', to: 'api', label: 'charts' },
+      { from: 'web', to: 'api', label: 'management' },
+      { from: 'field', to: 'api', label: 'sync' },
+      { from: 'field', to: 'local', label: 'offline' },
       { from: 'api', to: 'db', label: 'data' },
-      { from: 'pipeline', to: 'db', label: 'analytics' },
+      { from: 'api', to: 'stripe', label: 'subscribe' },
     ],
-    zones: [{ name: 'Docker', nodes: ['api', 'pipeline', 'db'] }],
+    zones: [{ name: 'Docker · multi-tenant', nodes: ['api', 'db'] }],
   },
 
   /* Gestion locative mobile — stack : Flutter, Dart, Django, PostgreSQL, Docker */

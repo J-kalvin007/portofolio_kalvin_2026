@@ -25,6 +25,8 @@ import { padNumber } from '@/lib/format';
 import ProjectTicket from '@/components/project/ProjectTicket';
 import Arrow from '@/components/ui/Arrow';
 import SectionHead from '@/components/ui/SectionHead';
+import TechIcon from '@/components/ui/TechIcon';
+import TechIconSprite from '@/components/ui/TechIconSprite';
 import { BUTTON_PRIMARY, COLUMN_HEADING, CONTAINER, LINK_SECONDARY, OVERLINE } from '@/components/ui/styles';
 import ProfileReceipt from './ProfileReceipt';
 
@@ -66,7 +68,7 @@ export function ProjectsSection() {
   const others = PROJECTS.filter((project) => !project.featured);
 
   return (
-    <section id="projets" aria-labelledby="projects-title" className="scroll-mt-24 py-section">
+    <section id="projets" aria-labelledby="projects-title" className="py-section">
       <div className={CONTAINER}>
         <SectionHead id="projects-title" overline={t('overline')} title={t('title')} description={t('description')} />
 
@@ -118,9 +120,11 @@ export function StackSection() {
   const t = useTranslations('home.stack');
 
   return (
-    <section id="competences" aria-labelledby="stack-title" className="scroll-mt-24 border-y border-line bg-surface py-section">
+    <section id="competences" aria-labelledby="stack-title" className="border-y border-line bg-surface py-section">
       <div className={CONTAINER}>
         <SectionHead id="stack-title" overline={t('overline')} title={t('title')} description={t('description')} />
+        {/* Réserve des logos : chaque tracé une seule fois pour toute la page. */}
+        <TechIconSprite names={SKILLS.flatMap((group) => group.skills.map((skill) => skill.name))} />
         <div className="grid gap-x-10 gap-y-12 sm:grid-cols-2 xl:grid-cols-4">
           {SKILLS.map((group) => (
             <div key={group.key}>
@@ -130,7 +134,10 @@ export function StackSection() {
                   const count = TECH_USAGE.get(skill.name) ?? 0;
                   return (
                     <li key={skill.name} className="hm-skill">
-                      <span className="font-semibold text-ink">{skill.name}</span>
+                      <span className="hm-skill-name">
+                        <TechIcon name={skill.name} className="hm-skill-icon" />
+                        {skill.name}
+                      </span>
                       <span className="hm-skill-leader" aria-hidden="true" />
                       <span className={`whitespace-nowrap tabular-nums ${count > 0 ? 'text-ink-soft' : 'text-ink-muted'} text-caption`}>
                         {t('usage', { count })}
@@ -168,7 +175,7 @@ export function CareerSection() {
   ];
 
   return (
-    <section id="parcours" aria-labelledby="career-title" className="scroll-mt-24 py-section">
+    <section id="parcours" aria-labelledby="career-title" className="py-section">
       <div className={CONTAINER}>
         <SectionHead id="career-title" overline={t('overline')} title={t('title')} />
         <div className="grid gap-12 md:grid-cols-2">
