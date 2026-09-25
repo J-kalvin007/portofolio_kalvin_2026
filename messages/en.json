@@ -176,8 +176,8 @@
   },
   "contact_page": {
     "overline": "Contact",
-    "title": "Write to me.",
-    "lead": "A project, a position, a question: through the form, by email or on WhatsApp. Reply within 24 hours.",
+    "title": "Let’s book a meeting.",
+    "lead": "Reserve a slot in my calendar, or write to me directly. Reply within 24 hours.",
     "labels": {
       "email": "Email",
       "phone": "Phone",
@@ -224,7 +224,59 @@
       "errorMessage": "Error sending message.",
       "networkError": "Network error. Please try again.",
       "dismiss": "Dismiss notification"
-    }
+    },
+    "booking": {
+      "overline": "Book a meeting",
+      "title": "Pick a time slot.",
+      "lead": "Choose a date, a time and how we talk. The slots shown are the ones still free in my calendar.",
+      "steps": {
+        "date": "Pick a date",
+        "time": "Pick a time",
+        "details": "Your details"
+      },
+      "previousMonth": "Previous month",
+      "nextMonth": "Next month",
+      "slotsAvailable": "{count, plural, one {# free slot} other {# free slots}}",
+      "noSlots": "no slot",
+      "pickDayFirst": "Pick a date in the calendar first.",
+      "duration": "{minutes} minutes",
+      "timeZoneNote": "Lomé time (UTC+0)",
+      "yourTime": "≈ {time} your time",
+      "loading": "Loading availability…",
+      "loadError": "Availability could not be loaded.",
+      "retry": "Try again",
+      "recap": "Selected slot",
+      "recapEmpty": "No slot selected",
+      "submit": "Request this slot",
+      "submitting": "Sending…",
+      "sendError": "The request could not be sent.",
+      "networkError": "Network error. Please try again.",
+      "fields": {
+        "name": "Full name",
+        "email": "Email",
+        "phone": "Phone",
+        "subject": "Meeting subject",
+        "message": "Context",
+        "messagePlaceholder": "Your need, your timeline, your context…",
+        "optional": "(optional)",
+        "channel": "How we talk",
+        "phoneTooLong": "Number too long",
+        "messageTooLong": "Text too long"
+      },
+      "channels": {
+        "video": "Video call",
+        "phone": "Phone",
+        "whatsapp": "WhatsApp",
+        "onsite": "On site in Lomé"
+      },
+      "confirmed": {
+        "title": "Request sent",
+        "text": "I confirm this slot by email within 24 hours. Until then, it is no longer offered to anyone else.",
+        "ics": "Add to my calendar",
+        "again": "Request another slot"
+      }
+    },
+    "messageSummary": "Would you rather write a message?"
   },
   "contact_cta": {
     "overline": "Contact",

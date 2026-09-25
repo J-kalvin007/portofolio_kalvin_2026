@@ -176,8 +176,8 @@
   },
   "contact_page": {
     "overline": "Contact",
-    "title": "Écrivez-moi.",
-    "lead": "Un projet, un poste, une question : par le formulaire, par e-mail ou sur WhatsApp. Réponse sous 24 heures.",
+    "title": "Prenons rendez-vous.",
+    "lead": "Réservez un créneau dans mon agenda, ou écrivez-moi directement. Réponse sous 24 heures.",
     "labels": {
       "email": "E-mail",
       "phone": "Téléphone",
@@ -224,7 +224,59 @@
       "errorMessage": "Erreur lors de l’envoi.",
       "networkError": "Erreur réseau. Veuillez réessayer.",
       "dismiss": "Fermer la notification"
-    }
+    },
+    "booking": {
+      "overline": "Prendre rendez-vous",
+      "title": "Réservez un créneau.",
+      "lead": "Choisissez une date, une heure et la façon de se parler. Les créneaux affichés sont ceux qui restent libres dans mon agenda.",
+      "steps": {
+        "date": "Choisir une date",
+        "time": "Choisir une heure",
+        "details": "Vos coordonnées"
+      },
+      "previousMonth": "Mois précédent",
+      "nextMonth": "Mois suivant",
+      "slotsAvailable": "{count, plural, one {# créneau libre} other {# créneaux libres}}",
+      "noSlots": "aucun créneau",
+      "pickDayFirst": "Choisissez d’abord une date dans le calendrier.",
+      "duration": "{minutes} minutes",
+      "timeZoneNote": "Heures de Lomé (UTC+0)",
+      "yourTime": "≈ {time} chez vous",
+      "loading": "Chargement des disponibilités…",
+      "loadError": "Impossible de charger les disponibilités.",
+      "retry": "Réessayer",
+      "recap": "Créneau retenu",
+      "recapEmpty": "Aucun créneau sélectionné",
+      "submit": "Demander ce créneau",
+      "submitting": "Envoi en cours…",
+      "sendError": "Erreur lors de l’envoi de la demande.",
+      "networkError": "Erreur réseau. Veuillez réessayer.",
+      "fields": {
+        "name": "Nom complet",
+        "email": "E-mail",
+        "phone": "Téléphone",
+        "subject": "Sujet du rendez-vous",
+        "message": "Contexte",
+        "messagePlaceholder": "Votre besoin, votre calendrier, votre contexte…",
+        "optional": "(facultatif)",
+        "channel": "Comment se parler",
+        "phoneTooLong": "Numéro trop long",
+        "messageTooLong": "Texte trop long"
+      },
+      "channels": {
+        "video": "Visioconférence",
+        "phone": "Téléphone",
+        "whatsapp": "WhatsApp",
+        "onsite": "Sur place à Lomé"
+      },
+      "confirmed": {
+        "title": "Demande envoyée",
+        "text": "Je vous confirme ce créneau par e-mail sous 24 heures. En attendant, il n’est plus proposé à personne d’autre.",
+        "ics": "Ajouter à mon agenda",
+        "again": "Demander un autre créneau"
+      }
+    },
+    "messageSummary": "Vous préférez écrire un message ?"
   },
   "contact_cta": {
     "overline": "Contact",
