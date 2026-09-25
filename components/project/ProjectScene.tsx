@@ -111,8 +111,10 @@ export default function ProjectScene({ title, description, images, techStack }: 
           {tech in TECH_ICONS ? (
             <TechIcon name={tech} className="pj-tech-icon" />
           ) : (
-            /* Aucune marque n'est inventée : une technologie sans logo publié
-               (Android, iOS) reçoit une pastille portant son initiale. */
+            /* Filet de sécurité : les 29 technologies citées par les projets ont
+               aujourd'hui leur tracé. Une nouvelle venue sans logo publié
+               recevrait cette pastille à son initiale — aucune marque n'est
+               inventée pour combler un vide. */
             <span className="pj-tech-letter" aria-hidden="true">{tech.charAt(0)}</span>
           )}
           <span className="pj-tech-name">{tech}</span>

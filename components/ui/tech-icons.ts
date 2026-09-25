@@ -20,12 +20,19 @@
  *   dans simple-icons : `Django REST Framework`, `Prisma ORM`, `Framer Motion`,
  *   `WebSocket`, `Chart.js`. Ils sont remis à l'échelle depuis leur grille
  *   d'origine (voir `transform`).
- * - `PayDunya`, `Isar`, `HTML/CSS` et `SEO` : glyphes neutres dessinés pour ce
- *   site (paiement mobile, base de données locale, balisage, recherche) — ce ne
- *   sont pas leurs logos.
- * - `Android` et `iOS` n'ont volontairement aucun tracé : leurs marques ne sont
- *   pas reproduites ici. Les composants affichent alors une pastille portant
- *   l'initiale, ce qui est honnête et reste lisible.
+ * - `Android` et `iOS` : tracés des fichiers fournis dans `public/svg`, aplatis
+ *   en une seule couleur (pour Android, les silhouettes seules ; pour iOS, les
+ *   trois lettres sans leur pastille de fond).
+ * - `PayDunya` : la marque a été **vectorisée** depuis
+ *   `public/svg/logo_paydunya.jpeg`, le seul fichier disponible. Une image
+ *   matricielle ne peut pas rejoindre ce catalogue : elle resterait bleue dans
+ *   les deux thèmes et floue à 16 px.
+ * - `Isar`, `HTML/CSS` et `SEO` : glyphes neutres dessinés pour ce site (base
+ *   de données locale, balisage, recherche) — ce ne sont pas leurs logos.
+ *
+ * Les 29 technologies citées par les projets ont désormais toutes un tracé. Une
+ * technologie sans logo publié recevrait une pastille portant son initiale :
+ * aucune marque n'est jamais inventée.
  *
  * Fichier généré ; pour ajouter une technologie, ajouter son tracé ici et son
  * nom dans `lib/data/skills.ts` (les deux doivent correspondre exactement).
@@ -207,13 +214,30 @@ export const TECH_ICONS: Record<string, TechIconShape> = {
       'M9 0.0618897V7H15.9381C15.4869 3.38128 12.6187 0.513137 9 0.0618897Z',
     ],
   },
-  'PayDunya': {
-    /* glyphe neutre (paiement mobile) */
-    stroke: true,
+  'Android': {
+    /* public/svg/android.svg */
+    transform: 'scale(0.0234)',
     paths: [
-      'M8 2.2h8a2 2 0 0 1 2 2v15.6a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V4.2a2 2 0 0 1 2-2Z',
-      'M10.6 4.9h2.8',
-      'M14.6 12.2a2.6 2.6 0 1 1-5.2 0 2.6 2.6 0 0 1 5.2 0Z',
+      'M213.696 348.032c-28.16 0-51.2 23.04-51.2 51.2V604.8c0 28.096 23.04 51.2 51.2 51.2s51.2-23.04 51.2-51.2V399.168c0-28.16-23.04-51.136-51.2-51.136z',
+      'M831.68 348.032c-28.16 0-51.2 23.04-51.2 51.2V604.8c0 28.096 22.976 51.2 51.2 51.2s51.2-23.04 51.2-51.2V399.168a51.2 51.2 0 0 0-51.2-51.136z',
+      'M294.656 709.184c0 24.64 20.16 44.8 44.8 44.8h43.008v116.8c0 28.096 23.04 51.2 51.2 51.2s51.2-23.04 51.2-51.2v-116.8h81.6v116.8c0 28.096 22.976 51.2 51.2 51.2s51.2-23.04 51.2-51.2v-116.8h38.976c24.64 0 44.8-20.16 44.8-44.8V348.032H294.656v361.152z',
+      'M297.92 320h451.52a225.28 225.28 0 0 0-113.28-163.456l51.712-51.712a11.328 11.328 0 0 0 0-15.808h-0.064a11.2 11.2 0 0 0-15.808 0l-52.032 52.096c-1.728 1.664-2.24 3.968-2.624 6.144A219.456 219.456 0 0 0 528.704 128h-10.048c-27.52 0-53.824 5.184-78.208 14.4-0.256-0.384-0.128-0.96-0.448-1.28l-52.096-52.096a11.2 11.2 0 0 0-15.808 15.808l47.488 47.552A225.088 225.088 0 0 0 297.92 320z m325.376-120.768a25.984 25.984 0 1 1 0 51.904 25.984 25.984 0 0 1 0-51.904z m-197.952 0a25.984 25.984 0 1 1 0 51.904 25.984 25.984 0 0 1 0-51.904z',
+    ],
+  },
+  'iOS': {
+    /* public/svg/ios.svg */
+    transform: 'scale(1.14) translate(-5.947, -5.447)',
+    paths: [
+      'M7.08597 20.8394H8.61506V13.7443H7.08597V20.8394ZM7.84745 12.8139C8.3203 12.8139 8.70103 12.4123 8.70103 11.9103C8.70103 11.3949 8.3203 11 7.84745 11C7.38074 11 7 11.3949 7 11.9103C7 12.4123 7.38074 12.8139 7.84745 12.8139Z',
+      'M13.9577 11.0201C11.3723 11.0201 9.75113 12.9411 9.75113 16.0134C9.75113 19.0857 11.3723 21 13.9577 21C16.5368 21 18.158 19.0857 18.158 16.0134C18.158 12.9411 16.5368 11.0201 13.9577 11.0201ZM13.9577 12.4926C15.5359 12.4926 16.543 13.8581 16.543 16.0134C16.543 18.162 15.5359 19.5274 13.9577 19.5274C12.3733 19.5274 11.3723 18.162 11.3723 16.0134C11.3723 13.8581 12.3733 12.4926 13.9577 12.4926Z',
+      'M19.0608 18.1218C19.1283 19.9023 20.467 21 22.5058 21C24.649 21 26 19.8487 26 18.0147C26 16.5756 25.2385 15.7657 23.4392 15.3173L22.4198 15.0629C21.3329 14.7818 20.8846 14.407 20.8846 13.7644C20.8846 12.9612 21.5601 12.4257 22.5611 12.4257C23.5743 12.4257 24.2683 12.9679 24.342 13.8715H25.8526C25.8158 12.1714 24.5262 11.0201 22.5734 11.0201C20.6451 11.0201 19.2757 12.178 19.2757 13.8916C19.2757 15.2704 20.0495 16.1272 21.6829 16.5355L22.8313 16.83C23.9489 17.1178 24.4034 17.5194 24.4034 18.2155C24.4034 19.0187 23.6603 19.5944 22.5918 19.5944C21.511 19.5944 20.6942 19.012 20.596 18.1218H19.0608Z',
+    ],
+  },
+  'PayDunya': {
+    /* public/svg/logo_paydunya.jpeg, vectorisé */
+    fillRule: 'evenodd',
+    paths: [
+      'M7.35 7.4L8.76 7.4L9.79 7.68L10.92 8.34L11.95 9.56L13.27 8.24L14.3 7.68L15.33 7.4L16.74 7.4L17.96 7.78L18.9 8.34L19.65 9.09L20.5 10.69L20.78 10.5L22.28 7.78L22.66 7.4L23.12 7.4L23.41 7.59L23.5 8.34L19.84 14.63L18.99 15.57L17.49 16.41L16.65 16.6L15.43 16.6L14.3 16.32L13.27 15.76L11.95 14.44L11.01 15.57L9.79 16.32L8.67 16.6L6.88 16.51L5.29 15.76L4.35 14.82L3.5 13.22L1.63 16.41L1.34 16.6L0.78 16.51L0.5 15.85L4.35 9.18L5.76 7.96L6.88 7.49L7.26 7.49ZM8.57 8.71L7.63 8.62L6.13 9.18L5.1 10.31L4.63 11.81L4.72 12.75L5.29 13.97L6.32 14.91L7.63 15.38L8.86 15.29L9.79 14.91L10.92 13.78L11.39 12.56L11.39 11.44L10.73 9.93L9.79 9.09L8.67 8.71ZM16.65 8.71L15.61 8.62L14.11 9.18L13.17 10.12L12.61 11.72L12.7 12.75L13.27 13.97L14.3 14.91L15.61 15.38L16.83 15.29L18.15 14.63L18.9 13.78L19.37 12.56L19.37 11.34L18.9 10.22L18.06 9.28L16.74 8.71Z',
     ],
   },
   'Isar': {
