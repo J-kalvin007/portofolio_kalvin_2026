@@ -11,7 +11,8 @@ import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { resolveLocale, type LocaleParams } from '@/i18n/params';
 import { Link } from '@/i18n/navigation';
-import { CV_PATH } from '@/lib/site';
+import { PROJECTS } from '@/lib/data/projects';
+import { CONTACT, CV_PATH } from '@/lib/site';
 import { pageMetadata } from '@/lib/seo';
 import ContactCta from '@/components/sections/ContactCta';
 import PageHeader from '@/components/ui/PageHeader';
@@ -40,6 +41,7 @@ export default async function AboutPage({ params }: LocaleParams) {
   return (
     <>
       <PageHeader
+        className="ab-page-head"
         overline={t('overline')}
         title={t('title')}
         lead={t('lead')}
@@ -48,6 +50,16 @@ export default async function AboutPage({ params }: LocaleParams) {
             <a href={CV_PATH} download className={BUTTON_PRIMARY}>{t('ctaCv')}</a>
             <Link href="/contact" className={LINK_SECONDARY}>{t('ctaContact')}</Link>
           </>
+        }
+        /* Trois faits vérifiables, en pied d'en-tête : le lieu et son fuseau,
+           la disponibilité affichée sur la fiche, et le nombre de projets
+           réellement présentés sur le site. */
+        meta={
+          <ul className="ab-facts">
+            <li>{CONTACT.city}, {CONTACT.country} · {t('facts.timezone')}</li>
+            <li>{t('card.stamp')}</li>
+            <li>{t('facts.projects', { count: PROJECTS.length })}</li>
+          </ul>
         }
         aside={<ProfileCard />}
       />

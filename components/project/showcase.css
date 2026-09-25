@@ -507,7 +507,10 @@
   flex-direction: column;
   overflow-y: auto;
   overscroll-behavior: contain;
-  background: var(--ds-canvas);
+  /* Même grain que le reste du site : la modale est une page, pas un calque. */
+  background-color: var(--ds-canvas);
+  background-image: var(--ds-grain);
+  background-size: 2.5rem 2.5rem;
   animation: pj-stage-in var(--motion-base) var(--ease-emphasized) both;
 }
 @keyframes pj-stage-in {

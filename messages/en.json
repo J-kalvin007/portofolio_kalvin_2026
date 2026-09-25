@@ -89,7 +89,9 @@
       "missionsValue": "Remote",
       "stamp": "Available",
       "languages": "Languages",
-      "languagesValue": "French (C2) · English"
+      "languagesValue": "French (C2) · English",
+      "zoom": "View the portrait full screen",
+      "close": "Close the portrait"
     },
     "career": {
       "overline": "Background",
@@ -172,6 +174,10 @@
           "text": "Technology watch and new applications of artificial intelligence."
         }
       ]
+    },
+    "facts": {
+      "projects": "{count} projects shown",
+      "timezone": "UTC+0"
     }
   },
   "contact_page": {

@@ -54,7 +54,16 @@
   }
 
   body {
-    background: var(--ds-canvas);
+    /* Le fond n'est plus une couleur plate : il porte le grain du système de
+       design (voir `--ds-grain`). Le motif **défile avec la page**, comme
+       l'impression sur une feuille — `background-attachment: fixed` donnerait
+       l'effet inverse, et provoque des recalculs de peinture au défilement sur
+       plusieurs navigateurs mobiles.
+       Les surfaces opaques du site (billets, panneaux, papier) le recouvrent :
+       le grain ne se voit que dans les respirations, ce qui suffit. */
+    background-color: var(--ds-canvas);
+    background-image: var(--ds-grain);
+    background-size: 2.5rem 2.5rem;
     color: var(--ds-ink);
     font-family: var(--font-sans);
     /* Transition douce lors du changement de thème */

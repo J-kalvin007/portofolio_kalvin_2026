@@ -89,7 +89,9 @@
       "missionsValue": "À distance",
       "stamp": "Disponible",
       "languages": "Langues",
-      "languagesValue": "Français (C2) · anglais"
+      "languagesValue": "Français (C2) · anglais",
+      "zoom": "Voir le portrait en grand",
+      "close": "Fermer le portrait"
     },
     "career": {
       "overline": "Parcours",
@@ -172,6 +174,10 @@
           "text": "Veille technologique et nouvelles applications de l’intelligence artificielle."
         }
       ]
+    },
+    "facts": {
+      "projects": "{count} projets présentés",
+      "timezone": "UTC+0"
     }
   },
   "contact_page": {
