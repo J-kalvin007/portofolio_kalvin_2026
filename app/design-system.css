@@ -92,8 +92,14 @@
   /* Motif de fond : un carré de 2 px tous les 40 px, à peine visible. C'est le
      tampon carré du site, réduit à la taille d'un grain de papier — assez pour
      que le fond cesse d'être une surface morte, trop peu pour qu'on le
-     remarque avant de le chercher. */
-  --ds-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Crect width='2' height='2' fill='%2311161d' fill-opacity='0.055'/%3E%3C/svg%3E");
+     remarque avant de le chercher.
+
+     ⚠️ L'encre n'est pas la même dans les deux thèmes, et ce n'est pas une
+     inattention : à écart de luminance égal, un point sombre sur un fond clair
+     se voit **deux fois moins** qu'un point clair sur un fond sombre. Le grain
+     clair est donc posé à 10,5 %, le sombre à 7 %, pour une présence
+     équivalente à l'œil. */
+  --ds-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Crect width='2' height='2' fill='%2311161d' fill-opacity='0.105'/%3E%3C/svg%3E");
 
 
   /* Couleur d'ombre : une seule source de lumière, en haut, teintée d'encre */

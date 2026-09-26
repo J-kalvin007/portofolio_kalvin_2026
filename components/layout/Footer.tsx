@@ -10,16 +10,24 @@
  * Contenu, et seulement ce qui est vrai :
  *  - les coordonnées viennent de `lib/site.ts` (source unique) ;
  *  - les réseaux sont ceux de `SOCIAL_LINKS`. Les six liens gabarits
- *    (Instagram, TikTok… vers la page d'accueil de chaque réseau) sont retirés ;
+ *    (TikTok, Snapchat… vers la page d'accueil de chaque réseau) sont retirés ;
  *  - les mentions « Confidentialité » et « Conditions » sont retirées : elles
  *    n'étaient pas des liens et aucune page ne leur correspondait.
+ *
+ * Chaque donnée et chaque réseau porte son pictogramme (`ContactIcon`). Les
+ * glyphes sont insérés dans le HTML et peints avec `currentColor` : le pied de
+ * page reste un composant serveur, sans requête d'image ni logo noir invisible
+ * en thème sombre.
  */
 
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import { CONTACT, SOCIAL_LINKS } from '@/lib/site';
+import type { ContactIconName } from '@/components/ui/contact-icons';
 import Arrow from '@/components/ui/Arrow';
+import ContactIcon from '@/components/ui/ContactIcon';
 import Logotype from './Logotype';
+import '@/components/ui/contact-icons.css';
 import './footer.css';
 
 const COLUMN_HEADING = 'border-b border-ink pb-3 text-caption font-bold uppercase tracking-[0.1em] text-ink';
@@ -35,6 +43,18 @@ const FOOTER_LINK =
  */
 const COPYRIGHT_YEAR = new Date().getFullYear();
 
+/**
+ * Une coordonnée du pied de page : son pictogramme, son libellé, et **une ou
+ * plusieurs** valeurs. Le téléphone en compte deux — d'où `values` au pluriel
+ * plutôt qu'une seconde entrée « Téléphone 2 », qui laisserait croire à deux
+ * coordonnées distinctes.
+ */
+interface FooterDatum {
+  icon: ContactIconName;
+  label: string;
+  values: readonly { value: string; href?: string }[];
+}
+
 export default function Footer() {
   const t = useTranslations('footer');
   const tNav = useTranslations('nav');
@@ -47,10 +67,10 @@ export default function Footer() {
     { href: '/contact' as const, label: tNav('contact') },
   ];
 
-  const contact = [
-    { label: tLabels('email'), value: CONTACT.email, href: `mailto:${CONTACT.email}` },
-    { label: tLabels('phone'), value: CONTACT.phoneDisplay, href: CONTACT.phoneHref },
-    { label: tLabels('location'), value: `${CONTACT.city}, ${CONTACT.country}` },
+  const contact: FooterDatum[] = [
+    { icon: 'mail', label: tLabels('email'), values: [{ value: CONTACT.email, href: `mailto:${CONTACT.email}` }] },
+    { icon: 'phone', label: tLabels('phone'), values: CONTACT.phones.map(({ display, href }) => ({ value: display, href })) },
+    { icon: 'location', label: tLabels('location'), values: [{ value: `${CONTACT.city}, ${CONTACT.country}` }] },
   ];
 
   return (
@@ -81,14 +101,21 @@ export default function Footer() {
           <div>
             <h2 className={COLUMN_HEADING}>{t('contact')}</h2>
             <dl className="mt-4 grid gap-3">
-              {contact.map(({ label, value, href }) => (
-                <div key={label}>
-                  <dt className="text-overline font-semibold uppercase text-ink-muted">{label}</dt>
-                  <dd className="mt-0.5 text-[0.9375rem]">
-                    {href ? (
-                      <a href={href} className={`${FOOTER_LINK} wrap-anywhere`}>{value}</a>
-                    ) : (
-                      <span className="text-ink-soft">{value}</span>
+              {contact.map(({ icon, label, values }) => (
+                <div key={label} className="ft-datum">
+                  <dt className="flex items-center gap-2 text-overline font-semibold uppercase text-ink-muted">
+                    <ContactIcon name={icon} className="ft-glyph" />
+                    {label}
+                  </dt>
+                  {/* `justify-items: start` : la zone cliquable épouse le texte
+                      au lieu de couvrir toute la largeur de la colonne. */}
+                  <dd className="mt-0.5 grid justify-items-start gap-0.5 text-[0.9375rem]">
+                    {values.map(({ value, href }) =>
+                      href ? (
+                        <a key={value} href={href} className={`${FOOTER_LINK} wrap-anywhere`}>{value}</a>
+                      ) : (
+                        <span key={value} className="text-ink-soft">{value}</span>
+                      ),
                     )}
                   </dd>
                 </div>
@@ -100,9 +127,10 @@ export default function Footer() {
           <div>
             <h2 className={COLUMN_HEADING}>{t('elsewhere')}</h2>
             <ul className="mt-4 grid gap-2.5 text-[0.9375rem]">
-              {SOCIAL_LINKS.map(({ label, href }) => (
+              {SOCIAL_LINKS.map(({ label, href, icon }) => (
                 <li key={label}>
                   <a href={href} target="_blank" rel="noopener noreferrer" className={FOOTER_LINK}>
+                    <ContactIcon name={icon} className="ft-glyph mr-2" />
                     {label} <Arrow direction="up-right" />
                   </a>
                 </li>
@@ -116,7 +144,7 @@ export default function Footer() {
           <p>
             © {COPYRIGHT_YEAR} Kalvin Takoudjou. {t('copyright')}
           </p>
-          <p>{t('madeIn')}</p>
+          {/* <p>{t('madeIn')}</p> */}
         </div>
       </div>
     </footer>

@@ -75,6 +75,60 @@
   gap: 0.65rem;
 }
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   ▌ PICTOGRAMME D'UNE COORDONNÉE
+   ───────────────────────────────────────────────────────────────────────────
+   Le glyphe ouvre le libellé, à l'intérieur du `<dt>`. Comme tous les `<dt>`
+   d'une même fiche commencent au même bord, les glyphes se retrouvent alignés
+   sur une verticale : la fiche est structurée par cet alignement, sans filet ni
+   cadre ajoutés.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.rc-line dt .rc-glyph {
+  width: 1.2em;
+  height: 1.2em;
+  /* Un cran plus soutenu que le libellé : la colonne de glyphes doit se lire
+     d'un trait, sans dominer la donnée qu'elle annonce. Un navigateur qui ne
+     connaîtrait pas `color-mix` ignore la déclaration et le glyphe garde la
+     couleur héritée du libellé — dégradation sans conséquence. */
+  color: color-mix(in oklab, var(--ds-paper-ink) 55%, var(--ds-paper-muted));
+  transition:
+    color var(--motion-fast) ease,
+    translate var(--motion-base) var(--ease-emphasized);
+}
+
+/* La ligne dont le lien est survolé ou focalisé encre son glyphe et le fait
+   monter d'un cheveu.
+
+   `:has()` laisse l'ancêtre réagir à l'état d'un descendant : c'est ce qui
+   permet au glyphe de rester dans le `<dt>` — donc dans la colonne — tout en
+   répondant à un survol qui se produit dans le `<dd>`. Sans cette règle, il
+   faudrait déplacer le glyphe à côté du lien, et l'alignement disparaîtrait. */
+.rc-line:has(dd a:hover) dt .rc-glyph,
+.rc-line:has(dd a:focus-visible) dt .rc-glyph {
+  color: var(--ds-stamp);
+  translate: 0 -1px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rc-line dt .rc-glyph {
+    transition-duration: 0s;
+  }
+  .rc-line:has(dd a:hover) dt .rc-glyph,
+  .rc-line:has(dd a:focus-visible) dt .rc-glyph {
+    translate: none;
+  }
+}
+
+/* Valeur à plusieurs lignes — les deux numéros de téléphone. Une grille plutôt
+   que deux `<br>` : l'interligne se règle alors au centième de rem, et chaque
+   numéro garde sa propre zone cliquable sur toute sa largeur. */
+.rc-multi {
+  display: grid;
+  justify-items: end;
+  row-gap: 0.1rem;
+}
+
 /* Lien dans une ligne de reçu */
 .rc-line dd a {
   color: inherit;

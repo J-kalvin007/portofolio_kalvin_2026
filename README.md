@@ -79,14 +79,34 @@ Aucune n'est obligatoire pour que le site s'affiche ; chacune débloque une fonc
 | Variable | Sans elle | Où la trouver |
 | --- | --- | --- |
 | `NEXT_PUBLIC_SITE_URL` | Les adresses canoniques, le sitemap et les aperçus de partage reprennent le domaine de repli inscrit dans `lib/site.ts`. **Le build l'annonce en clair.** | Votre domaine, sans barre oblique finale |
-| `EMAIL_HOST_USER` | Les deux formulaires répondent « service momentanément indisponible » (503) | Adresse Gmail d'envoi |
-| `EMAIL_HOST_PASSWORD` | idem | Mot de passe d'application Google (pas le mot de passe du compte) |
+| `EMAIL_HOST_USER` | Les deux formulaires répondent « service momentanément indisponible » (503) | **Toujours requise** : c'est l'adresse qui reçoit, et celle qui expédie |
+| `BREVO_API_KEY` | Le site retombe sur le SMTP | Clé d'API v3 de Brevo. **Recommandée sur Vercel** — voir ci-dessous |
+| `EMAIL_HOST_PASSWORD` | Aucun envoi possible si `BREVO_API_KEY` est absente aussi | Mot de passe d'application Google (jamais celui du compte) |
 | `GOOGLE_CALENDAR_ID` | Le calendrier propose les créneaux des règles, sans confronter l'agenda réel | Agenda Google → Paramètres → Identifiant de l'agenda |
 | `GOOGLE_SERVICE_ACCOUNT_EMAIL` | idem | Champ `client_email` de la clé JSON du compte de service |
 | `GOOGLE_PRIVATE_KEY` | idem | Champ `private_key` de la même clé (les `\n` littéraux sont convertis) |
 
 > L'agenda doit être **partagé** avec l'adresse du compte de service, avec le droit
 > « Apporter des modifications aux événements ». Voir [Les API](#les-api).
+
+### Quel transport d'e-mail choisir
+
+`lib/mailer.ts` prend le premier transport configuré, dans cet ordre :
+
+| Transport | Quand | Ce qu'il faut |
+| --- | --- | --- |
+| **API HTTP (Brevo)** | Plateforme sans serveur — **Vercel** | `BREVO_API_KEY` + `EMAIL_HOST_USER` validée comme expéditeur chez Brevo |
+| **SMTP (Gmail)** | Serveur qui tourne en continu — Docker, VPS | `EMAIL_HOST_USER` + `EMAIL_HOST_PASSWORD` |
+| *aucun* | — | Les formulaires répondent 503, le reste du site fonctionne |
+
+Le SMTP est excellent sur un serveur permanent : la connexion se réutilise, la latence
+disparaît. Sur une fonction sans serveur il est fragile — poignée de main TLS et
+authentification à chaque démarrage à froid, refus fréquents de Google depuis les adresses
+de centres de données (`535-5.7.8`), quota lié au compte personnel. L'API HTTP n'a aucun de
+ces trois problèmes : une requête, une réponse.
+
+Mettre Brevo en place : compte gratuit (300 e-mails par jour), validation de l'adresse
+d'expédition dans *Expéditeurs et adresses IP*, puis une clé d'API v3.
 
 ## Architecture
 
@@ -250,7 +270,9 @@ Les apparitions au défilement sont écrites en CSS (`animation-timeline: view()
 
 ### Contact — `app/[locale]/contact/page.tsx`
 
-- **`ContactDetails`** (serveur) — les coordonnées en lignes de reçu, colonne collante.
+- **`ContactDetails`** (serveur) — les coordonnées en lignes de reçu, colonne collante : e-mail,
+  les deux lignes téléphoniques, les profils publics, le lieu, l'heure locale et la disponibilité.
+  Chaque ligne s'ouvre sur son pictogramme, tous alignés sur la même verticale.
 - **`BookingCalendar`** (client) — trois étapes : une date, une heure, ses coordonnées. Le navigateur **ne connaît aucune règle de disponibilité** : il affiche la liste de créneaux libres que l'API lui donne.
 - **`ContactForm`** (client) — le formulaire de message, replié sous le rendez-vous.
 
@@ -287,8 +309,9 @@ d'un ticket + nom en en-tête de journal), `ThemeToggle`, `ThemeInitializer`, `p
 ### `components/ui/`
 
 `PageHeader` et `SectionHead` (en-têtes), `Arrow`, `LocalTime`, `TechIcon` / `TechIconSprite`
-(logos des technologies), `styles.ts` (recettes de classes partagées : `BUTTON_PRIMARY`,
-`CONTAINER`, `FOCUS_RING`…), `receipt.css` (la ligne de reçu, primitive partagée par quatre pages).
+(logos des technologies), `ContactIcon` (pictogrammes des coordonnées), `styles.ts` (recettes de
+classes partagées : `BUTTON_PRIMARY`, `CONTAINER`, `FOCUS_RING`…), `receipt.css` (la ligne de reçu,
+primitive partagée par quatre pages).
 
 ## Les modules
 
@@ -305,6 +328,7 @@ d'un ticket + nom en en-tête de journal), `ThemeToggle`, `ThemeInitializer`, `p
 | `lib/booking/ics.ts` | `buildInvite` | Fichier `.ics` conforme (CRLF, repli à 75 octets, échappements) |
 | `lib/booking/contract.ts` | `BOOKING_LIMITS`, `MEETING_CHANNELS`, `BookingRequest` | Contrat partagé formulaire ↔ API |
 | `lib/contact.ts` | `CONTACT_LIMITS`, `EMAIL_PATTERN`, `HONEYPOT_FIELD`, `CONTACT_MAX_BODY_BYTES` | Idem pour le message |
+| `lib/mailer.ts` | `sendMail`, `mailTransport`, `MailerNotConfiguredError` | **Envoi des e-mails**, indépendant du transport : API HTTP (Brevo) ou SMTP (Gmail) |
 | `lib/rate-limit.ts` | `createRateLimiter`, `clientIdentifier` | Quota par adresse IP, une implémentation pour les deux API |
 | `lib/useTheme.ts` | `useThemeStore`, `useTheme`, `useThemeInit`, `useLanguage` | Préférence clair / sombre / système |
 | `lib/fonts.ts` | `poppins`, `poppinsItalic`, `fontVariables` | **Poppins, seule police du site**, auto-hébergée |
@@ -326,7 +350,7 @@ et `node:crypto` ouvrent des connexions réseau.
 | JSON | Illisible → `400` |
 | Validation | Zod, mêmes limites que le formulaire → `400` |
 | Pot de miel | Champ `website` rempli → `200` **sans rien envoyer** (le robot n'apprend pas qu'il a été vu) |
-| Envoi | Gmail via nodemailer, `replyTo` = le visiteur, corps HTML en tableaux (Outlook) |
+| Envoi | `lib/mailer.ts` (Brevo ou SMTP), `replyTo` = le visiteur, corps HTML en tableaux (Outlook) |
 | Panne | SMTP non configuré → `503` ; autre → `500` |
 
 ### `GET /api/rendezvous` — créneaux libres
@@ -383,6 +407,7 @@ et 7 % en sombre. Il défile avec la page, et les surfaces opaques le recouvrent
 | `lib/data/architectures.ts` | 9 schémas | Le schéma sous chaque projet |
 | `lib/data/skills.ts` | 23 technologies, 5 groupes | Le relevé de compétences |
 | `components/ui/tech-icons.ts` | 31 tracés d'icônes (**fichier généré**) | Les logos, partout |
+| `components/ui/contact-icons.ts` | 8 tracés : e-mail, téléphone, WhatsApp, LinkedIn, GitHub, épingle, horloge, disponibilité | Les pictogrammes du pied de page, de la fiche de contact, du menu mobile et de la bande de faits |
 | `messages/fr.json` / `en.json` | 431 clés × 2 langues, 18 espaces de noms | Tous les textes |
 
 Les textes des projets (`projects_data.<clé>.short`, `.full`, `.domain`, `.points`) vivent dans les
@@ -405,6 +430,25 @@ Le projet apparaît alors sur l'accueil, dans la grille, le sommaire, le filtre,
 1. Ajouter son nom exact dans `lib/data/skills.ts` et/ou dans le `techStack` d'un projet.
 2. Ajouter son tracé dans `components/ui/tech-icons.ts` (fichier généré : voir l'en-tête du fichier pour la provenance de chaque icône et les règles de mise à l'échelle).
 3. Sans tracé, les composants affichent une pastille portant l'initiale — **aucune marque n'est jamais inventée**.
+
+### Changer une coordonnée, ajouter un réseau
+
+Tout est dans `lib/site.ts` — **et nulle part ailleurs**. Le pied de page, la fiche de la page
+Contact, le menu mobile et la bande de faits de la page À propos s'y alimentent.
+
+- **Un numéro** : `CONTACT.phones`, dans l'ordre d'affichage. `display` porte les espaces qui
+  rendent le numéro lisible, `href` la forme que l'appareil compose (`tel:` n'accepte pas
+  d'espace). Les deux numéros s'affichent partout, le premier en tête.
+- **WhatsApp** : `CONTACT.whatsappHref` — c'est lui qui décide à quelle ligne arrivent les
+  messages, indépendamment de l'ordre de `phones`.
+- **Un réseau** : une entrée dans `PROFILES`, avec `label` (le nom de la marque, jamais traduit),
+  `href`, `icon` (un nom de `contact-icons.ts` — le type refuse une faute de frappe) et `handle`
+  (ce que le lien affiche). **Une entrée dont `href` est vide est écartée** : c'est ainsi
+  qu'Instagram attend son adresse sans afficher de lien mort.
+
+> ⚠️ **Instagram n'est pas publié** tant que son adresse n'est pas renseignée. Coller l'adresse
+> exacte du profil dans l'entrée prévue suffit : le pictogramme, le pied de page et la fiche de
+> contact suivent sans autre modification.
 
 ### Changer les disponibilités de rendez-vous
 
@@ -478,7 +522,7 @@ AVIF est activé côté Vercel uniquement (l'encodage y est amorti par leur rés
 
 Checklist avant le premier déploiement :
 
-1. Variables d'environnement (voir plus haut).
+1. Variables d'environnement (voir plus haut). **Sans `EMAIL_HOST_USER`, les deux formulaires répondent 503** — c'est la cause la plus fréquente d'un « service momentanément indisponible » en production.
 2. `public/projets/` pèse ~137 Mo d'anciennes captures **qu'aucune page n'utilise** : les écarter du déploiement (`.vercelignore`) évite de les téléverser à chaque fois.
 3. Vérifier que l'avertissement `NEXT_PUBLIC_SITE_URL` n'apparaît pas dans le journal de build.
 
