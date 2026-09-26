@@ -16,7 +16,8 @@
  * Un rendez-vous accepté produit trois choses, dans cet ordre :
  *  1. un événement dans l'agenda (si branché) — ce qui rend le créneau occupé
  *     pour le visiteur suivant, sans base de données ;
- *  2. un e-mail à Kalvin, avec le fichier `.ics` en pièce jointe ;
+ *  2. un e-mail à Kalvin, avec le fichier `.ics` en pièce jointe (transport
+ *     choisi par `lib/mailer.ts`) ;
  *  3. le même `.ics` renvoyé au visiteur, qui peut l'ajouter à son agenda.
  *
  * @remarks Le créneau est **revérifié avant écriture**. Une page laissée
@@ -25,11 +26,11 @@
  */
 
 import { NextResponse, type NextRequest } from 'next/server';
-import nodemailer, { type Transporter } from 'nodemailer';
 import { z } from 'zod';
 import { escapeHtml } from '@/lib/html-escape';
 import { CONTACT, SITE_NAME, SITE_URL } from '@/lib/site';
 import { clientIdentifier, createRateLimiter } from '@/lib/rate-limit';
+import { MailerNotConfiguredError, sendMail } from '@/lib/mailer';
 import { EMAIL_PATTERN, HONEYPOT_FIELD } from '@/lib/contact';
 import {
   BOOKING_RULES,
@@ -44,7 +45,7 @@ import { BOOKING_LIMITS, BOOKING_MAX_BODY_BYTES, MEETING_CHANNELS, type MeetingC
 import { buildInvite } from '@/lib/booking/ics';
 import { fetchBusy, createEvent } from '@/lib/booking/google-calendar';
 
-/** `nodemailer` et `node:crypto` ouvrent des sockets : runtime Node obligatoire. */
+/** L'envoi d'e-mail et la signature du jeton Google exigent le runtime Node. */
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
@@ -158,31 +159,6 @@ const bookingSchema = z.object({
   [HONEYPOT_FIELD]: z.string().max(500).optional(),
 });
 
-let cachedTransporter: Transporter | null = null;
-
-function getTransporter(): Transporter {
-  if (cachedTransporter) return cachedTransporter;
-
-  const user = process.env.EMAIL_HOST_USER;
-  const pass = process.env.EMAIL_HOST_PASSWORD;
-  if (!user || !pass) throw new Error('EMAIL_HOST_USER ou EMAIL_HOST_PASSWORD manquant dans les variables d\'environnement.');
-
-  cachedTransporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 465,
-    secure: true,
-    auth: { user, pass },
-    pool: true,
-    maxConnections: 2,
-    maxMessages: 50,
-    connectionTimeout: 10_000,
-    greetingTimeout: 10_000,
-    socketTimeout: 20_000,
-  });
-
-  return cachedTransporter;
-}
-
 /** Retire tout retour à la ligne d'une valeur destinée à un en-tête SMTP. */
 const stripHeaderInjection = (value: string) => value.replace(/[\r\n]/g, ' ').trim();
 
@@ -285,10 +261,9 @@ export async function POST(request: NextRequest) {
     });
 
     /* ── 7. E-mail : la pièce maîtresse, toujours envoyée ────────────────── */
-    await getTransporter().sendMail({
-      from: `"${safeName}" <${process.env.EMAIL_HOST_USER}>`,
-      to: process.env.EMAIL_HOST_USER,
-      replyTo: `"${safeName}" <${data.email}>`,
+    await sendMail({
+      senderName: safeName,
+      replyTo: { name: safeName, email: data.email },
       subject: `Rendez-vous demandé · ${longDate} à ${data.time} · ${safeSubject}`,
       text: [
         'Demande de rendez-vous',
@@ -323,7 +298,7 @@ export async function POST(request: NextRequest) {
       return json({ success: false, message: API_MESSAGES[locale].invalid }, 400);
     }
 
-    if (error instanceof Error && error.message.includes('EMAIL_HOST_')) {
+    if (error instanceof MailerNotConfiguredError) {
       console.error('[rendezvous] configuration manquante :', error.message);
       return json({ success: false, message: API_MESSAGES[locale].misconfigured }, 503);
     }

@@ -191,9 +191,6 @@
     },
     "details": {
       "title": "Contact details",
-      "whatsapp": "WhatsApp",
-      "whatsappValue": "Message on WhatsApp",
-      "github": "GitHub",
       "localTime": "Local time",
       "status": "Status",
       "statusValue": "Available · remote",

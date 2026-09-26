@@ -197,6 +197,17 @@
 .ab-facts li:nth-child(2) {
   color: var(--ds-brand-text);
 }
+/* Le fait qui porte un pictogramme le colle à son texte : le `gap` de 1,25rem
+   du `<li>` sert à espacer le filet séparateur, pas le glyphe de sa donnée. */
+.ab-fact {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+.ab-fact .ci-glyph {
+  width: 1.1em;
+  height: 1.1em;
+}
 
 /* ═══════════════════════════════════════════════════════════════════════════
    ▌ PORTRAIT — de la fiche au plein écran

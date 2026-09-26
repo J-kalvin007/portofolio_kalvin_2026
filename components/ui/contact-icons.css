@@ -1,0 +1,40 @@
+/**
+ * @file contact-icons.css
+ * @description Assise commune des pictogrammes de coordonnées.
+ *
+ * Volontairement minuscule : ce fichier ne règle que ce qui doit être vrai
+ * partout — le glyphe ne se déforme pas, ne se coupe pas, et repose sur la
+ * ligne d'écriture. Sa taille et sa couleur appartiennent au contexte qui
+ * l'emploie (`receipt.css` pour la fiche de coordonnées, `footer.css` pour le
+ * pied de page), parce qu'un même pictogramme n'a pas le même poids optique
+ * dans une ligne de reçu de 11 px et dans une liste de 15 px.
+ *
+ * Aucune taille n'est fixée ici : les attributs `width="1em"` du composant
+ * servent de valeur par défaut, et un utilitaire de l'appelant peut encore les
+ * remplacer. Une règle de largeur à cet endroit interdirait cette liberté, les
+ * feuilles de composants de ce projet étant hors couche.
+ */
+
+.ci-glyph {
+  display: inline-block;
+  /* Dans un conteneur en `flex`, un glyphe ne doit jamais céder sa place au
+     texte : sans cela, un libellé long l'écrase jusqu'à le rendre illisible. */
+  flex: none;
+  /* Assise sur la ligne d'écriture. Sans cela, le bord inférieur du dessin
+     s'aligne sur la ligne de base et le glyphe paraît flotter au-dessus du
+     texte : l'œil lit un décalage d'un ou deux pixels comme un défaut. */
+  vertical-align: -0.16em;
+  /* Le dessin garde son carré même si la ligne est compressée. */
+  aspect-ratio: 1;
+}
+
+/* Les glyphes sont les seuls éléments à réagir au thème sans changer de tracé :
+   ils héritent de `currentColor`. Rien à faire ici — mais un thème à contraste
+   forcé remplace toutes les couleurs par les siennes, et un glyphe évidé
+   (WhatsApp, LinkedIn) y deviendrait une tache pleine. On le laisse alors se
+   peindre avec la couleur du texte du système, qui garde l'évidement lisible. */
+@media (forced-colors: active) {
+  .ci-glyph {
+    forced-color-adjust: auto;
+  }
+}

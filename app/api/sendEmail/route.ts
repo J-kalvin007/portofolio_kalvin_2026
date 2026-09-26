@@ -7,21 +7,23 @@
  * - Reçoit le JSON depuis la page frontend.
  * - Effectue une seconde validation de sécurité avec Zod côté serveur (Ne jamais faire confiance au frontend).
  * - Nettoie (Sanitize) les données pour éviter l'injection de scripts XSS et de Header Injection.
- * - Utilise `nodemailer` pour expédier le mail via le compte Gmail configuré dans `.env.local`.
+ * - Confie l'expédition à `lib/mailer.ts`, qui choisit le transport selon la
+ *   configuration : API HTTP (Brevo) sur une plateforme sans serveur, SMTP
+ *   (Gmail) sur un serveur qui tourne en continu.
  * - Construit et envoie un e-mail HTML au design ultra-premium (Or Solaire).
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import nodemailer from 'nodemailer';
-import type { Transporter } from 'nodemailer';
 import { z } from 'zod';
 import { escapeHtml } from '@/lib/html-escape';
 import { SITE_URL, SITE_NAME } from '@/lib/site';
 import { CONTACT_LIMITS, CONTACT_MAX_BODY_BYTES, EMAIL_PATTERN, HONEYPOT_FIELD } from '@/lib/contact';
 import { clientIdentifier, createRateLimiter } from '@/lib/rate-limit';
+import { MailerNotConfiguredError, sendMail } from '@/lib/mailer';
 
 /**
- * `nodemailer` ouvre des sockets TCP : il ne peut pas tourner sur le runtime Edge.
+ * L'envoi ouvre des sockets (SMTP) ou appelle une API distante : ni l'un ni
+ * l'autre ne tourne sur le runtime Edge.
  * La déclaration est explicite pour qu'une migration de runtime échoue au build
  * plutôt qu'en production, à la première soumission de formulaire.
  */
@@ -121,50 +123,6 @@ const contactSchema = z.object({
   [HONEYPOT_FIELD]: z.string().max(500).optional(),
 });
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   ▌ TRANSPORTEUR SMTP MUTUALISÉ
-   ───────────────────────────────────────────────────────────────────────────
-   Le transporteur était reconstruit à chaque requête, suivi d'un
-   `transporter.verify()` : deux poignées de main TLS complètes avant même de
-   commencer l'envoi, soit une à trois secondes ajoutées à chaque soumission.
-
-   Ici, une seule instance est conservée dans la portée du module. Sur une
-   plateforme sans serveur, cette portée survit entre deux invocations chaudes :
-   la connexion est réellement réutilisée. `pool: true` maintient la session
-   ouverte, les délais d'attente empêchent une fonction de rester bloquée si
-   Gmail ne répond pas.
-   ═══════════════════════════════════════════════════════════════════════════ */
-let cachedTransporter: Transporter | null = null;
-
-function getTransporter(): Transporter {
-  if (cachedTransporter) return cachedTransporter;
-
-  const user = process.env.EMAIL_HOST_USER;
-  const pass = process.env.EMAIL_HOST_PASSWORD;
-
-  // Échec explicite : sans cette garde, nodemailer produisait une erreur
-  // d'authentification opaque, à l'exécution, difficile à relier à un `.env`
-  // incomplet sur un environnement de préversion.
-  if (!user || !pass) {
-    throw new Error('EMAIL_HOST_USER ou EMAIL_HOST_PASSWORD manquant dans les variables d\'environnement.');
-  }
-
-  cachedTransporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 465,
-    secure: true, // `true` signifie SSL implicite pour le port 465
-    auth: { user, pass },
-    pool: true,
-    maxConnections: 2,
-    maxMessages: 50,
-    connectionTimeout: 10_000,
-    greetingTimeout: 10_000,
-    socketTimeout: 20_000,
-  });
-
-  return cachedTransporter;
-}
-
 export async function POST(request: NextRequest) {
   // La locale est résolue avant tout traitement : même une erreur précoce doit
   // pouvoir répondre dans la bonne langue.
@@ -250,9 +208,6 @@ export async function POST(request: NextRequest) {
        désormais lue côté serveur, elle n'est plus négociable. */
     const logoUrl = `${SITE_URL}/logo/kal_04_nobg.jpeg`;
 
-    // 3. Transporteur mutualisé (voir plus haut)
-    const transporter = getTransporter();
-
     const receivedAt = new Intl.DateTimeFormat(locale === 'en' ? 'en-GB' : 'fr-FR', {
       dateStyle: 'full',
       timeStyle: 'short',
@@ -261,13 +216,15 @@ export async function POST(request: NextRequest) {
 
     /**
      * 4. Envoi de l'e-mail
-     * - "from" : Expédie avec ton adresse pour s'assurer que Gmail ne rejette pas l'e-mail (Politique DMARC).
-     * - "to" : S'envoie à toi-même.
-     * - "replyTo" : L'adresse du client. Si tu cliques sur "Répondre", ça écrira directement au client.
+     *
+     * Le transport est choisi par `lib/mailer.ts` ; la route ne décrit que le
+     * message. L'expéditeur reste l'adresse du compte — envoyer au nom du
+     * domaine du visiteur ferait échouer sa politique DMARC — et son adresse
+     * part dans `replyTo` : le bouton « Répondre » écrit donc bien au visiteur.
      */
-    await transporter.sendMail({
-      from: `"${safeName}" <${process.env.EMAIL_HOST_USER}>`,
-      to: process.env.EMAIL_HOST_USER,
+    await sendMail({
+      senderName: safeName,
+      replyTo: { name: safeName, email: validatedData.email },
       subject: `Nouveau Message Portfolio : ${safeSubject}`,
       text: [
         `Nouveau message depuis le portfolio`,
@@ -284,7 +241,6 @@ export async function POST(request: NextRequest) {
         `Répondre directement à cet e-mail pour joindre l'expéditeur.`,
       ].join('\n'),
       html: buildEmailHtml({ htmlName, htmlEmail, htmlSubject, htmlMessage, logoUrl, receivedAt }),
-      replyTo: `"${safeName}" <${validatedData.email}>`, // Indispensable pour que le bouton "Répondre" de Gmail fonctionne.
     });
 
     // Retourne une réponse JSON HTTP 200 (OK) au client.
@@ -307,7 +263,7 @@ export async function POST(request: NextRequest) {
 
     // Configuration serveur incomplète : le message distingué évite de faire
     // chercher une panne réseau là où il manque une variable d'environnement.
-    if (error instanceof Error && error.message.includes('EMAIL_HOST_')) {
+    if (error instanceof MailerNotConfiguredError) {
       console.error('[sendEmail] Configuration manquante :', error.message);
       return NextResponse.json(
         { success: false, message: API_MESSAGES[locale].misconfigured },

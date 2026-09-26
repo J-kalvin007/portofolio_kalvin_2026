@@ -15,8 +15,10 @@ import { PROJECTS } from '@/lib/data/projects';
 import { CONTACT, CV_PATH } from '@/lib/site';
 import { pageMetadata } from '@/lib/seo';
 import ContactCta from '@/components/sections/ContactCta';
+import ContactIcon from '@/components/ui/ContactIcon';
 import PageHeader from '@/components/ui/PageHeader';
 import { BUTTON_PRIMARY, LINK_SECONDARY } from '@/components/ui/styles';
+import '@/components/ui/contact-icons.css';
 import { CareerLedger, MethodSection, ProfileCard, ProfileSection, RecommendationsSection } from './components/AboutSections';
 
 export async function generateMetadata({ params }: LocaleParams): Promise<Metadata> {
@@ -56,7 +58,15 @@ export default async function AboutPage({ params }: LocaleParams) {
            réellement présentés sur le site. */
         meta={
           <ul className="ab-facts">
-            <li>{CONTACT.city}, {CONTACT.country} · {t('facts.timezone')}</li>
+            {/* Le seul fait qui soit une coordonnée porte son épingle, comme
+                dans le pied de page et sur la page Contact. Les deux autres
+                sont un tampon et un décompte : ils n'en demandent pas. */}
+            <li>
+              <span className="ab-fact">
+                <ContactIcon name="location" />
+                {CONTACT.city}, {CONTACT.country} · {t('facts.timezone')}
+              </span>
+            </li>
             <li>{t('card.stamp')}</li>
             <li>{t('facts.projects', { count: PROJECTS.length })}</li>
           </ul>

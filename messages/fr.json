@@ -191,9 +191,6 @@
     },
     "details": {
       "title": "Coordonnées",
-      "whatsapp": "WhatsApp",
-      "whatsappValue": "Écrire sur WhatsApp",
-      "github": "GitHub",
       "localTime": "Heure locale",
       "status": "Statut",
       "statusValue": "Disponible · à distance",
