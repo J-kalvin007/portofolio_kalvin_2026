@@ -170,15 +170,53 @@
   stroke: var(--ds-annotation);
   stroke-width: 1.2;
 }
-.arch-dim text {
-  fill: var(--ds-annotation);
+/* ── Cote de stack : un logo devant chaque technologie ──────────────────────
+   Composée en HTML dans un `<foreignObject>` (voir ArchitectureDiagram.tsx).
+   Les dimensions sont en unités du `viewBox`, comme le reste du dessin : elles
+   suivent donc l'échelle du schéma. */
+.arch-stack {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  /* Aucun écart, ni vertical ni horizontal.
+
+     Vertical : l'interligne fait déjà la hauteur d'une ligne de cote, et un
+     écart décalerait la cote par rapport à la place réservée.
+
+     Horizontal : l'espacement est porté par le remplissage des éléments, de
+     sorte que leurs plaques de fond se touchent. Un écart, même de quelques
+     pixels, laisserait le trait de cote réapparaître entre deux technologies —
+     l'œil y lirait des tirets, alors qu'il s'agit du trait qui passe derrière.
+     Le texte SVET d'origine obtenait le même résultat avec un halo continu. */
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
   font-size: 10.5px;
   font-weight: 600;
   letter-spacing: 0.1em;
-  paint-order: stroke;
-  stroke: var(--arch-bg);
-  stroke-width: 10px;
-  stroke-linejoin: round;
+  line-height: 15px; /* = DIMENSION_LINE_HEIGHT */
+  text-transform: uppercase;
+  color: var(--ds-annotation);
+}
+.arch-stack li {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  /* La plaque de fond remplace le halo du texte SVG (`paint-order: stroke`) :
+     elle détache la cote du papier millimétré et du trait de cote qui passe
+     derrière elle. Le remplissage latéral joue deux rôles à la fois — il écarte
+     les technologies les unes des autres, et il joint les plaques voisines. */
+  padding: 0 4.5px;
+  background: var(--arch-bg);
+  white-space: nowrap;
+}
+.arch-stack-icon {
+  /* La base de Tailwind met les `svg` en `display: block`. */
+  display: inline-block;
+  width: 1.2em;
+  height: 1.2em;
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -293,6 +331,10 @@
 /* ── Contrastes forcés (Windows) : couleurs système ── */
 @media (forced-colors: active) {
   .arch-box, .arch-line, .arch-zone rect, .arch-dim path { stroke: CanvasText; }
-  .arch-title, .arch-tech, .arch-label, .arch-zone text, .arch-dim text { fill: CanvasText; stroke: Canvas; }
+  .arch-title, .arch-tech, .arch-label, .arch-zone text { fill: CanvasText; stroke: Canvas; }
+  /* La cote de stack est composee en HTML : elle prend les couleurs du systeme
+     par la propriete `color`, et sa plaque de fond celle du fond. */
+  .arch-stack { color: CanvasText; }
+  .arch-stack li { background: Canvas; }
   .arch-flow { display: none; }
 }

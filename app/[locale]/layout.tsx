@@ -17,11 +17,12 @@ import { getMessages, getTranslations, setRequestLocale } from 'next-intl/server
 import { routing } from '@/i18n/routing';
 import { resolveLocale, type LocaleParams } from '@/i18n/params';
 import { SITE_NAME, SITE_URL } from '@/lib/site';
-import { OPEN_GRAPH_LOCALES, SHARE_IMAGE, TITLE_TEMPLATE } from '@/lib/seo';
+import { IS_PREVIEW_DEPLOYMENT, OPEN_GRAPH_LOCALES, SHARE_IMAGE, TITLE_TEMPLATE } from '@/lib/seo';
 import { fontVariables, poppins } from '@/lib/fonts';
 import '../globals.css';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
+import StructuredData from '@/components/layout/StructuredData';
 import ThemeInitializer from '@/components/layout/ThemeInitializer';
 
 /* ═══════════════════════════════════════════════
@@ -114,12 +115,18 @@ export async function generateMetadata({ params }: LocaleParams): Promise<Metada
       description,
       images: [SHARE_IMAGE.url],
     },
-    // Instructions pour les robots d'indexation (GoogleBot)
+    // Instructions pour les robots d'indexation (GoogleBot).
+    //
+    // Un déploiement de préversion est un site complet au contenu identique à
+    // la production : indexable, il devient un doublon, et Google peut préférer
+    // son adresse au domaine. Une préversion est donc explicitement exclue —
+    // `follow` reste vrai pour que les liens continuent d'être suivis lors d'un
+    // contrôle manuel.
     robots: {
-      index: true,
+      index: !IS_PREVIEW_DEPLOYMENT,
       follow: true,
       googleBot: {
-        index: true,
+        index: !IS_PREVIEW_DEPLOYMENT,
         follow: true,
         'max-video-preview': -1,
         'max-image-preview': 'large',
@@ -158,6 +165,11 @@ export default async function LocaleLayout({
   /** Libellé du lien d'évitement. */
   const skipLabel = (await getTranslations({ locale, namespace: 'a11y' }))('skipToContent');
 
+  /* Données structurées : les valeurs viennent des mêmes catalogues que le
+     texte affiché, jamais d'une rédaction séparée qui pourrait en diverger. */
+  const tSeo = await getTranslations({ locale, namespace: 'seo.site' });
+  const tReceipt = await getTranslations({ locale, namespace: 'home.receipt' });
+
   return (
     <html
       lang={locale}
@@ -165,8 +177,24 @@ export default async function LocaleLayout({
       className={fontVariables}
     >
       <head>
-        {/* 
-          Script Injecté : Anti-FOUC (Flash of Unstyled Content) 
+        {/*
+          Données structurées (schema.org) : qui est l'auteur, quel est ce site,
+          et quels profils publics désignent la même personne.
+
+          L'employeur est extrait de la ligne « Poste » du reçu — « Ingénieur ·
+          Myriade Groupe » — dont la seconde moitié porte l'organisation. Une
+          traduction qui abandonnerait ce séparateur laisse simplement le champ
+          vide : rien ne casse, et surtout rien n'est inventé.
+        */}
+        <StructuredData
+          locale={locale}
+          jobTitle={tReceipt('role')}
+          description={tSeo('description')}
+          employer={tReceipt('positionValue').split(' · ')[1]}
+        />
+
+        {/*
+          Script Injecté : Anti-FOUC (Flash of Unstyled Content)
           S'exécute de façon synchrone et bloquante avant le rendu du body.
           Vérifie le localStorage et force le mode sombre si nécessaire.
 

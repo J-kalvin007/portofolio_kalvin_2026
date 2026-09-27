@@ -21,6 +21,7 @@ import { useTranslations } from 'next-intl';
 import type { Project } from '@/lib/data/projects';
 import { ARCHITECTURES } from '@/lib/data/architectures';
 import { DIMENSION_LINE_HEIGHT, layoutArchitecture, type PlacedNode } from '@/lib/architecture/layout';
+import TechIcon from '@/components/ui/TechIcon';
 import ArchitectureFigure from './ArchitectureFigure';
 import './architecture.css';
 
@@ -31,18 +32,40 @@ const BOX_RADIUS = 6;
 const STACK_LINE_MAX = 72;
 
 /**
- * Répartit la stack sur plusieurs lignes, sans couper un nom de technologie :
- * une stack de quatorze technologies ne tient pas sur la largeur du schéma.
+ * Largeur du logo et de son écart, exprimée en caractères.
+ *
+ * Volontairement généreuse : ce nombre ne sert qu'à **réserver** la hauteur du
+ * schéma, et se tromper n'a pas le même prix dans les deux sens. Trop grand, on
+ * prévoit une ligne de plus que nécessaire — quelques pixels de blanc sous la
+ * cote. Trop petit, la cote déborde du cadre et vient chevaucher ce qui suit.
  */
-function stackLines(techStack: string[]): string[] {
-  const lines: string[] = [];
+const ICON_WIDTH_IN_CHARACTERS = 3;
+
+/**
+ * Nombre de lignes qu'occupera la cote de stack.
+ *
+ * @remarks **Pourquoi une estimation, et non une mesure.**
+ * La cote est composée par le navigateur (voir le `<foreignObject>` plus bas),
+ * qui seul connaît les largeurs réelles de Poppins. Mais la hauteur du schéma,
+ * elle, doit être connue **avant** le rendu, puisqu'elle entre dans le
+ * `viewBox`. On estime donc le nombre de lignes au caractère près ici, et l'on
+ * arrondit toujours dans le sens qui laisse de la place.
+ */
+function stackLineCount(techStack: string[]): number {
+  let lines = 1;
+  let used = 0;
+
   for (const tech of techStack) {
-    const last = lines[lines.length - 1];
-    const candidate = last === undefined ? tech : `${last} · ${tech}`;
-    if (last !== undefined && candidate.length <= STACK_LINE_MAX) lines[lines.length - 1] = candidate;
-    else lines.push(tech);
+    const width = tech.length + ICON_WIDTH_IN_CHARACTERS;
+    if (used > 0 && used + width > STACK_LINE_MAX) {
+      lines += 1;
+      used = width;
+    } else {
+      used += width;
+    }
   }
-  return lines.map((line) => line.toUpperCase());
+
+  return lines;
 }
 
 export default function ArchitectureDiagram({ project }: { project: Project }) {
@@ -50,8 +73,8 @@ export default function ArchitectureDiagram({ project }: { project: Project }) {
   const tCategories = useTranslations('project.categories');
 
   const architecture = ARCHITECTURES[project.i18nKey];
-  const stack = stackLines(project.techStack);
-  const layout = layoutArchitecture(architecture, stack.length);
+  const stackLines = stackLineCount(project.techStack);
+  const layout = layoutArchitecture(architecture, stackLines);
   const markerId = `arch-arrow-${project.i18nKey}`;
 
   const nodeLabel = (node: PlacedNode) => t(`nodes.${node.label}`);
@@ -151,13 +174,36 @@ export default function ArchitectureDiagram({ project }: { project: Project }) {
             <path
               d={`M ${layout.dimension.x1} ${layout.dimension.y} H ${layout.dimension.x2} M ${layout.dimension.x1} ${layout.dimension.y - 6} V ${layout.dimension.y + 6} M ${layout.dimension.x2} ${layout.dimension.y - 6} V ${layout.dimension.y + 6}`}
             />
-            <text x={layout.width / 2} y={layout.dimension.y + 4} textAnchor="middle">
-              {stack.map((line, index) => (
-                <tspan key={line} x={layout.width / 2} dy={index === 0 ? 0 : DIMENSION_LINE_HEIGHT}>
-                  {line}
-                </tspan>
-              ))}
-            </text>
+            {/* La stack est composée en HTML, dans le dessin.
+
+                Un `<text>` SVG ne peut pas contenir d'image : pour poser un
+                logo devant chaque nom, il faudrait calculer soi-même la
+                largeur de chaque mot — donc connaître les métriques de Poppins
+                — puis placer chaque élément à la main. Le `<foreignObject>`
+                rend la composition au navigateur, qui mesure juste et replie
+                les lignes tout seul. La hauteur, elle, est réservée d'avance
+                par `stackLineCount()` : c'est la seule valeur que le `viewBox`
+                exige de connaître avant le rendu.
+
+                `overflow="visible"` est la sécurité qui va avec : si la stack
+                se replie sur une ligne de plus que prévu, elle dépasse du cadre
+                réservé plutôt que d'être coupée. */}
+            <foreignObject
+              x={layout.dimension.x1}
+              y={layout.dimension.y - DIMENSION_LINE_HEIGHT / 2}
+              width={layout.dimension.x2 - layout.dimension.x1}
+              height={stackLines * DIMENSION_LINE_HEIGHT}
+              overflow="visible"
+            >
+              <ul className="arch-stack">
+                {project.techStack.map((tech) => (
+                  <li key={tech}>
+                    <TechIcon name={tech} className="arch-stack-icon" />
+                    {tech}
+                  </li>
+                ))}
+              </ul>
+            </foreignObject>
           </g>
         </svg>
       </div>
