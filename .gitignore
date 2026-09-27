@@ -32,6 +32,9 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+# …sauf le modèle, qui ne contient aucune valeur : sans lui, un nouveau clone
+# ne sait pas quelles variables le projet attend.
+!.env.example
 
 # vercel
 .vercel

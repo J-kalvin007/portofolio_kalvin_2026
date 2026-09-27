@@ -26,10 +26,11 @@ Production : <https://portofolio-kalvin-2.vercel.app>
 13. [Sécurité](#sécurité)
 14. [Performance](#performance)
 15. [Accessibilité](#accessibilité)
-16. [Déploiement](#déploiement)
-17. [Vérification](#vérification)
-18. [Pièges connus](#pièges-connus)
-19. [Conventions de code](#conventions-de-code)
+16. [Référencement](#référencement)
+17. [Déploiement](#déploiement)
+18. [Vérification](#vérification)
+19. [Pièges connus](#pièges-connus)
+20. [Conventions de code](#conventions-de-code)
 
 ---
 
@@ -70,15 +71,32 @@ PORT=3000 node .next/standalone/server.js
 ```
 
 Docker : `docker compose up --build` (image `node:24-alpine`, utilisateur non root,
-port 3000, variables lues dans `.env.local`).
+port 3000, variables lues dans `.env`).
 
 ## Variables d'environnement
+
+**Toutes les variables sont déclarées et documentées dans deux fichiers jumeaux :**
+
+| Fichier | Versionné | Rôle |
+| --- | --- | --- |
+| `.env.example` | **oui** | Le modèle : chaque variable, son rôle, où la trouver, et **aucune valeur** |
+| `.env` | non (`.gitignore`) | Vos valeurs réelles, sur votre machine uniquement |
+
+Pour démarrer : `cp .env.example .env`, puis remplir. En production, les mêmes variables se
+saisissent dans les réglages de l'hébergeur (Vercel : *Settings → Environment Variables*) —
+un fichier `.env` n'est jamais déployé.
+
+> ⚠️ Les variables sont lues **au moment du build** pour les pages statiques : une valeur
+> modifiée sur l'hébergeur n'a d'effet qu'après un nouveau déploiement.
+
+> ⚠️ Une variable préfixée `NEXT_PUBLIC_` part **en clair** dans le JavaScript du navigateur.
+> Aucun secret ne doit en porter le préfixe.
 
 Aucune n'est obligatoire pour que le site s'affiche ; chacune débloque une fonction.
 
 | Variable | Sans elle | Où la trouver |
 | --- | --- | --- |
-| `NEXT_PUBLIC_SITE_URL` | Les adresses canoniques, le sitemap et les aperçus de partage reprennent le domaine de repli inscrit dans `lib/site.ts`. **Le build l'annonce en clair.** | Votre domaine, sans barre oblique finale |
+| `NEXT_PUBLIC_SITE_URL` | Les adresses canoniques, le sitemap, le JSON-LD et les aperçus de partage reprennent le domaine de repli inscrit dans `lib/site.ts`. **Le build l'annonce en clair.** | Votre domaine, sans barre oblique finale. Aujourd'hui `https://kalvin.dealandconsulting.com` |
 | `EMAIL_HOST_USER` | Les deux formulaires répondent « service momentanément indisponible » (503) | **Toujours requise** : c'est l'adresse qui reçoit, et celle qui expédie |
 | `BREVO_API_KEY` | Le site retombe sur le SMTP | Clé d'API v3 de Brevo. **Recommandée sur Vercel** — voir ci-dessous |
 | `EMAIL_HOST_PASSWORD` | Aucun envoi possible si `BREVO_API_KEY` est absente aussi | Mot de passe d'application Google (jamais celui du compte) |
@@ -88,6 +106,10 @@ Aucune n'est obligatoire pour que le site s'affiche ; chacune débloque une fonc
 
 > L'agenda doit être **partagé** avec l'adresse du compte de service, avec le droit
 > « Apporter des modifications aux événements ». Voir [Les API](#les-api).
+
+Trois autres variables sont posées par Vercel et jamais par vous : `VERCEL` (bascule la sortie
+du build et l'encodage AVIF), `VERCEL_ENV` (`production` / `preview` / `development` — c'est
+elle qui fait passer une **préversion** en `noindex`) et `NODE_ENV`.
 
 ### Quel transport d'e-mail choisir
 
@@ -500,6 +522,9 @@ Décisions qui expliquent ces chiffres :
 
 - **framer-motion n'est chargé que par la visionneuse plein écran**, au premier clic — et par elle seule. Chargée sur les quatre pages, la bibliothèque pesait à elle seule une grande partie de leur JavaScript (voir l'en-tête de `components/layout/Navbar.tsx`).
 - **Les logos de technologies sont des symboles réutilisés** (`TechIconSprite`) : sur la page Projets, où ils reviennent 90 fois, le HTML est passé de 93 à 68 Ko.
+  La réserve est déclarée **au niveau de la page** (`app/[locale]/page.tsx`, `projets/page.tsx`), et non dans une section : sur l'accueil, les billets de
+  projets et le relevé de compétences y puisent tous les deux. Restreinte aux seules compétences, elle laissait sans logo les technologies citées par les
+  projets et absentes du relevé (Traefik, Celery, PayDunya).
 - **Les animations sont en CSS**, y compris les apparitions au défilement (`animation-timeline: view()`) et la désintégration des cartes.
 - **Le carrousel utilise le défilement natif** (`scroll-snap`) plutôt qu'une bibliothèque.
 - **Le portrait plein écran** utilise les transitions de vue du navigateur : aucun calcul, aucune mesure.
@@ -512,6 +537,82 @@ Décisions qui expliquent ces chiffres :
 - Les modales : `role="dialog"`, `aria-modal`, focus déplacé puis **rendu**, `Tab` confiné, `Échap`, défilement verrouillé.
 - Les éléments décoratifs (pluies, schémas, fragments, conduites de points) sont `aria-hidden` ; leur contenu est restitué en texte ailleurs.
 - Contrastes : les rôles d'encre du système de design sont choisis pour rester lisibles dans les deux thèmes.
+
+## Référencement
+
+### Le domaine, déclaré une seule fois
+
+`NEXT_PUBLIC_SITE_URL` est la **seule** déclaration du domaine. Tout le reste en découle :
+
+| Ce qui en dépend | Construit par |
+| --- | --- |
+| `metadataBase`, balises canoniques | `app/[locale]/layout.tsx`, `lib/seo.ts` |
+| `hreflang` des deux langues + `x-default` | `lib/seo.ts` |
+| `sitemap.xml` (8 entrées : 4 pages × 2 langues) | `app/sitemap.ts` |
+| `robots.txt` (`Host` et `Sitemap`) | `app/robots.ts` |
+| Données structurées JSON-LD | `lib/seo.ts` → `components/layout/StructuredData.tsx` |
+| Aperçus de partage OpenGraph et X | `lib/seo.ts` |
+| Liens absolus des e-mails transactionnels | `app/api/*/route.ts` |
+
+Changer de domaine : modifier la variable chez l'hébergeur, redéployer. **Aucun fichier à
+toucher.** Le domaine écrit dans `lib/site.ts` n'est qu'un filet de sécurité si la variable
+manque — et le build le signale alors dans les journaux.
+
+> L'URL fournie par Vercel (`VERCEL_PROJECT_PRODUCTION_URL`) **ne participe plus** au calcul.
+> Elle vaut toujours `portofolio-kalvin-2.vercel.app` : intercalée avant le domaine de repli,
+> elle aurait fait déclarer à Google le sous-domaine Vercel le jour où la variable serait
+> oubliée — silencieusement.
+
+### Le sous-domaine Vercel redirige vers le domaine
+
+`proxy.ts` renvoie en **308** toute requête dont l'hôte finit par `.vercel.app` vers le même
+chemin sur le domaine canonique. C'est ce qui transmet l'antériorité de référencement déjà
+acquise, au lieu de laisser deux sites identiques se concurrencer.
+
+La redirection ne vise **que** ce suffixe : comparer l'hôte au domaine canonique aurait cassé
+`localhost`, `127.0.0.1` et toute adresse interne derrière un répartiteur de charge.
+`robots.txt` et `sitemap.xml` restent servis par les deux adresses — sans conséquence, leur
+contenu annonçant déjà le domaine canonique.
+
+### Les préversions ne sont pas indexées
+
+Un déploiement de branche sert le site entier sur une autre adresse. Laissé ouvert, il devient
+un doublon complet, et Google peut choisir d'indexer la préversion à la place du domaine.
+Quand `VERCEL_ENV` vaut `preview` :
+
+- `robots.txt` interdit tout (`Disallow: /`) — lu **avant** l'exploration ;
+- chaque page porte `noindex` — lu **pendant**, pour une page déjà connue.
+
+Les deux, parce qu'aucun des deux ne couvre seul les deux cas.
+
+### Les données structurées (JSON-LD)
+
+Les balises `<meta>` disent comment afficher une page ; le JSON-LD dit **de qui elle parle**.
+Le graphe (`lib/seo.ts`) déclare deux nœuds qui se citent par `@id` :
+
+- **`Person`** — nom, intitulé de poste, description, image, e-mail, téléphone au format
+  international, ville et pays (code ISO), langues, employeur, technologies maîtrisées, et
+  `sameAs` vers les profils publics ;
+- **`WebSite`** — adresse, nom, langue, et l'auteur qui renvoie au nœud précédent.
+
+C'est ce qui permet à Google de relier le site, le profil LinkedIn et le compte GitHub à **une
+seule et même entité**, au lieu de trois pages sans rapport.
+
+Deux règles tenues :
+
+1. **aucun fait inventé** — tout vient de `lib/site.ts`, des projets réels (`knowsAbout` est
+   calculé depuis les technologies effectivement employées) ou des catalogues de traduction
+   déjà affichés sur le site ;
+2. **`sameAs` ne contient que des profils** — le lien WhatsApp en est exclu : c'est un moyen
+   de contact, pas une identité, et l'y mettre brouille le signal.
+
+### Ce qui reste perfectible
+
+L'image de partage est le monogramme **carré 1080 × 1080**, d'où une carte X au format
+`summary`. Une image **1200 × 630** permettrait la grande carte (`summary_large_image`), plus
+visible sur LinkedIn et X. Elle demande un visuel dédié : la générer avec `next/og` exigerait
+un fichier Poppins au format TTF ou WOFF, que `next/font/google` ne laisse pas à disposition
+(il produit du WOFF2, que le moteur de rendu de `next/og` ne lit pas).
 
 ## Déploiement
 

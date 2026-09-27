@@ -23,6 +23,7 @@ import { PROJECTS, projectAnchor, repositoryUrl, type Project } from '@/lib/data
 import { padNumber } from '@/lib/format';
 import ArchitectureDiagram from '@/components/architecture/ArchitectureDiagram';
 import Arrow from '@/components/ui/Arrow';
+import TechIcon from '@/components/ui/TechIcon';
 import TicketGallery from './TicketGallery';
 import '@/components/ui/receipt.css';
 import './project.css';
@@ -81,18 +82,41 @@ export default function ProjectTicket({ project, variant = 'summary', headingLev
               </>
             )}
 
+            {/* Chaque technologie est précédée de son logo, comme dans le relevé
+                de compétences et sur les cartes de la page Projets. Le logo est
+                décoratif : le nom reste écrit juste à côté, et c'est lui que
+                lisent les technologies d'assistance.
+
+                Les points médians qui séparaient les noms disparaissent : le
+                logo joue désormais ce rôle, et cumuler les deux hachait la
+                ligne. Une technologie sans tracé n'affiche rien (`TechIcon`
+                rend `null`) — la liste reste alignée, sans trou. */}
             {isFull ? (
               <>
                 <p id={stackId} className="tk-label">{t('technologies')}</p>
                 <ul className="tk-tags" aria-labelledby={stackId}>
-                  {project.techStack.map((tech) => <li key={tech}>{tech}</li>)}
+                  {project.techStack.map((tech) => (
+                    <li key={tech}>
+                      <TechIcon name={tech} className="tk-tag-icon" />
+                      {tech}
+                    </li>
+                  ))}
                 </ul>
               </>
             ) : (
               <dl className="rc-lines rc-lines--wrap tk-lines">
                 <div className="rc-line">
                   <dt>{t('stack')}</dt>
-                  <dd>{project.techStack.join(' · ')}</dd>
+                  <dd>
+                    <ul className="tk-stack">
+                      {project.techStack.map((tech) => (
+                        <li key={tech}>
+                          <TechIcon name={tech} className="tk-stack-icon" />
+                          {tech}
+                        </li>
+                      ))}
+                    </ul>
+                  </dd>
                 </div>
               </dl>
             )}

@@ -184,6 +184,47 @@
   font-size: 0.8125rem;
 }
 
+/* ── Stack du billet : un logo par technologie ──────────────────────────────
+   La valeur du reçu est alignée à droite ; la liste suit, et se replie vers la
+   droite elle aussi, pour que la dernière ligne reste sous les précédentes.
+   L'écart horizontal est franc (0,75rem) et l'écart vertical serré : c'est ce
+   qui distingue deux technologies voisines sur une même ligne de deux lignes
+   successives, maintenant que les points médians ont disparu. */
+.tk-stack {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.15rem 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.tk-stack li {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+}
+.tk-stack-icon {
+  /* La base de Tailwind met les `svg` en `display: block` : sans cette ligne,
+     le logo passerait au-dessus du nom au lieu de le précéder. */
+  display: inline-block;
+  width: 1.15em;
+  height: 1.15em;
+  margin-right: 0.3rem;
+  /* Un ton plus clair que le nom : le logo annonce, il ne concurrence pas. */
+  color: var(--ds-paper-muted);
+}
+
+/* Étiquettes de la variante complète : même logo, dans l'encadré. */
+.tk-tag-icon {
+  display: inline-block;
+  width: 1.15em;
+  height: 1.15em;
+  margin-right: 0.35rem;
+  vertical-align: -0.22em;
+  color: var(--ds-paper-muted);
+}
+
 /* Réalisations (variante complète) : liste à puces carrées, comme sur un bordereau */
 .tk-points {
   display: grid;

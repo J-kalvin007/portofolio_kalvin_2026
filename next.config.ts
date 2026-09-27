@@ -41,21 +41,23 @@ const isVercel = Boolean(process.env.VERCEL);
    ▌ GARDE-FOU : L'ADRESSE PUBLIQUE DU SITE
    ───────────────────────────────────────────────────────────────────────────
    `lib/site.ts` construit toutes les URL absolues du site — balises
-   canoniques, `hreflang`, `sitemap.xml`, `robots.txt`, aperçus de partage — à
-   partir de `NEXT_PUBLIC_SITE_URL`. Si la variable manque au build, le site se
-   rabat sur le domaine écrit en dur dans ce fichier : les pages s'affichent
-   normalement, mais elles déclarent aux moteurs de recherche des adresses qui
-   ne sont peut-être pas les vôtres. La panne est silencieuse et coûteuse —
-   d'où cet avertissement, au moment précis où la valeur est figée.
+   canoniques, `hreflang`, `sitemap.xml`, `robots.txt`, données structurées,
+   aperçus de partage — à partir de `NEXT_PUBLIC_SITE_URL`. Si la variable
+   manque au build, le site se rabat sur le domaine écrit dans `lib/site.ts` :
+   les pages s'affichent normalement, mais rien ne signale que l'adresse
+   déclarée aux moteurs n'est peut-être pas celle qui est servie. La panne est
+   silencieuse et coûteuse — d'où cet avertissement, au moment précis où la
+   valeur est figée.
    ═══════════════════════════════════════════════════════════════════════════ */
-if (!isDevelopment && !process.env.NEXT_PUBLIC_SITE_URL && !process.env.VERCEL_PROJECT_PRODUCTION_URL) {
+if (!isDevelopment && !process.env.NEXT_PUBLIC_SITE_URL) {
   console.warn(
     [
       "",
       "  NEXT_PUBLIC_SITE_URL n'est pas définie pour ce build.",
-      "  Les adresses canoniques, le sitemap et les aperçus de partage porteront",
-      "  le domaine de repli inscrit dans lib/site.ts. Définissez la variable dans",
-      "  les réglages de la plateforme (ou dans .env.local) avant de déployer.",
+      "  Les adresses canoniques, le sitemap, le JSON-LD et les aperçus de partage",
+      "  porteront le domaine de repli inscrit dans lib/site.ts. Définissez la",
+      "  variable dans les réglages de la plateforme — ou dans .env en local.",
+      "  Le modèle documenté de toutes les variables est dans .env.example.",
       "",
     ].join("\n"),
   );

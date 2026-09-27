@@ -22,18 +22,41 @@
 
 import type { ContactIconName } from '@/components/ui/contact-icons';
 
-/** Domaine de production. À aligner sur le domaine réellement servi. */
-const PRODUCTION_URL = 'https://portofolio-kalvin-2.vercel.app';
+/**
+ * Domaine de production, écrit en dur **comme filet de sécurité seulement**.
+ * La valeur qui fait foi est `NEXT_PUBLIC_SITE_URL` (voir `.env`).
+ */
+const PRODUCTION_URL = 'https://kalvin.dealandconsulting.com';
 
 /**
  * URL absolue du site, sans barre oblique finale.
- * Priorité : variable d'environnement explicite → URL fournie par Vercel → domaine de production.
+ *
+ * Priorité : `NEXT_PUBLIC_SITE_URL` → domaine de production.
+ *
+ * @remarks **Pourquoi l'URL fournie par Vercel ne figure plus ici.**
+ * La version précédente intercalait `VERCEL_PROJECT_PRODUCTION_URL` entre les
+ * deux. C'était utile tant que le portfolio n'avait pas de domaine propre ; ça
+ * devient un défaut dès qu'il en a un, parce que cette variable vaut toujours
+ * `portofolio-kalvin-2.vercel.app`. Résultat concret si l'on avait gardé cet
+ * ordre : un déploiement où `NEXT_PUBLIC_SITE_URL` serait oubliée déclarerait à
+ * Google des adresses canoniques, un sitemap et des aperçus de partage sur le
+ * sous-domaine Vercel — exactement le contraire du but recherché, et sans
+ * aucun signe visible sur le site lui-même.
+ *
+ * Le sous-domaine Vercel reste joignable ; le proxy l'y redirige en 308
+ * (`proxy.ts`), ce qui transmet l'antériorité de référencement au domaine.
  */
-export const SITE_URL: string = (
-    process.env.NEXT_PUBLIC_SITE_URL ||
-    (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : '') ||
-    PRODUCTION_URL
-).replace(/\/+$/, '');
+export const SITE_URL: string = (process.env.NEXT_PUBLIC_SITE_URL || PRODUCTION_URL).replace(/\/+$/, '');
+
+/**
+ * Hôte canonique, sans schéma ni chemin (`kalvin.dealandconsulting.com`).
+ *
+ * Dérivé de `SITE_URL` et non réécrit : une seconde déclaration finirait par
+ * diverger de la première. Sert au proxy, qui compare l'hôte demandé à
+ * celui-ci. Un `SITE_URL` malformé fait donc échouer le build ici — mieux vaut
+ * une erreur au build qu'un site en ligne aux adresses fausses.
+ */
+export const CANONICAL_HOST: string = new URL(SITE_URL).host;
 
 /** Langues servies par l'application. Doit rester aligné sur `i18n/routing.ts`. */
 export const SITE_LOCALES = ['fr', 'en'] as const;
