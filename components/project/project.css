@@ -15,10 +15,6 @@
   display: grid;
   gap: 1rem;
 }
-/* Cible d'ancre (/projets#projet-…) : le titre ne passe pas sous la barre fixe. */
-.tk-entry[id] {
-  scroll-margin-top: 6rem;
-}
 .tk {
   display: grid;
   overflow: hidden;
@@ -35,7 +31,12 @@
 }
 @media (min-width: 640px) {
   .tk-main { grid-template-columns: minmax(13rem, 38%) minmax(0, 1fr); }
-  .tk--full .tk-main { grid-template-columns: minmax(15rem, 46%) minmax(0, 1fr); }
+}
+/* Variante complète : galerie au-dessus du texte. À côté du sommaire, trois
+   colonnes (galerie, texte, souche) donnaient une colonne de texte étroite et
+   très haute, et un grand vide sous les vignettes. */
+.tk--full .tk-main {
+  grid-template-columns: minmax(0, 1fr);
 }
 
 /* ── Capture de couverture — ouvre la galerie ── */
@@ -183,6 +184,73 @@
   font-size: 0.8125rem;
 }
 
+/* ── Stack du billet : un logo par technologie ──────────────────────────────
+   La valeur du reçu est alignée à droite ; la liste suit, et se replie vers la
+   droite elle aussi, pour que la dernière ligne reste sous les précédentes.
+   L'écart horizontal est franc (0,75rem) et l'écart vertical serré : c'est ce
+   qui distingue deux technologies voisines sur une même ligne de deux lignes
+   successives, maintenant que les points médians ont disparu. */
+.tk-stack {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.15rem 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.tk-stack li {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+}
+.tk-stack-icon {
+  /* La base de Tailwind met les `svg` en `display: block` : sans cette ligne,
+     le logo passerait au-dessus du nom au lieu de le précéder. */
+  display: inline-block;
+  width: 1.15em;
+  height: 1.15em;
+  margin-right: 0.3rem;
+  /* Un ton plus clair que le nom : le logo annonce, il ne concurrence pas. */
+  color: var(--ds-paper-muted);
+}
+
+/* Étiquettes de la variante complète : même logo, dans l'encadré. */
+.tk-tag-icon {
+  display: inline-block;
+  width: 1.15em;
+  height: 1.15em;
+  margin-right: 0.35rem;
+  vertical-align: -0.22em;
+  color: var(--ds-paper-muted);
+}
+
+/* Réalisations (variante complète) : liste à puces carrées, comme sur un bordereau */
+.tk-points {
+  display: grid;
+  gap: 0.45rem;
+  max-width: 64ch;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: color-mix(in srgb, var(--ds-paper-ink) 84%, var(--ds-paper));
+}
+.tk-points li {
+  position: relative;
+  padding-left: 1.1rem;
+}
+.tk-points li::before {
+  content: '';
+  position: absolute;
+  top: 0.6em;
+  left: 0.15rem;
+  width: 0.35rem;
+  height: 0.35rem;
+  background: var(--ds-stamp);
+}
+
 /* Stack en étiquettes (variante complète) */
 .tk-label {
   margin: 0.4rem 0 0;
@@ -263,6 +331,20 @@
   font-weight: 600;
   letter-spacing: 0;
 }
+/* Tampon « En production » */
+.tk-status {
+  margin: 0;
+  padding: 0.25rem 0.45rem 0.2rem 0.6rem;
+  border: 2px solid var(--ds-stamp);
+  border-radius: 0.25rem;
+  color: var(--ds-stamp);
+  font-size: 0.6875rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  transform: rotate(-4deg);
+}
+
 .tk-links {
   display: grid;
   justify-items: start;

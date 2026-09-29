@@ -1,0 +1,551 @@
+/**
+ * @file scene.css
+ * @description Premier écran de la fiche d'un projet : les deux colonnes de
+ * pluie et le carrousel de captures (voir `ProjectScene.tsx`).
+ *
+ * @architecture
+ * Feuille **hors couche Tailwind** : elle est importée par son composant, et
+ * ses règles l'emportent donc sur les utilitaires sans aucun `!important`.
+ * Toutes les couleurs, tailles et durées viennent des rôles du système de
+ * design (`app/design-system.css`) : la scène suit le thème clair comme le
+ * thème sombre sans une seule valeur codée en dur.
+ *
+ * Les deux pluies et les entrées en scène sont entièrement neutralisées quand
+ * le visiteur demande moins d'animations (bloc en fin de fichier).
+ */
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ▌ DISPOSITION DES TROIS COLONNES
+   ───────────────────────────────────────────────────────────────────────────
+   Sur téléphone, seule la colonne centrale existe : deux pluies verticales
+   demanderaient une hauteur qu'un petit écran n'a pas, et elles pousseraient
+   le contenu utile hors de vue. Les technologies y sont lues dans le dossier,
+   en pastilles.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.pj-scene {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(1rem, 2vw, 2.25rem);
+  width: 100%;
+  max-width: 120rem;
+  height: 100%;
+  margin-inline: auto;
+  padding: clamp(0.85rem, 2vh, 1.5rem) clamp(1rem, 3vw, 2.5rem) 0;
+}
+
+@media (min-width: 64rem) {
+  .pj-scene {
+    /* Le centre pèse près de trois fois une colonne latérale : les captures
+       sont le sujet, les pluies l'accompagnement. */
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 2.4fr) minmax(0, 0.85fr);
+  }
+}
+
+.pj-scene-center {
+  min-height: 0; /* sans quoi une grille refuse de laisser son contenu rétrécir */
+  animation: pj-scene-rise var(--motion-slow) var(--ease-emphasized) both;
+}
+
+.pj-scene-side {
+  display: none;
+}
+
+@media (min-width: 64rem) {
+  .pj-scene-side {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: 0.6rem;
+    min-height: 0;
+  }
+  .pj-scene-side--text {
+    animation: pj-scene-from-left var(--motion-slow) var(--ease-emphasized) 90ms both;
+  }
+  .pj-scene-side--tech {
+    animation: pj-scene-from-right var(--motion-slow) var(--ease-emphasized) 90ms both;
+  }
+}
+
+/* Intitulé de colonne : même petite capitale que les en-têtes de la page. */
+.pj-scene-label {
+  margin: 0;
+  color: var(--ds-ink-muted);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+/* L'invitation à survoler n'a de sens qu'avec un pointeur : elle reste cachée
+   sur un écran tactile, où le survol n'existe pas. */
+.pj-scene-hint {
+  display: none;
+}
+@media (hover: hover) {
+  .pj-scene-hint {
+    display: block;
+    margin-top: 0.3rem;
+    color: var(--ds-ink-faint);
+    font-size: 0.5625rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: none;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ▌ PLUIE — défilement sans fin
+   ───────────────────────────────────────────────────────────────────────────
+   La piste contient deux moitiés identiques et se translate de 50 % de sa
+   propre hauteur : à la fin du cycle, la seconde moitié occupe la place exacte
+   de la première. Le raccord est donc invisible par construction, sans mesurer
+   la moindre hauteur (voir `RainColumn.tsx`).
+
+   Le masque dégradé efface les deux extrémités **sans rien peindre** : le fond
+   reste visible derrière. L'ancienne version y posait deux bandes de couleur
+   pleine, parfaitement visibles sur le fond du site.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.pj-rain {
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 13%, #000 87%, transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 13%, #000 87%, transparent 100%);
+}
+
+.pj-rain-track {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  will-change: transform;
+  animation: pj-rain-scroll var(--pj-rain-duration, 48s) linear infinite;
+}
+
+/* Un seul jeu d'images clés pour les deux sens : la descente est la montée
+   jouée à l'envers. */
+@keyframes pj-rain-scroll {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(0, -50%, 0);
+  }
+}
+.pj-rain-track[data-direction='down'] {
+  animation-direction: reverse;
+}
+
+/* Le défilement se fige au survol et à la prise de focus : c'est ce qui rend
+   la colonne réellement lisible. */
+@media (hover: hover) {
+  .pj-rain:hover .pj-rain-track {
+    animation-play-state: paused;
+  }
+}
+.pj-rain:focus-within .pj-rain-track {
+  animation-play-state: paused;
+}
+
+.pj-rain-item {
+  padding: 1.1rem 0.35rem;
+}
+
+/* ── Colonne de gauche : la description ──────────────────────────────────── */
+
+.pj-rain-text {
+  margin: 0;
+  color: var(--ds-ink-soft);
+  /* Taille posée par le composant selon la longueur de la description. */
+  font-size: var(--pj-rain-size, 1.0625rem);
+  font-weight: 500;
+  line-height: 1.6;
+  text-align: center;
+  text-wrap: pretty;
+  transition: color var(--motion-base) var(--ease-emphasized);
+}
+
+/* Les blocs de texte respirent plus que les technologies : moins de
+   répétitions tiennent dans la hauteur, et la lecture est plus calme. */
+.pj-scene-side--text .pj-rain-item {
+  padding-block: 1.35rem;
+}
+
+/* Filet de séparation entre deux blocs : la même respiration que sur les
+   billets de l'accueil. */
+.pj-scene-side--text .pj-rain-item::after {
+  content: '';
+  display: block;
+  width: 1.75rem;
+  height: 1px;
+  margin: 1.1rem auto 0;
+  background: var(--ds-line);
+}
+
+/* Fin de la description : le bord perforé d'un billet. La colonne boucle, et
+   ce repère donne à la reprise l'allure d'un ruban voulu. */
+.pj-rain-mark {
+  display: block;
+  width: 3rem;
+  height: 3px;
+  margin-inline: auto;
+  background-image: repeating-linear-gradient(to right, var(--ds-brand) 0 3px, transparent 3px 8px);
+  opacity: 0.55;
+}
+.pj-scene-side--text .pj-rain-item:has(.pj-rain-mark) {
+  padding-block: 2.1rem;
+}
+.pj-scene-side--text .pj-rain-item:has(.pj-rain-mark)::after {
+  display: none;
+}
+
+@media (hover: hover) {
+  .pj-rain:hover .pj-rain-text {
+    color: var(--ds-ink);
+  }
+}
+
+/* ── Colonne de droite : les technologies ────────────────────────────────── */
+
+.pj-tech {
+  display: grid;
+  justify-items: center;
+  gap: 0.55rem;
+}
+
+.pj-tech-icon {
+  display: block;
+  width: 2.5rem;
+  height: 2.5rem;
+  color: var(--ds-ink-soft);
+  transition:
+    color var(--motion-base) var(--ease-emphasized),
+    transform var(--motion-base) var(--ease-emphasized);
+}
+
+/* Technologie sans marque publiée : pastille portant l'initiale. Aucun logo
+   n'est inventé. */
+.pj-tech-letter {
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1px solid var(--ds-line-strong);
+  border-radius: 0.55rem;
+  color: var(--ds-ink-muted);
+  font-size: 1.0625rem;
+  font-weight: 700;
+}
+
+.pj-tech-name {
+  color: var(--ds-ink-muted);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-align: center;
+  text-transform: uppercase;
+  transition: color var(--motion-base) var(--ease-emphasized);
+}
+
+@media (hover: hover) {
+  .pj-rain-item:hover .pj-tech-icon {
+    color: var(--ds-brand-text);
+    transform: scale(1.08);
+  }
+  .pj-rain-item:hover .pj-tech-name {
+    color: var(--ds-ink);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ▌ CARROUSEL
+   ───────────────────────────────────────────────────────────────────────────
+   Le conteneur défile nativement, avec un arrêt imposé sur chaque capture
+   (`scroll-snap`). `overscroll-behavior-x: contain` est indispensable : sans
+   lui, un glissement horizontal arrivé en bout de course déclenche le retour
+   arrière du navigateur sur macOS — le visiteur quitterait la page.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.pj-carousel {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: 0.75rem;
+  height: 100%;
+  min-height: 0;
+}
+
+/* Le cadre suit le format des captures (1440 × 900 pour la plupart) au lieu de
+   remplir toute la colonne : sinon l'image, affichée en entier, flottait au
+   milieu d'une grande surface vide et bordée. Il est centré dans la hauteur
+   disponible et ne la dépasse jamais. */
+.pj-carousel-frame {
+  position: relative;
+  width: 100%;
+  max-height: 100%;
+  aspect-ratio: 4 / 3;
+  align-self: center;
+  justify-self: center;
+}
+@media (min-width: 64rem) {
+  .pj-carousel-frame {
+    aspect-ratio: 16 / 10;
+  }
+}
+
+.pj-carousel-viewport {
+  display: flex;
+  height: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  border: 1px solid var(--ds-line);
+  border-radius: var(--radius-panel);
+  background: var(--ds-surface-sunken);
+}
+.pj-carousel-viewport::-webkit-scrollbar {
+  display: none;
+}
+
+.pj-carousel-slide {
+  position: relative;
+  flex: 0 0 100%;
+  height: 100%;
+  scroll-snap-align: center;
+}
+
+.pj-carousel-zoom {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: zoom-in;
+}
+.pj-carousel-zoom:focus-visible {
+  outline: 2px solid var(--ds-focus);
+  outline-offset: -4px;
+}
+
+/* `contain` et non `cover` : une capture d'écran se montre entière. Recadrée,
+   elle perd justement ce qu'elle est censée prouver — et les captures
+   d'application mobile, en hauteur, seraient amputées. */
+.pj-carousel-zoom img {
+  object-fit: contain;
+  padding: clamp(0.4rem, 1vw, 0.9rem);
+}
+
+.pj-carousel-zoom-hint {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid var(--ds-line);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--ds-canvas) 82%, transparent);
+  backdrop-filter: blur(6px);
+  color: var(--ds-ink-soft);
+  opacity: 0;
+  transition: opacity var(--motion-fast) var(--ease-emphasized);
+}
+.pj-carousel-zoom-hint svg {
+  display: block;
+}
+@media (hover: hover) {
+  .pj-carousel-zoom:hover .pj-carousel-zoom-hint {
+    opacity: 1;
+  }
+}
+.pj-carousel-zoom:focus-visible .pj-carousel-zoom-hint {
+  opacity: 1;
+}
+
+/* ── Commandes ───────────────────────────────────────────────────────────── */
+
+.pj-carousel-nav {
+  position: absolute;
+  top: 50%;
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  transform: translateY(-50%);
+  border: 1px solid var(--ds-line);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--ds-canvas) 86%, transparent);
+  backdrop-filter: blur(8px);
+  box-shadow: var(--shadow-e1);
+  color: var(--ds-ink-soft);
+  cursor: pointer;
+  transition:
+    color var(--motion-fast) var(--ease-emphasized),
+    border-color var(--motion-fast) var(--ease-emphasized),
+    opacity var(--motion-fast) linear;
+}
+.pj-carousel-nav--prev {
+  left: clamp(0.4rem, 1vw, 0.9rem);
+}
+.pj-carousel-nav--next {
+  right: clamp(0.4rem, 1vw, 0.9rem);
+}
+.pj-carousel-nav svg {
+  display: block;
+}
+.pj-carousel-nav:hover:not(:disabled) {
+  border-color: var(--ds-line-strong);
+  color: var(--ds-ink);
+}
+.pj-carousel-nav:focus-visible {
+  outline: 2px solid var(--ds-focus);
+  outline-offset: 2px;
+}
+/* Une flèche éteinte est plus claire qu'une flèche qui ne répond pas. */
+.pj-carousel-nav:disabled {
+  opacity: 0.32;
+  cursor: default;
+}
+
+/* ── Compteur et vignettes ───────────────────────────────────────────────── */
+
+.pj-carousel-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.9rem;
+  min-width: 0;
+}
+
+.pj-carousel-count {
+  display: flex;
+  gap: 0.25rem;
+  flex: none;
+  margin: 0;
+  color: var(--ds-ink-muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.08em;
+}
+.pj-carousel-count-sep {
+  color: var(--ds-ink-faint);
+}
+
+.pj-carousel-thumbs {
+  display: flex;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0.15rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+  list-style: none;
+}
+.pj-carousel-thumbs::-webkit-scrollbar {
+  display: none;
+}
+
+.pj-carousel-thumb {
+  position: relative;
+  display: block;
+  width: 4.25rem;
+  aspect-ratio: 16 / 10;
+  flex: none;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--ds-line);
+  border-radius: 0.4rem;
+  background: var(--ds-surface-sunken);
+  opacity: 0.55;
+  cursor: pointer;
+  transition:
+    opacity var(--motion-fast) linear,
+    border-color var(--motion-fast) var(--ease-emphasized);
+}
+.pj-carousel-thumb img {
+  object-fit: cover;
+}
+.pj-carousel-thumb:hover {
+  opacity: 0.85;
+}
+.pj-carousel-thumb:focus-visible {
+  outline: 2px solid var(--ds-focus);
+  outline-offset: 2px;
+}
+.pj-carousel-thumb[aria-current='true'] {
+  border-color: var(--ds-brand);
+  box-shadow: 0 0 0 1px var(--ds-brand);
+  opacity: 1;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ▌ ENTRÉES EN SCÈNE
+   Les captures montent, les deux pluies arrivent par leur bord. Une seule fois
+   par ouverture, et rejouées quand on passe au projet suivant (la scène est
+   remontée à neuf).
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@keyframes pj-scene-rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes pj-scene-from-left {
+  from {
+    opacity: 0;
+    transform: translateX(-28px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes pj-scene-from-right {
+  from {
+    opacity: 0;
+    transform: translateX(28px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ▌ MOUVEMENT RÉDUIT
+   Aucune pluie, aucune entrée, aucun défilement animé : la scène s'affiche
+   telle quelle. Les colonnes montrent alors le début de leur liste, immobile.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@media (prefers-reduced-motion: reduce) {
+  .pj-scene-center,
+  .pj-scene-side--text,
+  .pj-scene-side--tech,
+  .pj-rain-track {
+    animation: none;
+  }
+  .pj-carousel-viewport {
+    scroll-behavior: auto;
+  }
+  .pj-tech-icon,
+  .pj-tech-name,
+  .pj-rain-text,
+  .pj-carousel-nav,
+  .pj-carousel-thumb,
+  .pj-carousel-zoom-hint {
+    transition: none;
+  }
+  .pj-rain-item:hover .pj-tech-icon {
+    transform: none;
+  }
+}

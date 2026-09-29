@@ -28,7 +28,10 @@ import { Link, usePathname, useRouter } from '@/i18n/navigation';
 import { routing } from '@/i18n/routing';
 import { CONTACT } from '@/lib/site';
 import Arrow from '@/components/ui/Arrow';
+import ContactIcon from '@/components/ui/ContactIcon';
+import Logotype from './Logotype';
 import ThemeToggle from './ThemeToggle';
+import '@/components/ui/contact-icons.css';
 
 /* ═══════════════════════════════════════════════════════════════════════════
    ▌ SEUILS
@@ -230,13 +233,9 @@ export default function Navbar() {
                    motion-reduce:transition-none"
       >
         <div className="mx-auto flex h-full w-full max-w-content items-center gap-5 px-4 sm:px-6 lg:px-8">
-          {/* Logotype : le nom, sans image. `·` en bleu, seul accent de la barre. */}
-          <Link
-            href="/"
-            aria-label={tBrand('homeLabel')}
-            className={`rounded-control text-[0.9375rem] font-extrabold uppercase leading-none tracking-[0.06em] text-ink ${FOCUS_RING}`}
-          >
-            K<span className="text-brand-text">·</span>Takoudjou
+          {/* Logotype : perforation de reçu + nom sur deux lignes (Logotype.tsx). */}
+          <Link href="/" aria-label={tBrand('homeLabel')} className={`rounded-control ${FOCUS_RING}`}>
+            <Logotype />
           </Link>
 
           {/* Navigation de bureau */}
@@ -352,13 +351,29 @@ export default function Navbar() {
           {t('contactBtn')}
         </Link>
 
-        <p className="mt-auto pt-10 text-caption text-ink-muted">
-          <a href={`mailto:${CONTACT.email}`} className={`break-all text-ink-soft underline decoration-line-strong underline-offset-4 ${FOCUS_RING}`}>
-            {CONTACT.email}
-          </a>
-          <br />
-          {CONTACT.city}, {CONTACT.country}
-        </p>
+        {/* Coordonnées en pied de panneau. Sur un téléphone, ce sont les seules
+            accessibles sans ouvrir la page Contact : les deux lignes y figurent
+            donc, chacune composable d'une touche. */}
+        <ul className="mt-auto grid gap-2 pt-10 text-caption text-ink-muted">
+          <li>
+            <ContactIcon name="mail" className="mr-2 size-[1.15em]" />
+            <a href={`mailto:${CONTACT.email}`} className={`break-all text-ink-soft underline decoration-line-strong underline-offset-4 ${FOCUS_RING}`}>
+              {CONTACT.email}
+            </a>
+          </li>
+          {CONTACT.phones.map(({ display, href }) => (
+            <li key={href}>
+              <ContactIcon name="phone" className="mr-2 size-[1.15em]" />
+              <a href={href} className={`text-ink-soft underline decoration-line-strong underline-offset-4 ${FOCUS_RING}`}>
+                {display}
+              </a>
+            </li>
+          ))}
+          <li>
+            <ContactIcon name="location" className="mr-2 size-[1.15em]" />
+            {CONTACT.city}, {CONTACT.country}
+          </li>
+        </ul>
       </div>
     </div>
   );

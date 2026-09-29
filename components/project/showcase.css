@@ -1,0 +1,995 @@
+/**
+ * showcase.css — page Projets : cartes, désintégration, modale de détail.
+ *
+ * @architecture
+ * Feuille non « layered » : elle passe après les utilitaires Tailwind, sans
+ * `!important`. Toutes les couleurs viennent du système de design (`--ds-*`),
+ * donc les deux thèmes sont couverts sans une seule valeur en dur.
+ *
+ * Toutes les animations sont en CSS : rien n'est piloté image par image en
+ * JavaScript. Le composant ne fait que poser des attributs (`data-phase`,
+ * `data-open`), le navigateur s'occupe du reste — sur son fil de composition.
+ */
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ▌ GRILLE DE CARTES
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.pj-grid {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 40rem) {
+  .pj-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (min-width: 90rem) {
+  .pj-grid {
+    gap: 1.75rem;
+  }
+}
+
+/* La cellule ancre les fragments, qui sont positionnés en absolu au-dessus
+   de la carte. Elle porte aussi `--pj-shatter-duration`, posée par
+   `ProjectShowcase` depuis sa constante TypeScript. */
+.pj-cell {
+  position: relative;
+}
+
+/* Une carte retirée par le filtre reste en place le temps de se désintégrer,
+   puis disparaît de la mise en page. */
+.pj-cell[hidden] {
+  display: none;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ▌ CARTE
+   Le cadre entier est un lien : une seule cible, un seul arrêt de tabulation.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.pj-card {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  height: 100%;
+  overflow: hidden;
+  border: 1px solid var(--ds-line);
+  border-radius: var(--radius-card);
+  background: var(--ds-surface);
+  box-shadow: var(--shadow-e1);
+  text-decoration: none;
+  transition:
+    transform var(--motion-base) var(--ease-emphasized),
+    box-shadow var(--motion-base) var(--ease-emphasized),
+    border-color var(--motion-base) var(--ease-emphasized);
+}
+
+@media (hover: hover) {
+  .pj-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--ds-line-strong);
+    box-shadow: var(--shadow-e2);
+  }
+}
+
+.pj-card:focus-visible {
+  outline: 2px solid var(--ds-focus);
+  outline-offset: 3px;
+}
+
+/* ── Visuel ─────────────────────────────────────────────────────────────── */
+
+.pj-card-media {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: var(--ds-surface-sunken);
+  border-bottom: 1px solid var(--ds-line);
+}
+
+.pj-card-media img {
+  object-fit: cover;
+  transition: transform var(--motion-slow) var(--ease-emphasized);
+}
+@media (hover: hover) {
+  .pj-card:hover .pj-card-media img {
+    transform: scale(1.045);
+  }
+}
+
+/* Voile bas : les pastilles restent lisibles sur n'importe quelle capture. */
+.pj-card-media::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 45%;
+  background: linear-gradient(to top, rgb(0 0 0 / 0.45), transparent);
+  pointer-events: none;
+}
+
+/* Numéro : petit tampon carré, en haut à gauche. */
+.pj-card-number {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  min-width: 1.75rem;
+  padding: 0.15rem 0.4rem;
+  border: 1px solid rgb(255 255 255 / 0.5);
+  border-radius: 0.3rem;
+  background: rgb(0 0 0 / 0.35);
+  backdrop-filter: blur(6px);
+  color: #fff;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.06em;
+}
+
+/* Pastilles du bas : catégorie, année, et le tampon « En production ». */
+.pj-card-chips {
+  position: absolute;
+  inset: auto 0.75rem 0.75rem 0.75rem;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pj-card-chip {
+  border-radius: 999px;
+  border: 1px solid rgb(255 255 255 / 0.28);
+  background: rgb(0 0 0 / 0.4);
+  backdrop-filter: blur(6px);
+  padding: 0.2rem 0.6rem;
+  color: rgb(255 255 255 / 0.92);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.pj-card-chip--live {
+  border-color: transparent;
+  background: var(--ds-brand);
+  color: var(--ds-brand-ink);
+}
+
+/* ── Corps ──────────────────────────────────────────────────────────────── */
+
+.pj-card-body {
+  display: grid;
+  align-content: start;
+  gap: 0.6rem;
+  padding: 1.15rem 1.25rem 1.25rem;
+}
+
+.pj-card-title {
+  margin: 0;
+  color: var(--ds-ink);
+  font-size: 1.0625rem;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  line-height: 1.25;
+}
+
+.pj-card-text {
+  margin: 0;
+  color: var(--ds-ink-soft);
+  font-size: 0.875rem;
+  line-height: 1.6;
+  /* Deux lignes au plus : toutes les cartes gardent la même hauteur de texte. */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+/* Rangée de logos des technologies (voir TechIcon.tsx). */
+.pj-card-stack {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0.15rem 0 0;
+  padding: 0;
+  list-style: none;
+  color: var(--ds-ink-muted);
+}
+.pj-card-stack svg {
+  /* La base de Tailwind met les `svg` en `display: block`. */
+  display: inline-block;
+  width: 1.05rem;
+  height: 1.05rem;
+  transition: color var(--motion-base) var(--ease-emphasized);
+}
+@media (hover: hover) {
+  .pj-card:hover .pj-card-stack {
+    color: var(--ds-ink-soft);
+  }
+}
+.pj-card-stack-more {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--ds-ink-faint);
+}
+
+/* Appel à l'action : la flèche avance au survol. */
+.pj-card-cta {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.35rem;
+  color: var(--ds-ink-muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: color var(--motion-base) var(--ease-emphasized);
+}
+.pj-card-cta svg {
+  display: inline-block;
+  transition: transform var(--motion-base) var(--ease-emphasized);
+}
+@media (hover: hover) {
+  .pj-card:hover .pj-card-cta {
+    color: var(--ds-brand-text);
+  }
+  .pj-card:hover .pj-card-cta svg {
+    transform: translateX(3px);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ▌ DÉSINTÉGRATION
+   ───────────────────────────────────────────────────────────────────────────
+   Les fragments portent la capture du projet elle-même : c'est la carte qui se
+   brise, et non une pluie de carrés colorés posée par-dessus (l'ancienne
+   version). Chaque fragment affiche sa propre tranche d'image grâce à
+   `background-position` en pourcentages — le procédé classique des feuilles de
+   sprites : 0 % aligne les bords gauches, 100 % les bords droits, et les
+   valeurs intermédiaires tombent exactement sur chaque case.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.pj-shatter {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  /* Les fragments sortent du cadre : on ne les coupe pas. */
+  overflow: visible;
+}
+
+.pj-piece {
+  position: absolute;
+  left: calc(var(--col) * 100% / var(--cols));
+  top: calc(var(--row) * 100% / var(--rows));
+  width: calc(100% / var(--cols));
+  height: calc(100% / var(--rows));
+  background-image: var(--pj-image);
+  background-size: calc(var(--cols) * 100%) calc(var(--rows) * 100%);
+  background-position: calc(var(--col) * 100% / (var(--cols) - 1)) calc(var(--row) * 100% / (var(--rows) - 1));
+  background-repeat: no-repeat;
+  animation-duration: var(--pj-shatter-duration);
+  animation-timing-function: var(--ease-emphasized);
+  animation-fill-mode: both;
+  will-change: transform, opacity;
+}
+
+/* Départ : chaque fragment s'envole dans sa direction, tourne et s'efface.
+   L'échelle finale reste haute (0,35) : les tuiles restent lisibles jusqu'au
+   bout, au lieu de se réduire à des points. */
+@keyframes pj-piece-out {
+  from {
+    transform: translate3d(0, 0, 0) rotate(0) scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: translate3d(var(--dx), var(--dy), 0) rotate(var(--rot)) scale(0.35);
+    opacity: 0;
+  }
+}
+
+/* Retour : le même vol, à l'envers — la carte se reconstitue. */
+@keyframes pj-piece-in {
+  from {
+    transform: translate3d(var(--dx), var(--dy), 0) rotate(var(--rot)) scale(0.35);
+    opacity: 0;
+  }
+  to {
+    transform: translate3d(0, 0, 0) rotate(0) scale(1);
+    opacity: 1;
+  }
+}
+
+.pj-cell[data-phase='out'] .pj-piece {
+  animation-name: pj-piece-out;
+}
+.pj-cell[data-phase='in'] .pj-piece {
+  animation-name: pj-piece-in;
+}
+
+/* La carte s'efface sous ses fragments pendant le départ, et réapparaît
+   derrière eux au retour. */
+.pj-cell[data-phase='out'] .pj-card {
+  opacity: 0;
+  transform: scale(0.97);
+  transition:
+    opacity var(--pj-shatter-duration) linear,
+    transform var(--pj-shatter-duration) var(--ease-emphasized);
+}
+.pj-cell[data-phase='in'] .pj-card {
+  animation: pj-card-return var(--pj-shatter-duration) var(--ease-emphasized) both;
+}
+@keyframes pj-card-return {
+  from {
+    opacity: 0;
+  }
+  60% {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Trait de balayage : il suit la ligne de rupture, comme dans l'ancienne
+   version, mais dans le bleu de la marque plutôt qu'en or. */
+.pj-scan {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  z-index: 4;
+  background: var(--ds-brand);
+  box-shadow: 0 0 24px 6px color-mix(in srgb, var(--ds-brand) 60%, transparent);
+  pointer-events: none;
+  animation: pj-scan var(--pj-shatter-duration) linear both;
+}
+@keyframes pj-scan {
+  from {
+    top: -4%;
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  to {
+    top: 104%;
+    opacity: 0;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ▌ SOMMAIRE (colonne de gauche)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.pj-index {
+  display: grid;
+  gap: 0.15rem;
+  margin: 0.4rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pj-index-link {
+  display: grid;
+  grid-template-columns: 1.5rem 2.75rem minmax(0, 1fr);
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.3rem 0.4rem;
+  border-radius: var(--radius-control);
+  border-left: 2px solid transparent;
+  color: var(--ds-ink-soft);
+  font-size: 0.875rem;
+  text-decoration: none;
+  transition:
+    color var(--motion-fast) var(--ease-emphasized),
+    background-color var(--motion-fast) var(--ease-emphasized),
+    border-color var(--motion-fast) var(--ease-emphasized);
+}
+.pj-index-link:hover {
+  background: var(--ds-surface-sunken);
+  color: var(--ds-ink);
+}
+.pj-index-link:focus-visible {
+  outline: 2px solid var(--ds-focus);
+  outline-offset: 2px;
+}
+.pj-index-link[aria-current='true'] {
+  border-left-color: var(--ds-brand);
+  color: var(--ds-ink);
+  font-weight: 600;
+}
+
+.pj-index-num {
+  color: var(--ds-ink-faint);
+  font-size: 0.6875rem;
+  font-variant-numeric: tabular-nums;
+}
+.pj-index-link[aria-current='true'] .pj-index-num {
+  color: var(--ds-brand-text);
+}
+
+/* Micro-aperçu : reconnaître un projet à son image, pas seulement à son nom. */
+.pj-index-thumb {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border: 1px solid var(--ds-line);
+  border-radius: 0.25rem;
+  background: var(--ds-surface-sunken);
+}
+.pj-index-thumb img {
+  object-fit: cover;
+  transition: transform var(--motion-base) var(--ease-emphasized);
+}
+@media (hover: hover) {
+  .pj-index-link:hover .pj-index-thumb img {
+    transform: scale(1.12);
+  }
+}
+.pj-index-link[aria-current='true'] .pj-index-thumb {
+  border-color: var(--ds-brand);
+}
+
+.pj-index-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ▌ MODALE DE DÉTAIL — plein écran
+   ───────────────────────────────────────────────────────────────────────────
+   La modale occupe tout l'écran et se lit en deux temps :
+
+     1. LA SCÈNE — barre d'identité, puis trois colonnes qui tiennent dans un
+        écran : la description qui descend, les captures au centre, les
+        technologies qui montent (`scene.css`).
+     2. LE DOSSIER — le contenu complet, rendu par le serveur : description,
+        réalisations, technologies et schéma d'architecture.
+
+   Les neuf dossiers sont dans le HTML dès le départ — référencement, et
+   lecture possible sans JavaScript — et simplement masqués. Sans JavaScript,
+   l'ancre `#projet-…` d'une carte révèle son dossier en pleine page grâce à
+   `:target` ; la règle est neutralisée dès que le composant a posé `data-js`,
+   pour ne pas entrer en conflit avec la modale.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.pj-modal {
+  display: none;
+}
+
+.pj-modal[data-open] {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: block;
+}
+
+/* Voile : visible pendant la seule apparition de la scène, qui le recouvre
+   ensuite entièrement. C'est lui qui évite de voir la page nue à travers. */
+.pj-veil {
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, #05070a 72%, transparent);
+  backdrop-filter: blur(10px);
+  animation: pj-veil-in var(--motion-base) linear both;
+}
+@keyframes pj-veil-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ── Le plateau : tout l'écran, un seul défilement ───────────────────────── */
+
+.pj-stage {
+  /* Hauteur de la barre d'identité, déclarée une seule fois : l'écran de scène
+     s'y accorde exactement, sans nombre magique dispersé dans la feuille. */
+  --pj-bar-h: 4.25rem;
+
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  /* Même grain que le reste du site : la modale est une page, pas un calque. */
+  background-color: var(--ds-canvas);
+  background-image: var(--ds-grain);
+  background-size: 2.5rem 2.5rem;
+  animation: pj-stage-in var(--motion-base) var(--ease-emphasized) both;
+}
+@keyframes pj-stage-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.pj-stage:focus-visible {
+  outline: none;
+}
+
+/* ── Barre d'identité : collante, toujours lisible ───────────────────────── */
+
+.pj-stage-head {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex: none;
+  min-height: var(--pj-bar-h);
+  padding: 0.55rem clamp(0.75rem, 2vw, 1.5rem);
+  border-bottom: 1px solid var(--ds-line);
+  background: color-mix(in srgb, var(--ds-canvas) 90%, transparent);
+  backdrop-filter: blur(10px);
+}
+
+.pj-stage-id {
+  display: flex;
+  align-items: baseline;
+  gap: 0.7rem;
+  min-width: 0; /* autorise la troncature du titre plutôt que le débordement */
+}
+
+.pj-stage-number {
+  flex: none;
+  color: var(--ds-ink-muted);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.pj-stage-title {
+  margin: 0;
+  overflow: hidden;
+  color: var(--ds-ink);
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pj-stage-stamp {
+  flex: none;
+  border: 1px solid var(--ds-brand);
+  border-radius: 0.3rem;
+  padding: 0.1rem 0.45rem;
+  color: var(--ds-brand-text);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+@media (max-width: 30rem) {
+  /* Sur un écran étroit, le titre passe avant le tampon. */
+  .pj-stage-stamp {
+    display: none;
+  }
+}
+
+.pj-stage-tools {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: none;
+}
+
+/* Liens d'action, au gabarit de la barre. Ils sont répétés en bas du dossier :
+   c'est un appel à l'action, pas un doublon — le visiteur ne doit jamais avoir
+   à remonter pour ouvrir le produit. */
+.pj-stage-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: 1px solid var(--ds-line-strong);
+  border-radius: var(--radius-control);
+  padding: 0.45rem 0.85rem;
+  color: var(--ds-ink);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  white-space: nowrap;
+  transition:
+    border-color var(--motion-fast) var(--ease-emphasized),
+    background-color var(--motion-fast) var(--ease-emphasized);
+}
+.pj-stage-link:hover {
+  border-color: var(--ds-ink);
+  background: var(--ds-surface-sunken);
+}
+.pj-stage-link--primary {
+  border-color: var(--ds-brand);
+  background: var(--ds-brand);
+  color: var(--ds-brand-ink);
+}
+.pj-stage-link--primary:hover {
+  border-color: var(--ds-brand);
+  background: var(--ds-brand);
+  filter: brightness(1.08);
+}
+.pj-stage-link svg {
+  display: inline-block;
+}
+@media (max-width: 52rem) {
+  /* Les deux liens restent accessibles dans le dossier, juste en dessous. */
+  .pj-stage-link {
+    display: none;
+  }
+}
+
+/* Passage au projet précédent ou suivant, sans repasser par la grille. */
+.pj-stage-steps {
+  display: flex;
+  gap: 0.25rem;
+  margin-inline: 0.15rem;
+}
+
+.pj-stage-step,
+.pj-close {
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  flex: none;
+  border: 1px solid var(--ds-line);
+  border-radius: 999px;
+  background: var(--ds-surface);
+  color: var(--ds-ink-soft);
+  cursor: pointer;
+  transition:
+    color var(--motion-fast) var(--ease-emphasized),
+    border-color var(--motion-fast) var(--ease-emphasized),
+    background-color var(--motion-fast) var(--ease-emphasized);
+}
+.pj-stage-step:hover:not(:disabled),
+.pj-close:hover {
+  border-color: var(--ds-line-strong);
+  background: var(--ds-surface-sunken);
+  color: var(--ds-ink);
+}
+.pj-stage-step:focus-visible,
+.pj-close:focus-visible {
+  outline: 2px solid var(--ds-focus);
+  outline-offset: 2px;
+}
+.pj-stage-step:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.pj-stage-step svg,
+.pj-close svg {
+  display: inline-block;
+}
+
+/* ── Premier écran : la scène, exactement une hauteur de fenêtre ─────────── */
+
+.pj-stage-screen {
+  position: relative;
+  flex: none;
+  padding-bottom: 3.25rem; /* bande réservée à l'invitation à lire le dossier */
+}
+@media (min-width: 64rem) {
+  .pj-stage-screen {
+    height: calc(100svh - var(--pj-bar-h));
+  }
+}
+
+.pj-stage-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0.5rem auto 0;
+  border: 1px solid var(--ds-line);
+  border-radius: 999px;
+  padding: 0.4rem 0.95rem;
+  background: var(--ds-surface);
+  color: var(--ds-ink-soft);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    color var(--motion-fast) var(--ease-emphasized),
+    border-color var(--motion-fast) var(--ease-emphasized);
+}
+.pj-stage-more:hover {
+  border-color: var(--ds-line-strong);
+  color: var(--ds-ink);
+}
+.pj-stage-more:focus-visible {
+  outline: 2px solid var(--ds-focus);
+  outline-offset: 2px;
+}
+.pj-stage-more svg {
+  display: inline-block;
+}
+@media (min-width: 64rem) {
+  .pj-stage-more {
+    position: absolute;
+    left: 50%;
+    bottom: 0.7rem;
+    margin: 0;
+    /* Le balancement doit conserver le centrage : les images clés portent donc
+       la translation horizontale en plus du mouvement vertical. */
+    animation: pj-stage-more-bob 2.8s ease-in-out 1.4s infinite;
+  }
+}
+@keyframes pj-stage-more-bob {
+  0%,
+  100% {
+    transform: translate(-50%, 0);
+  }
+  50% {
+    transform: translate(-50%, 5px);
+  }
+}
+
+/* ── Second écran : le dossier ───────────────────────────────────────────── */
+
+.pj-stage-dossier {
+  width: 100%;
+  max-width: 78rem;
+  flex: none;
+  margin-inline: auto;
+  /* La barre d'identité flotte au-dessus du contenu : sans cette marge,
+     « Lire le dossier » amenait le titre de section pile sous la barre, qui le
+     recouvrait. */
+  scroll-margin-top: calc(var(--pj-bar-h) + 0.75rem);
+  padding-bottom: clamp(2rem, 6vh, 4rem);
+}
+
+.pj-dossier-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  margin: 0 clamp(1.25rem, 3vw, 2.5rem);
+  padding-top: clamp(1rem, 3vh, 2rem);
+  color: var(--ds-ink-muted);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.pj-dossier-eyebrow::after {
+  content: '';
+  height: 1px;
+  flex: 1;
+  background: var(--ds-line);
+}
+
+/* Un dossier fermé est masqué par une CLASSE, et non par l'attribut `hidden` :
+   Chrome applique ce dernier avec une priorité qu'aucune règle d'auteur ne peut
+   lever, pas même en `!important`, ce qui rendait le repli `:target` (sans
+   JavaScript) inopérant. Dans les deux cas, `display: none` retire bien le
+   dossier de l'arbre d'accessibilité. */
+.pj-detail-wrap--closed {
+  display: none;
+}
+
+/* La galerie du dossier ne sert qu'aux moteurs de recherche et aux visiteurs
+   sans JavaScript : dès que la scène est montée, le carrousel montre les mêmes
+   captures, en plus grand et avec l'agrandissement plein écran. */
+.pj-modal[data-js] .pj-detail .tk-gallery {
+  display: none;
+}
+
+/* ── Sans JavaScript : le dossier s'affiche en pleine page ───────────────── */
+
+.pj-modal:not([data-js]) .pj-detail-wrap:target {
+  display: block;
+}
+.pj-modal:not([data-js]):has(.pj-detail-wrap:target) {
+  position: static;
+  display: block;
+  padding: 0;
+  margin-top: 2rem;
+}
+.pj-modal:not([data-js]):has(.pj-detail-wrap:target) .pj-stage {
+  position: static;
+  display: block;
+  overflow: visible;
+  background: none;
+  animation: none;
+}
+.pj-modal:not([data-js]) .pj-veil,
+.pj-modal:not([data-js]) .pj-stage-head {
+  display: none;
+}
+.pj-detail {
+  display: grid;
+  gap: clamp(1.5rem, 3vw, 2.25rem);
+  padding: clamp(1.25rem, 3vw, 2.5rem);
+}
+
+.pj-detail-head {
+  display: grid;
+  gap: 0.75rem;
+  max-width: 62ch;
+}
+
+.pj-detail-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  color: var(--ds-ink-muted);
+  font-size: 0.8125rem;
+}
+.pj-detail-stamp {
+  display: inline-block;
+  border: 1px solid var(--ds-brand);
+  border-radius: 0.3rem;
+  padding: 0.1rem 0.45rem;
+  color: var(--ds-brand-text);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.pj-detail-title {
+  margin: 0;
+  color: var(--ds-ink);
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+}
+
+.pj-detail-lead {
+  margin: 0;
+  color: var(--ds-ink-soft);
+  font-size: 1.0625rem;
+  line-height: 1.7;
+  text-wrap: pretty;
+}
+
+/* Galerie : le composant de billet est réutilisé, à une autre échelle. */
+.pj-detail .tk-gallery {
+  gap: 0.6rem;
+}
+.pj-detail .tk-media {
+  aspect-ratio: 16 / 9;
+  border-radius: var(--radius-card);
+}
+.pj-detail .tk-thumb {
+  border-radius: 0.5rem;
+}
+
+/* Deux colonnes : réalisations à gauche, technologies à droite. */
+.pj-detail-cols {
+  display: grid;
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+}
+@media (min-width: 52rem) {
+  .pj-detail-cols {
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  }
+}
+
+.pj-detail-label {
+  margin: 0 0 0.75rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--ds-line);
+  color: var(--ds-ink);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.pj-detail-points {
+  display: grid;
+  gap: 0.7rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--ds-ink-soft);
+  font-size: 0.9375rem;
+  line-height: 1.65;
+}
+.pj-detail-points li {
+  display: grid;
+  grid-template-columns: 0.55rem minmax(0, 1fr);
+  gap: 0.7rem;
+}
+/* Puce carrée, comme le tampon des billets. */
+.pj-detail-points li::before {
+  content: '';
+  width: 0.4rem;
+  height: 0.4rem;
+  margin-top: 0.55rem;
+  background: var(--ds-brand);
+}
+
+/* Technologies : logo + nom, en pastilles. */
+.pj-detail-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.pj-detail-stack li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  border: 1px solid var(--ds-line);
+  border-radius: 999px;
+  padding: 0.3rem 0.7rem;
+  background: var(--ds-surface);
+  color: var(--ds-ink-soft);
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+.pj-detail-stack svg {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  color: var(--ds-ink-muted);
+}
+
+.pj-detail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ▌ MOUVEMENT RÉDUIT
+   Aucune particule, aucun vol, aucun glissement : les états changent net.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@media (prefers-reduced-motion: reduce) {
+  .pj-card,
+  .pj-card-media img,
+  .pj-card-cta svg {
+    transition: none;
+  }
+  .pj-card:hover {
+    transform: none;
+  }
+  .pj-stage,
+  .pj-veil,
+  .pj-piece,
+  .pj-scan,
+  .pj-stage-more,
+  .pj-cell[data-phase='in'] .pj-card {
+    animation: none;
+  }
+  /* Les images clés du balancement portaient aussi le centrage horizontal :
+     sans elles, il faut le rétablir — et seulement là où l'invitation est
+     posée en absolu. */
+  @media (min-width: 64rem) {
+    .pj-stage-more {
+      transform: translateX(-50%);
+    }
+  }
+  .pj-scan {
+    display: none;
+  }
+}

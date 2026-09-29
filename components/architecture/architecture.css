@@ -65,25 +65,19 @@
   overscroll-behavior-x: contain;
 }
 
-/* Indice de défilement : le bord droit s'estompe tant qu'il reste du schéma à
-   voir, puis redevient net en fin de course. Piloté par le défilement même
-   (`animation-timeline`) : sans débordement, la chronologie est inactive et
-   aucun fondu n'est appliqué — le schéma reste intact sur grand écran.
-   Navigateurs sans cette fonction : pas d'indice, le défilement fonctionne. */
-@property --arch-fade {
-  syntax: '<length>';
-  inherits: false;
-  initial-value: 0px;
-}
-@keyframes arch-scroll-hint {
-  0%, 92% { --arch-fade: 56px; }
-  100% { --arch-fade: 0px; }
-}
-@supports (animation-timeline: scroll()) {
+/* Indice de défilement (écrans étroits, où le schéma déborde) : une ombre
+   douce au bord droit tant qu'il reste du schéma à voir.
+   Technique des deux fonds : l'ombre est fixe (`scroll`), un cache de la
+   couleur du fond défile avec le contenu (`local`) et la recouvre une fois la
+   fin atteinte. Aucune animation : le navigateur ne repeint qu'au défilement.
+   (Une première version animait un masque en dégradé via `animation-timeline` :
+   mesuré, cela retardait d'une seconde environ l'apparition des schémas, le
+   masque forçant à repeindre en continu les flux animés.) */
+@media (max-width: 719.98px) {
   .arch-scroll {
-    mask-image: linear-gradient(to right, #000 calc(100% - var(--arch-fade)), transparent);
-    animation: arch-scroll-hint linear both;
-    animation-timeline: scroll(self inline);
+    background:
+      linear-gradient(to left, var(--arch-bg) 40%, transparent) right center / 2.5rem 100% no-repeat local,
+      radial-gradient(farthest-side at 100% 50%, hsl(var(--ds-shadow-color) / 0.22), transparent) right center / 0.9rem 100% no-repeat scroll;
   }
 }
 .arch-svg {
@@ -176,15 +170,53 @@
   stroke: var(--ds-annotation);
   stroke-width: 1.2;
 }
-.arch-dim text {
-  fill: var(--ds-annotation);
+/* ── Cote de stack : un logo devant chaque technologie ──────────────────────
+   Composée en HTML dans un `<foreignObject>` (voir ArchitectureDiagram.tsx).
+   Les dimensions sont en unités du `viewBox`, comme le reste du dessin : elles
+   suivent donc l'échelle du schéma. */
+.arch-stack {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  /* Aucun écart, ni vertical ni horizontal.
+
+     Vertical : l'interligne fait déjà la hauteur d'une ligne de cote, et un
+     écart décalerait la cote par rapport à la place réservée.
+
+     Horizontal : l'espacement est porté par le remplissage des éléments, de
+     sorte que leurs plaques de fond se touchent. Un écart, même de quelques
+     pixels, laisserait le trait de cote réapparaître entre deux technologies —
+     l'œil y lirait des tirets, alors qu'il s'agit du trait qui passe derrière.
+     Le texte SVET d'origine obtenait le même résultat avec un halo continu. */
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
   font-size: 10.5px;
   font-weight: 600;
   letter-spacing: 0.1em;
-  paint-order: stroke;
-  stroke: var(--arch-bg);
-  stroke-width: 10px;
-  stroke-linejoin: round;
+  line-height: 15px; /* = DIMENSION_LINE_HEIGHT */
+  text-transform: uppercase;
+  color: var(--ds-annotation);
+}
+.arch-stack li {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  /* La plaque de fond remplace le halo du texte SVG (`paint-order: stroke`) :
+     elle détache la cote du papier millimétré et du trait de cote qui passe
+     derrière elle. Le remplissage latéral joue deux rôles à la fois — il écarte
+     les technologies les unes des autres, et il joint les plaques voisines. */
+  padding: 0 4.5px;
+  background: var(--arch-bg);
+  white-space: nowrap;
+}
+.arch-stack-icon {
+  /* La base de Tailwind met les `svg` en `display: block`. */
+  display: inline-block;
+  width: 1.2em;
+  height: 1.2em;
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -198,8 +230,13 @@
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: none; }
 }
+/* La pointe de flèche (marker) ne suit pas le tracé en pointillés : elle est
+   masquée jusqu'à ce que la ligne soit presque dessinée, sinon elle apparaît
+   seule, avant sa ligne. `marker-end` est discret : il bascule à mi-chemin
+   entre 97 % et 100 %. */
 @keyframes arch-draw {
-  from { stroke-dashoffset: 1; }
+  from { stroke-dashoffset: 1; marker-end: none; }
+  97% { marker-end: none; }
   to { stroke-dashoffset: 0; }
 }
 @keyframes arch-fade-in {
@@ -227,6 +264,7 @@
 .arch[data-reveal='pending'] .arch-line {
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
+  marker-end: none;
 }
 
 /* Lecture : composants → liaisons → étiquettes et zones → cote → flux
@@ -293,6 +331,10 @@
 /* ── Contrastes forcés (Windows) : couleurs système ── */
 @media (forced-colors: active) {
   .arch-box, .arch-line, .arch-zone rect, .arch-dim path { stroke: CanvasText; }
-  .arch-title, .arch-tech, .arch-label, .arch-zone text, .arch-dim text { fill: CanvasText; stroke: Canvas; }
+  .arch-title, .arch-tech, .arch-label, .arch-zone text { fill: CanvasText; stroke: Canvas; }
+  /* La cote de stack est composee en HTML : elle prend les couleurs du systeme
+     par la propriete `color`, et sa plaque de fond celle du fond. */
+  .arch-stack { color: CanvasText; }
+  .arch-stack li { background: Canvas; }
   .arch-flow { display: none; }
 }

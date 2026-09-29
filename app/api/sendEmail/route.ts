@@ -7,88 +7,44 @@
  * - Reçoit le JSON depuis la page frontend.
  * - Effectue une seconde validation de sécurité avec Zod côté serveur (Ne jamais faire confiance au frontend).
  * - Nettoie (Sanitize) les données pour éviter l'injection de scripts XSS et de Header Injection.
- * - Utilise `nodemailer` pour expédier le mail via le compte Gmail configuré dans `.env.local`.
+ * - Confie l'expédition à `lib/mailer.ts`, qui choisit le transport selon la
+ *   configuration : API HTTP (Brevo) sur une plateforme sans serveur, SMTP
+ *   (Gmail) sur un serveur qui tourne en continu.
  * - Construit et envoie un e-mail HTML au design ultra-premium (Or Solaire).
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import nodemailer from 'nodemailer';
-import type { Transporter } from 'nodemailer';
 import { z } from 'zod';
 import { escapeHtml } from '@/lib/html-escape';
 import { SITE_URL, SITE_NAME } from '@/lib/site';
-import { CONTACT_LIMITS, CONTACT_MAX_BODY_BYTES, HONEYPOT_FIELD } from '@/lib/contact';
+import { CONTACT_LIMITS, CONTACT_MAX_BODY_BYTES, EMAIL_PATTERN, HONEYPOT_FIELD } from '@/lib/contact';
+import { clientIdentifier, createRateLimiter } from '@/lib/rate-limit';
+import { MailerNotConfiguredError, sendMail } from '@/lib/mailer';
 
 /**
- * `nodemailer` ouvre des sockets TCP : il ne peut pas tourner sur le runtime Edge.
+ * L'envoi ouvre des sockets (SMTP) ou appelle une API distante : ni l'un ni
+ * l'autre ne tourne sur le runtime Edge.
  * La déclaration est explicite pour qu'une migration de runtime échoue au build
  * plutôt qu'en production, à la première soumission de formulaire.
  */
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   ▌ LIMITATION DE DÉBIT
+/* ════════════════════════════════════════════════════════════════════════════
+   ▐ LIMITATION DE DÉBIT
    ───────────────────────────────────────────────────────────────────────────
    Le point d'entrée était totalement ouvert. Un script trivial pouvait le
    marteler et, en quelques minutes, atteindre le quota d'envoi SMTP de Gmail
    (500 messages par jour) — quota dépassé, le compte cesse d'émettre pour
    24 heures, y compris pour votre courrier personnel.
 
-   ⚠️ Cette implémentation garde son état en mémoire du processus. Sur une
-   plateforme sans serveur, chaque instance a donc son propre compteur, et
-   l'état disparaît au refroidissement. Elle arrête les floods naïfs, pas un
-   attaquant déterminé. Pour une protection réelle, adosser ce compteur à un
-   magasin partagé (Vercel KV, Upstash Redis) — la signature de
-   `isRateLimited` est prévue pour ce remplacement.
+   L'algorithme vit désormais dans `lib/rate-limit.ts` : la route des
+   rendez-vous applique le même, avec un quota qui lui est propre. Ses limites
+   (état en mémoire du processus, donc par instance) y sont documentées.
    ═══════════════════════════════════════════════════════════════════════════ */
 
-/** Fenêtre d'observation glissante. */
-const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000; // 1 heure
-
-/** Nombre de messages autorisés par adresse IP et par fenêtre. */
-const RATE_LIMIT_MAX_REQUESTS = 5;
-
-/** Au-delà de ce nombre d'IP suivies, on purge les entrées expirées. */
-const RATE_LIMIT_CLEANUP_THRESHOLD = 500;
-
-/** Horodatages des requêtes récentes, indexés par adresse IP. */
-const requestTimestamps = new Map<string, number[]>();
-
-/** Extrait l'adresse cliente derrière le proxy de la plateforme. */
-function getClientIdentifier(request: NextRequest): string {
-  const forwardedFor = request.headers.get('x-forwarded-for');
-  if (forwardedFor) return forwardedFor.split(',')[0].trim();
-
-  return request.headers.get('x-real-ip') ?? 'unknown';
-}
-
-/** Purge les IP dont toutes les requêtes sont sorties de la fenêtre. */
-function pruneExpiredEntries(now: number): void {
-  for (const [identifier, timestamps] of requestTimestamps) {
-    const stillRelevant = timestamps.filter((t) => now - t < RATE_LIMIT_WINDOW_MS);
-    if (stillRelevant.length === 0) requestTimestamps.delete(identifier);
-    else requestTimestamps.set(identifier, stillRelevant);
-  }
-}
-
-/** Retourne `true` si l'appelant a épuisé son quota, et le délai avant réouverture. */
-function isRateLimited(identifier: string): { limited: boolean; retryAfterSeconds: number } {
-  const now = Date.now();
-
-  if (requestTimestamps.size > RATE_LIMIT_CLEANUP_THRESHOLD) pruneExpiredEntries(now);
-
-  const recent = (requestTimestamps.get(identifier) ?? []).filter((t) => now - t < RATE_LIMIT_WINDOW_MS);
-
-  if (recent.length >= RATE_LIMIT_MAX_REQUESTS) {
-    const oldest = Math.min(...recent);
-    return { limited: true, retryAfterSeconds: Math.ceil((RATE_LIMIT_WINDOW_MS - (now - oldest)) / 1000) };
-  }
-
-  recent.push(now);
-  requestTimestamps.set(identifier, recent);
-  return { limited: false, retryAfterSeconds: 0 };
-}
+/** Cinq messages par heure et par adresse IP. */
+const limiter = createRateLimiter({ windowMs: 60 * 60 * 1000, max: 5 });
 
 /* ═══════════════════════════════════════════════════════════════════════════
    ▌ RÉPONSES LOCALISÉES
@@ -147,7 +103,8 @@ function stripHeaderInjection(s: string): string {
 const contactSchema = z.object({
   // Limites importées de lib/contact.ts : identiques à celles du formulaire.
   name: z.string().min(CONTACT_LIMITS.nameMin).max(CONTACT_LIMITS.nameMax),
-  email: z.string().email(),
+  // Même motif que le formulaire (lib/contact.ts).
+  email: z.string().regex(EMAIL_PATTERN),
   subject: z.string().min(CONTACT_LIMITS.subjectMin).max(CONTACT_LIMITS.subjectMax),
   message: z.string().min(CONTACT_LIMITS.messageMin).max(CONTACT_LIMITS.messageMax),
 
@@ -166,50 +123,6 @@ const contactSchema = z.object({
   [HONEYPOT_FIELD]: z.string().max(500).optional(),
 });
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   ▌ TRANSPORTEUR SMTP MUTUALISÉ
-   ───────────────────────────────────────────────────────────────────────────
-   Le transporteur était reconstruit à chaque requête, suivi d'un
-   `transporter.verify()` : deux poignées de main TLS complètes avant même de
-   commencer l'envoi, soit une à trois secondes ajoutées à chaque soumission.
-
-   Ici, une seule instance est conservée dans la portée du module. Sur une
-   plateforme sans serveur, cette portée survit entre deux invocations chaudes :
-   la connexion est réellement réutilisée. `pool: true` maintient la session
-   ouverte, les délais d'attente empêchent une fonction de rester bloquée si
-   Gmail ne répond pas.
-   ═══════════════════════════════════════════════════════════════════════════ */
-let cachedTransporter: Transporter | null = null;
-
-function getTransporter(): Transporter {
-  if (cachedTransporter) return cachedTransporter;
-
-  const user = process.env.EMAIL_HOST_USER;
-  const pass = process.env.EMAIL_HOST_PASSWORD;
-
-  // Échec explicite : sans cette garde, nodemailer produisait une erreur
-  // d'authentification opaque, à l'exécution, difficile à relier à un `.env`
-  // incomplet sur un environnement de préversion.
-  if (!user || !pass) {
-    throw new Error('EMAIL_HOST_USER ou EMAIL_HOST_PASSWORD manquant dans les variables d\'environnement.');
-  }
-
-  cachedTransporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 465,
-    secure: true, // `true` signifie SSL implicite pour le port 465
-    auth: { user, pass },
-    pool: true,
-    maxConnections: 2,
-    maxMessages: 50,
-    connectionTimeout: 10_000,
-    greetingTimeout: 10_000,
-    socketTimeout: 20_000,
-  });
-
-  return cachedTransporter;
-}
-
 export async function POST(request: NextRequest) {
   // La locale est résolue avant tout traitement : même une erreur précoce doit
   // pouvoir répondre dans la bonne langue.
@@ -217,7 +130,7 @@ export async function POST(request: NextRequest) {
 
   try {
     /* ── 0. Quota par adresse IP ────────────────────────────────────────── */
-    const { limited, retryAfterSeconds } = isRateLimited(getClientIdentifier(request));
+    const { limited, retryAfterSeconds } = limiter.check(clientIdentifier(request));
 
     if (limited) {
       return NextResponse.json(
@@ -295,9 +208,6 @@ export async function POST(request: NextRequest) {
        désormais lue côté serveur, elle n'est plus négociable. */
     const logoUrl = `${SITE_URL}/logo/kal_04_nobg.jpeg`;
 
-    // 3. Transporteur mutualisé (voir plus haut)
-    const transporter = getTransporter();
-
     const receivedAt = new Intl.DateTimeFormat(locale === 'en' ? 'en-GB' : 'fr-FR', {
       dateStyle: 'full',
       timeStyle: 'short',
@@ -306,13 +216,15 @@ export async function POST(request: NextRequest) {
 
     /**
      * 4. Envoi de l'e-mail
-     * - "from" : Expédie avec ton adresse pour s'assurer que Gmail ne rejette pas l'e-mail (Politique DMARC).
-     * - "to" : S'envoie à toi-même.
-     * - "replyTo" : L'adresse du client. Si tu cliques sur "Répondre", ça écrira directement au client.
+     *
+     * Le transport est choisi par `lib/mailer.ts` ; la route ne décrit que le
+     * message. L'expéditeur reste l'adresse du compte — envoyer au nom du
+     * domaine du visiteur ferait échouer sa politique DMARC — et son adresse
+     * part dans `replyTo` : le bouton « Répondre » écrit donc bien au visiteur.
      */
-    await transporter.sendMail({
-      from: `"${safeName}" <${process.env.EMAIL_HOST_USER}>`,
-      to: process.env.EMAIL_HOST_USER,
+    await sendMail({
+      senderName: safeName,
+      replyTo: { name: safeName, email: validatedData.email },
       subject: `Nouveau Message Portfolio : ${safeSubject}`,
       text: [
         `Nouveau message depuis le portfolio`,
@@ -329,7 +241,6 @@ export async function POST(request: NextRequest) {
         `Répondre directement à cet e-mail pour joindre l'expéditeur.`,
       ].join('\n'),
       html: buildEmailHtml({ htmlName, htmlEmail, htmlSubject, htmlMessage, logoUrl, receivedAt }),
-      replyTo: `"${safeName}" <${validatedData.email}>`, // Indispensable pour que le bouton "Répondre" de Gmail fonctionne.
     });
 
     // Retourne une réponse JSON HTTP 200 (OK) au client.
@@ -352,7 +263,7 @@ export async function POST(request: NextRequest) {
 
     // Configuration serveur incomplète : le message distingué évite de faire
     // chercher une panne réseau là où il manque une variable d'environnement.
-    if (error instanceof Error && error.message.includes('EMAIL_HOST_')) {
+    if (error instanceof MailerNotConfiguredError) {
       console.error('[sendEmail] Configuration manquante :', error.message);
       return NextResponse.json(
         { success: false, message: API_MESSAGES[locale].misconfigured },

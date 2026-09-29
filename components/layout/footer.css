@@ -46,3 +46,66 @@
     border-top: 1px solid CanvasText;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ▌ PICTOGRAMMES DES COORDONNÉES ET DES RÉSEAUX
+   ───────────────────────────────────────────────────────────────────────────
+   Deux emplacements, une seule règle de taille et de couleur : en tête du
+   libellé d'une coordonnée (colonne « Contact »), et en tête d'un lien de
+   profil (colonne « Ailleurs »).
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.ft-glyph {
+  width: 1.15em;
+  height: 1.15em;
+  color: var(--ds-ink-muted);
+  transition:
+    color var(--motion-fast) ease,
+    translate var(--motion-base) var(--ease-emphasized);
+}
+
+/* Le libellé d'une coordonnée est en petites capitales : son glyphe a besoin
+   d'un peu plus de corps pour tenir le même poids optique que celui d'un lien
+   de profil, dans la colonne voisine. */
+.ft-datum dt .ft-glyph {
+  width: 1.3em;
+  height: 1.3em;
+}
+
+/* Le glyphe déborde dans la marge, et la valeur s'aligne sous le texte du
+   libellé : les deux lignes d'une même coordonnée forment alors un bloc, que
+   l'épingle ou l'enveloppe annonce depuis la gauche. La gouttière vaut la
+   largeur du glyphe (1,3 fois le corps du libellé) plus son écart — écrite
+   telle quelle, elle reste juste si le corps du libellé change. */
+.ft-datum {
+  --ft-gutter: calc(1.3 * 0.6875rem + 0.5rem);
+}
+.ft-datum dd {
+  padding-inline-start: var(--ft-gutter);
+}
+
+/* Le glyphe d'un lien de profil s'encre avec son libellé. */
+.site-footer a:hover .ft-glyph,
+.site-footer a:focus-visible .ft-glyph {
+  color: var(--ds-ink);
+  translate: 0 -1px;
+}
+
+/* Le glyphe d'une coordonnée, lui, est dans le libellé et non dans le lien :
+   `:has()` le fait réagir au survol de la valeur voisine. Sans cette règle,
+   survoler l'adresse e-mail laisserait son enveloppe éteinte — l'œil lirait
+   deux éléments sans rapport là où il n'y a qu'une donnée. */
+.ft-datum:has(dd a:hover) dt .ft-glyph,
+.ft-datum:has(dd a:focus-visible) dt .ft-glyph {
+  color: var(--ds-ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ft-glyph {
+    transition-duration: 0s;
+  }
+  .site-footer a:hover .ft-glyph,
+  .site-footer a:focus-visible .ft-glyph {
+    translate: none;
+  }
+}

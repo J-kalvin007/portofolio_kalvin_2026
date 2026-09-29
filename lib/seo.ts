@@ -23,7 +23,23 @@
 import type { Metadata } from 'next';
 import type { Locale } from 'next-intl';
 import { routing } from '@/i18n/routing';
-import { SITE_NAME, SITE_ROUTES } from '@/lib/site';
+import { CONTACT, SITE_NAME, SITE_ROUTES, SITE_URL, SOCIAL_LINKS } from '@/lib/site';
+import { mostUsedTechnologies } from '@/lib/data/projects';
+
+/**
+ * Déploiement de **préversion** (une branche déployée sur Vercel).
+ *
+ * @remarks Sans cette distinction, chaque préversion est un site complet,
+ * indexable, au contenu identique à la production : Google y voit des doublons
+ * et peut choisir d'indexer l'adresse de préversion à la place du domaine. Les
+ * pages d'une préversion portent donc `noindex`.
+ *
+ * Variable **serveur** : elle ne vaut quelque chose que dans les métadonnées et
+ * `robots.txt`, qui sont produits sur le serveur. Lue depuis un composant
+ * client, elle serait `undefined` — d'où la lecture ici, dans un module que
+ * seuls les rendus serveur importent.
+ */
+export const IS_PREVIEW_DEPLOYMENT = process.env.VERCEL_ENV === 'preview';
 
 /** Correspondance langue de l'URL → locale OpenGraph (format `langue_PAYS`). */
 export const OPEN_GRAPH_LOCALES = { fr: 'fr_FR', en: 'en_US' } as const satisfies Record<Locale, string>;
@@ -85,5 +101,94 @@ export function pageMetadata({ locale, path, title, description, imageAlt, absol
       description,
       images: [SHARE_IMAGE.url],
     },
+  };
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ▌ DONNÉES STRUCTURÉES (JSON-LD)
+   ───────────────────────────────────────────────────────────────────────────
+   Les balises `<meta>` disent à un moteur comment afficher une page ; le
+   JSON-LD lui dit **de qui et de quoi elle parle**. Pour un portfolio, c'est la
+   différence entre « une page qui contient le mot Kalvin Takoudjou » et « la
+   page officielle de la personne Kalvin Takoudjou, ingénieur logiciel à Lomé,
+   dont voici les profils publics ». C'est ce qui permet à Google de relier le
+   site, le profil LinkedIn et le compte GitHub à une seule et même entité.
+
+   Deux règles tenues ici :
+    - **aucun fait inventé.** Tout vient de `lib/site.ts`, des projets réels ou
+      des catalogues de traduction déjà affichés sur le site ;
+    - **rien qui contredise la page.** Une donnée structurée qui annonce ce que
+      la page ne montre pas est une infraction aux consignes de Google, et se
+      paie par une perte de confiance sur l'ensemble du domaine.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/** Nombre de technologies déclarées dans `knowsAbout`. */
+const EXPERTISE_COUNT = 8;
+
+/** Code ISO 3166-1 alpha-2 du pays, exigé par `PostalAddress`. */
+const COUNTRY_CODE = 'TG';
+
+interface StructuredDataInput {
+  locale: Locale;
+  /** Intitulé du poste, traduit (`home.receipt.role`). */
+  jobTitle: string;
+  /** Description du site, traduite (`seo.site.description`). */
+  description: string;
+  /** Employeur affiché sur la fiche de profil (`home.receipt.positionValue`). */
+  employer?: string;
+}
+
+/**
+ * Graphe décrivant la personne et le site.
+ *
+ * Les deux nœuds se citent par `@id` plutôt que de se recopier : un moteur
+ * comprend alors qu'il s'agit d'un seul auteur, et non d'une personne et d'un
+ * éditeur qui porteraient le même nom.
+ */
+export function structuredData({ locale, jobTitle, description, employer }: StructuredDataInput) {
+  const personId = `${SITE_URL}/#kalvin`;
+  const siteId = `${SITE_URL}/#site`;
+
+  return {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'Person',
+        '@id': personId,
+        name: 'Kalvin Takoudjou',
+        url: `${SITE_URL}/${locale}`,
+        jobTitle,
+        description,
+        image: `${SITE_URL}${SHARE_IMAGE.url}`,
+        email: `mailto:${CONTACT.email}`,
+        // Forme internationale, sans espace : c'est celle que les moteurs
+        // savent rapprocher d'une fiche existante.
+        telephone: CONTACT.phones[0].href.replace('tel:', ''),
+        address: {
+          '@type': 'PostalAddress',
+          addressLocality: CONTACT.city,
+          addressCountry: COUNTRY_CODE,
+        },
+        knowsLanguage: [...routing.locales],
+        // Les technologies réellement employées par les projets publiés : la
+        // liste suit les données, elle ne se rédige pas à la main.
+        knowsAbout: mostUsedTechnologies(EXPERTISE_COUNT),
+        ...(employer ? { worksFor: { '@type': 'Organization', name: employer } } : {}),
+        /* `sameAs` sert à dire « c'est la même personne, ailleurs ». On n'y met
+           donc que des profils publics : un lien WhatsApp est un moyen de
+           contact, pas une identité, et l'y faire figurer brouille le signal. */
+        sameAs: SOCIAL_LINKS.filter((link) => !link.href.includes('wa.me')).map((link) => link.href),
+      },
+      {
+        '@type': 'WebSite',
+        '@id': siteId,
+        url: `${SITE_URL}/${locale}`,
+        name: SITE_NAME,
+        description,
+        inLanguage: locale,
+        author: { '@id': personId },
+        publisher: { '@id': personId },
+      },
+    ],
   };
 }

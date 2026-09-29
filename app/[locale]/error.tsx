@@ -37,7 +37,7 @@ import { useClientSnapshot } from '@/hooks/useClientSnapshot';
 const ERROR_MESSAGES = {
   fr: {
     title: 'Erreur inattendue',
-    message: "Une erreur est survenue pendant l'affichage de cette page. Vous pouvez réessayer — le reste du site reste accessible.",
+    message: "Une erreur est survenue pendant l’affichage de cette page. Vous pouvez réessayer — le reste du site reste accessible.",
   },
   en: {
     title: 'Something went wrong',
