@@ -144,7 +144,7 @@ export default function Footer() {
           <p>
             © {COPYRIGHT_YEAR} Kalvin Takoudjou. {t('copyright')}
           </p>
-          {/* <p>{t('madeIn')}</p> */}
+          <p>{t('madeIn')}</p>
         </div>
       </div>
     </footer>

@@ -665,6 +665,7 @@ Chacun a coûté du temps ; ils sont documentés à l'endroit du code concerné.
 | **Le cache de build de Turbopack peut servir du CSS périmé** | En cas de doute : `rm -rf .next` avant `npm run build` |
 | **Les rangées d'une grille s'étirent** | Deux éléments côte à côte ont la même hauteur ; le plus court étirait ses propres rangées et son texte décrochait du titre. `align-content: start` |
 | **`innerText` est vide dans un `<details>` fermé** | Utiliser `textContent` pour inspecter du contenu replié |
+| **`scroll-behavior: smooth` sur `html` casse le retour en haut** | À chaque changement de route, Next.js remet la page en haut par des `scrollIntoView()`, qui héritent du `scroll-behavior` de la page : en `smooth`, ils s'animent au lieu de s'appliquer. Dès la **deuxième** visite d'une route (déjà en cache), la page s'affiche sans attente et la dernière animation en vol se conclut sur une position périmée — la page s'ouvrait à 800 px du haut. Le défilement doux est donc réservé aux ancres réellement visées : `html:has(:target)` |
 
 ## Conventions de code
 

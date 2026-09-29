@@ -334,27 +334,27 @@ export default function ProjectShowcase({ entries, categories }: ProjectShowcase
   // il est construit une fois, puis inséré aux deux endroits.
   const index = (
     <ol className="pj-index">
-        {shown.map((entry) => (
-          <li key={entry.anchor}>
-            <a
-              href={`#${entry.anchor}`}
-              className="pj-index-link"
-              aria-current={current === entry.anchor ? 'true' : undefined}
-              onClick={(event) => {
-                if (event.metaKey || event.ctrlKey || event.shiftKey) return;
-                event.preventDefault();
-                requestOpen(entry.anchor);
-              }}
-            >
-              <span className="pj-index-num">{entry.number}</span>
-              <span className="pj-index-thumb">
-                <Image src={entry.cover} alt="" fill sizes="44px" />
-              </span>
-              <span className="pj-index-title">{entry.title}</span>
-            </a>
-          </li>
-        ))}
-      </ol>
+      {shown.map((entry) => (
+        <li key={entry.anchor}>
+          <a
+            href={`#${entry.anchor}`}
+            className="pj-index-link"
+            aria-current={current === entry.anchor ? 'true' : undefined}
+            onClick={(event) => {
+              if (event.metaKey || event.ctrlKey || event.shiftKey) return;
+              event.preventDefault();
+              requestOpen(entry.anchor);
+            }}
+          >
+            <span className="pj-index-num">{entry.number}</span>
+            <span className="pj-index-thumb">
+              <Image src={entry.cover} alt="" fill sizes="44px" />
+            </span>
+            <span className="pj-index-title">{entry.title}</span>
+          </a>
+        </li>
+      ))}
+    </ol>
   );
 
   return (

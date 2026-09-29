@@ -172,6 +172,7 @@ export const PROJECTS: Project[] = [
     images: ['/images_projets/lotus_01.webp', '/images_projets/lotus_04.webp', '/images_projets/lotus_03.webp', '/images_projets/lotus_05.webp', '/images_projets/lotus_06.webp'],
     techStack: ['Next.js', 'Prisma ORM', 'Docker', 'Chart.js', 'Tailwind CSS'],
     githubUrl: 'https://github.com/J-kalvin007',
+    liveUrl: 'https://lotus.com',
     featured: false,
     year: '2026',
   },

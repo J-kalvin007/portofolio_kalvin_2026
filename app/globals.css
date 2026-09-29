@@ -46,9 +46,32 @@
     scrollbar-color: var(--ds-line-strong) var(--ds-surface);
   }
 
-  /* Défilement doux, uniquement pour qui n'a pas demandé moins d'animations. */
+  /* Défilement doux — réservé aux ancres internes, et à elles seules.
+     ─────────────────────────────────────────────────────────────────────────
+     Déclaré sur `html` sans condition, il ouvrait la page suivante au milieu
+     du texte au lieu de son début. Le mécanisme, mesuré au navigateur :
+
+      1. à chaque changement de route, Next.js remet la page en haut en
+         appelant `scrollIntoView()` sur les sections de la page d'arrivée, de
+         la dernière à la première ;
+      2. `scrollIntoView()` sans argument hérite du `scroll-behavior` de la
+         boîte de défilement. Avec `smooth`, ces appels **s'animent** au lieu
+         de s'appliquer : ils se mettent en file au lieu de se remplacer ;
+      3. quand la route visée est déjà en cache — c'est-à-dire dès la deuxième
+         visite — la nouvelle page s'affiche sans attente, et la dernière
+         animation en vol se conclut sur une position calculée avant elle.
+         La page s'ouvrait alors à 800 px du haut, titre hors écran.
+
+     La correction ne supprime pas le défilement doux : elle le limite au seul
+     cas qui le demande, une ancre effectivement visée dans la page (`#main`
+     du lien d'évitement, `#projets` de l'accueil, `#projet-…` du repli sans
+     JavaScript). Un changement de route n'a pas de cible : `:has(:target)` n'y
+     correspond pas, et le retour en haut redevient instantané — donc exact.
+
+     `:target` ne suit que les vraies navigations par fragment : la fiche de
+     projet, qui écrit son ancre par `replaceState`, ne rallume pas la règle. */
   @media (prefers-reduced-motion: no-preference) {
-    html {
+    html:has(:target) {
       scroll-behavior: smooth;
     }
   }
