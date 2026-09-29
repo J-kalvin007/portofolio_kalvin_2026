@@ -2,24 +2,24 @@
   "seo": {
     "site": {
       "title": "Kalvin Takoudjou — Ingénieur logiciel full-stack et mobile",
-      "description": "Portfolio de Kalvin Takoudjou, ingénieur logiciel full-stack, backend et mobile à Lomé : plateformes web, applications mobiles et SaaS, de l’analyse du besoin à la mise en production.",
+      "description": "Portfolio de Kalvin Takoudjou, ingénieur logiciel à Lomé. Applications web, mobiles et SaaS pour des besoins métier concrets, du développement au déploiement en production.",
       "imageAlt": "Kalvin Takoudjou — Ingénieur logiciel"
     },
     "home": {
       "title": "Kalvin Takoudjou — Ingénieur logiciel full-stack et mobile",
-      "description": "Plateformes web et mobiles en production : e-commerce avec wallet et paiements Mobile Money, billetterie digitale, SaaS agricole offline-first. L’architecture de chaque projet est détaillée."
+      "description": "Applications web et mobiles conçues pour des usages concrets : e-commerce, billetterie et gestion agricole hors ligne. Chaque projet montre ce qui a été construit et comment il fonctionne."
     },
     "projects": {
-      "title": "Projets",
-      "description": "Les projets de Kalvin Takoudjou, un par un : captures d’écran, stack et schéma d’architecture de chaque application web et mobile."
+      "title": "Projets — Kalvin Takoudjou",
+      "description": "Découvrez les applications construites par Kalvin Takoudjou : fonctionnalités, écrans, technologies et architecture."
     },
     "about": {
-      "title": "À propos",
-      "description": "Parcours de Kalvin Takoudjou, ingénieur logiciel à Lomé : expérience, formation, méthode de travail et recommandations."
+      "title": "À propos — Kalvin Takoudjou",
+      "description": "Parcours de Kalvin Takoudjou : expérience en développement logiciel, formation, méthode de travail et projets réalisés."
     },
     "contact": {
-      "title": "Contact",
-      "description": "Écrire à Kalvin Takoudjou pour un projet, un poste ou une question. Réponse sous 24 heures."
+      "title": "Contact — Kalvin Takoudjou",
+      "description": "Contacter Kalvin Takoudjou pour un projet, une opportunité ou une question."
     }
   },
   "nav": {
@@ -31,7 +31,7 @@
     "mainNavigation": "Navigation principale",
     "openMenu": "Ouvrir le menu",
     "closeMenu": "Fermer le menu",
-    "switchLanguage": "Switch to English"
+    "switchLanguage": "Passer en anglais"
   },
   "project": {
     "categories": {
@@ -41,42 +41,42 @@
       "saas": "SaaS",
       "platform": "Mobile + Web + API"
     },
-    "ticket": "Billet n°",
-    "stack": "Stack",
+    "ticket": "Fiche n°",
+    "stack": "Technologies",
     "technologies": "Technologies",
     "liveSite": "Voir le site",
-    "sourceCode": "Code source",
-    "details": "Détails du projet",
-    "newTab": "(nouvel onglet)",
+    "sourceCode": "Voir le code",
+    "details": "Voir les détails",
+    "newTab": "(ouvre un nouvel onglet)",
     "inProduction": "En production",
     "highlights": "Ce que j’ai construit"
   },
   "projects_page": {
     "overline": "Projets livrés",
-    "title": "Les projets, un par un.",
-    "lead": "{count} projets. Pour chacun : ce qu’il fait, à quoi il ressemble et comment il est construit.",
-    "filtersLabel": "Filtrer par catégorie",
+    "title": "Des logiciels construits pour des besoins réels.",
+    "lead": "{count} projets. Pour chacun : son objectif, ce que j’ai développé et la manière dont le système fonctionne.",
+    "filtersLabel": "Filtrer les projets",
     "filterAll": "Tous",
     "shown": "{count, plural, =0 {Aucun projet affiché} one {# projet affiché} other {# projets affichés}}",
-    "index": "Sommaire",
-    "indexLabel": "Sommaire des projets",
+    "index": "Projets",
+    "indexLabel": "Liste des projets",
     "sheetNumber": "Projet {number}/{total}",
-    "closeDetails": "Fermer la fiche du projet",
+    "closeDetails": "Fermer les détails du projet",
     "descriptionColumn": "Description",
-    "pauseHint": "Survolez pour figer",
-    "readDossier": "Lire le dossier",
-    "dossierTitle": "Le dossier",
+    "pauseHint": "Survolez pour mettre en pause",
+    "readDossier": "Voir la fiche complète",
+    "dossierTitle": "Fiche du projet",
     "previousProject": "Projet précédent",
     "nextProject": "Projet suivant"
   },
   "about_page": {
     "overline": "À propos",
-    "title": "Ingénieur logiciel à Lomé, du besoin métier à la mise en production.",
-    "lead": "Je m’appelle Kalvin Takoudjou. Je conçois et développe des solutions complètes — plateformes web, applications mobiles et systèmes SaaS — de l’analyse du besoin jusqu’à la mise en production : API REST, architectures backend, applications cross-platform, paiements, multi-tenant et offline-first.",
-    "ctaCv": "Télécharger le CV (PDF)",
+    "title": "Ingénieur logiciel à Lomé. Je construis pour des usages concrets.",
+    "lead": "Je m’appelle Kalvin Takoudjou. Je développe des applications web et mobiles pour répondre à des besoins concrets : vendre, gérer, suivre, contrôler ou automatiser une activité. J’aime comprendre le fonctionnement réel d’un projet avant d’écrire le code, puis aller jusqu’au déploiement et à la mise en production.",
+    "ctaCv": "Télécharger mon CV (PDF)",
     "ctaContact": "Me contacter",
     "card": {
-      "label": "Fiche de Kalvin Takoudjou",
+      "label": "Profil de Kalvin Takoudjou",
       "portraitAlt": "Portrait de Kalvin Takoudjou",
       "role": "Ingénieur logiciel full-stack et mobile",
       "position": "Poste",
@@ -85,85 +85,85 @@
       "educationValue": "MBA Big Data & IA, en cours",
       "based": "Basé à",
       "basedValue": "Lomé, Togo · UTC+0",
-      "missions": "Missions",
+      "missions": "Mode de travail",
       "missionsValue": "À distance",
       "stamp": "Disponible",
       "languages": "Langues",
-      "languagesValue": "Français (C2) · anglais",
+      "languagesValue": "Français (TCF C2) · anglais",
       "zoom": "Voir le portrait en grand",
       "close": "Fermer le portrait"
     },
     "career": {
       "overline": "Parcours",
-      "title": "Expérience et formation.",
-      "experience": "Expérience",
+      "title": "Expérience et formation, en quelques étapes.",
+      "experience": "Expérience professionnelle",
       "education": "Formation",
-      "tasks": "Missions"
+      "tasks": "Missions principales"
     },
     "method": {
-      "overline": "Méthode",
-      "title": "Comment je travaille.",
+      "overline": "Ma façon de travailler",
+      "title": "Du besoin métier au logiciel en production.",
       "business": {
-        "title": "Partir du métier",
-        "text": "Pointage des employés, vente de billets, stock, location : chaque projet commence par le processus réel qu’il doit servir, avant le choix des outils."
+        "title": "Je pars du fonctionnement réel",
+        "text": "Stocks, billetterie, pointage, commandes ou paiements : avant de choisir une technologie, je cherche à comprendre ce que les utilisateurs doivent réellement faire."
       },
       "system": {
-        "title": "Un seul système, plusieurs écrans",
-        "text": "Application mobile sur le terrain, tableau de bord sur le web, API au centre : les mêmes données servent chaque écran."
+        "title": "Je relie les différentes parties du logiciel",
+        "text": "Application mobile, interface web, API et base de données doivent fonctionner ensemble. Je construis le système pour que les données circulent correctement entre ces différentes interfaces."
       },
       "delivery": {
-        "title": "Livrer, pas seulement développer",
-        "text": "Docker, reverse proxy, sauvegardes et restauration, supervision des services : un logiciel est terminé lorsqu’il tourne, et reste exploitable, chez ceux qui l’utilisent."
+        "title": "Je vais jusqu’à la mise en production",
+        "text": "Développement, Docker, serveur Linux, reverse proxy, sauvegardes et supervision : le travail ne s’arrête pas quand le code fonctionne sur mon ordinateur."
       },
       "architecture": {
-        "title": "Rendre l’architecture lisible",
-        "text": "Chaque projet de ce portfolio est présenté avec son schéma — composants, échanges, stack — pour qu’un client comme un développeur comprenne ce qui a été construit."
+        "title": "Je documente ce qui a été construit",
+        "text": "J’explique les composants, les flux de données et les choix techniques pour que le système reste compréhensible pour une équipe technique comme pour une personne qui pilote le projet."
       }
     },
     "recommendations": {
       "overline": "Recommandations",
-      "title": "Ce qu’en disent ceux qui ont travaillé avec moi."
+      "title": "Ce que mes collaborateurs disent de mon travail."
     },
     "profile": {
       "overline": "Profil",
-      "title": "Langues, atouts et centres d’intérêt.",
+      "title": "Langues, points forts et centres d’intérêt.",
       "languagesTitle": "Langues",
       "languages": [
         {
           "name": "Français",
           "level": "Langue maternelle",
-          "note": "Excellente maîtrise à l’oral et à l’écrit. Attestation TFC, niveau C2."
+          "note": "Très bonne maîtrise à l’oral et à l’écrit. Certificat TCF, niveau C2."
         },
         {
           "name": "Anglais",
-          "level": "Niveau intermédiaire",
-          "note": "Lecture et rédaction de documentation technique ; expression orale en cours de consolidation."
+          "level": "Intermédiaire",
+          "note": "Je peux lire et rédiger de la documentation technique ; mon expression orale continue de progresser."
         }
       ],
-      "strengthsTitle": "Atouts",
+      "strengthsTitle": "Points forts",
       "strengths": [
         {
-          "title": "Rigueur d’ingénierie",
-          "text": "Une approche structurée de la conception, du développement et de la résolution des problèmes."
+          "title": "Rigueur",
+          "text": "Je structure le travail, j’isole les problèmes et je cherche une solution claire avant de complexifier le système."
         },
         {
           "title": "Autonomie",
-          "text": "Prendre en charge un sujet de manière responsable, de l’analyse jusqu’à sa mise en œuvre."
+          "text": "Je peux prendre un sujet en charge de l’analyse jusqu’à la livraison, tout en sachant demander un avis quand c’est nécessaire."
         },
         {
           "title": "Résolution de problèmes",
-          "text": "Analyse méthodique, diagnostic et recherche de solutions robustes."
+          "text": "Je pars des faits, je cherche la cause du problème et je corrige sans masquer les symptômes."
         },
         {
           "title": "Culture open source",
-          "text": "Technologies ouvertes, documentation, partage de connaissances et bonnes pratiques."
+          "text": "J’utilise des outils ouverts, je consulte leur documentation et je privilégie les pratiques que l’équipe peut comprendre et maintenir."
         }
       ],
       "interestsTitle": "Centres d’intérêt",
       "interests": [
         {
           "title": "Basketball",
-          "text": "NBA, EuroLeague, analyse et actualité sportive."
+          "text": "NBA, EuroLeague et analyse sportive."
         },
         {
           "title": "Nature et découverte",
@@ -171,7 +171,7 @@
         },
         {
           "title": "IA et automatisation",
-          "text": "Veille technologique et nouvelles applications de l’intelligence artificielle."
+          "text": "Je suis les usages concrets de l’IA et les façons d’automatiser des tâches utiles."
         }
       ]
     },
@@ -182,56 +182,56 @@
   },
   "contact_page": {
     "overline": "Contact",
-    "title": "Prenons rendez-vous.",
-    "lead": "Réservez un créneau dans mon agenda, ou écrivez-moi directement. Réponse sous 24 heures.",
+    "title": "Parlons de votre besoin.",
+    "lead": "Vous pouvez réserver un créneau ou m’écrire directement. Je vous répondrai dès que possible.",
     "labels": {
       "email": "E-mail",
       "phone": "Téléphone",
       "location": "Localisation"
     },
     "details": {
-      "title": "Coordonnées",
+      "title": "Mes coordonnées",
       "localTime": "Heure locale",
-      "status": "Statut",
+      "status": "Disponibilité",
       "statusValue": "Disponible · à distance",
-      "cv": "Télécharger le CV (PDF)"
+      "cv": "Télécharger mon CV (PDF)"
     },
     "form": {
-      "title": "Envoyer un message",
+      "title": "Décrire votre besoin",
       "note": "Tous les champs sont obligatoires.",
       "name": "Nom complet",
       "namePlaceholder": "Votre nom",
       "email": "E-mail",
       "emailPlaceholder": "vous@exemple.com",
       "subject": "Sujet",
-      "subjectPlaceholder": "Projet, poste, question…",
+      "subjectPlaceholder": "Projet, poste, collaboration…",
       "message": "Message",
-      "messagePlaceholder": "Votre besoin, votre calendrier, votre contexte…",
+      "messagePlaceholder": "Expliquez simplement votre besoin, votre contexte et votre échéance…",
       "counter": "{count} / {max} caractères",
-      "submit": "Envoyer le message",
-      "submitting": "Envoi en cours…"
+      "submit": "Envoyer",
+      "submitting": "Envoi…"
     },
     "validation": {
-      "nameMin": "Le nom doit contenir au moins 2 caractères",
-      "nameMax": "Le nom ne doit pas dépasser {max} caractères",
-      "emailInvalid": "Adresse e-mail invalide",
-      "subjectMin": "Le sujet doit contenir au moins 3 caractères",
-      "subjectMax": "Le sujet ne doit pas dépasser {max} caractères",
-      "messageMin": "Le message doit contenir au moins 10 caractères",
-      "messageMax": "Message trop long"
+      "nameMin": "Le nom doit contenir au moins 2 caractères.",
+      "nameMax": "Le nom ne doit pas dépasser {max} caractères.",
+      "emailInvalid": "Cette adresse e-mail n’est pas valide.",
+      "subjectMin": "Le sujet doit contenir au moins 3 caractères.",
+      "subjectMax": "Le sujet ne doit pas dépasser {max} caractères.",
+      "messageMin": "Le message doit contenir au moins 10 caractères.",
+      "messageMax": "Le message est trop long."
     },
     "notification": {
       "success": "Message envoyé",
-      "error": "Envoi impossible",
-      "successMessage": "Message envoyé avec succès !",
-      "errorMessage": "Erreur lors de l’envoi.",
-      "networkError": "Erreur réseau. Veuillez réessayer.",
+      "error": "Échec de l’envoi",
+      "successMessage": "Votre message a bien été envoyé.",
+      "errorMessage": "Le message n’a pas pu être envoyé.",
+      "networkError": "Problème de connexion. Vérifiez votre réseau et réessayez.",
       "dismiss": "Fermer la notification"
     },
     "booking": {
       "overline": "Prendre rendez-vous",
-      "title": "Réservez un créneau.",
-      "lead": "Choisissez une date, une heure et la façon de se parler. Les créneaux affichés sont ceux qui restent libres dans mon agenda.",
+      "title": "Choisissez un créneau.",
+      "lead": "Choisissez une date, une heure et votre moyen de contact. Seuls les créneaux encore disponibles sont proposés.",
       "steps": {
         "date": "Choisir une date",
         "time": "Choisir une heure",
@@ -243,26 +243,26 @@
       "noSlots": "aucun créneau",
       "pickDayFirst": "Choisissez d’abord une date dans le calendrier.",
       "duration": "{minutes} minutes",
-      "timeZoneNote": "Heures de Lomé (UTC+0)",
+      "timeZoneNote": "Heure de Lomé (UTC+0)",
       "yourTime": "≈ {time} chez vous",
-      "loading": "Chargement des disponibilités…",
-      "loadError": "Impossible de charger les disponibilités.",
+      "loading": "Chargement des créneaux…",
+      "loadError": "Les disponibilités ne peuvent pas être chargées.",
       "retry": "Réessayer",
-      "recap": "Créneau retenu",
-      "recapEmpty": "Aucun créneau sélectionné",
+      "recap": "Créneau choisi",
+      "recapEmpty": "Aucun créneau choisi",
       "submit": "Demander ce créneau",
-      "submitting": "Envoi en cours…",
-      "sendError": "Erreur lors de l’envoi de la demande.",
-      "networkError": "Erreur réseau. Veuillez réessayer.",
+      "submitting": "Envoi…",
+      "sendError": "La demande n’a pas pu être envoyée.",
+      "networkError": "Problème de connexion. Réessayez.",
       "fields": {
         "name": "Nom complet",
         "email": "E-mail",
         "phone": "Téléphone",
-        "subject": "Sujet du rendez-vous",
+        "subject": "Objet du rendez-vous",
         "message": "Contexte",
-        "messagePlaceholder": "Votre besoin, votre calendrier, votre contexte…",
+        "messagePlaceholder": "Expliquez votre besoin, votre contexte et votre échéance…",
         "optional": "(facultatif)",
-        "channel": "Comment se parler",
+        "channel": "Mode de contact",
         "phoneTooLong": "Numéro trop long",
         "messageTooLong": "Texte trop long"
       },
@@ -270,76 +270,76 @@
         "video": "Visioconférence",
         "phone": "Téléphone",
         "whatsapp": "WhatsApp",
-        "onsite": "Sur place à Lomé"
+        "onsite": "En personne à Lomé"
       },
       "confirmed": {
         "title": "Demande envoyée",
-        "text": "Je vous confirme ce créneau par e-mail sous 24 heures. En attendant, il n’est plus proposé à personne d’autre.",
+        "text": "Je vous confirme le créneau par e-mail sous 24 heures. D’ici là, il reste réservé pour cette demande.",
         "ics": "Ajouter à mon agenda",
-        "again": "Demander un autre créneau"
+        "again": "Choisir un autre créneau"
       }
     },
-    "messageSummary": "Vous préférez écrire un message ?"
+    "messageSummary": "Vous préférez écrire directement ?"
   },
   "contact_cta": {
     "overline": "Contact",
-    "title": "Un projet, un poste, une question ?",
-    "description": "Réponse sous 24 heures.",
+    "title": "Un projet, un poste ou une question ?",
+    "description": "Écrivez-moi ou réservez un créneau.",
     "email": "Écrire un e-mail",
-    "form": "Passer par le formulaire",
-    "cv": "Télécharger le CV"
+    "form": "Ouvrir le formulaire",
+    "cv": "Télécharger mon CV"
   },
   "notfound": {
     "code": "404",
-    "title": "Page introuvable",
-    "description": "Cette adresse ne correspond à aucune page du portfolio.",
+    "title": "Cette page n’existe pas",
+    "description": "L’adresse demandée ne correspond à aucune page de ce portfolio.",
     "cta": "Retour à l’accueil"
   },
   "footer": {
-    "description": "Ingénieur logiciel full-stack et mobile. Applications web et mobiles livrées en production, depuis Lomé.",
+    "description": "Ingénieur logiciel full-stack et mobile. Je construis et déploie des applications web et mobiles depuis Lomé.",
     "navigation": "Navigation",
     "contact": "Contact",
-    "elsewhere": "Ailleurs",
+    "elsewhere": "Mes liens",
     "copyright": "Tous droits réservés.",
-    "madeIn": "Conçu et développé à Lomé."
+    "madeIn": "Toute la gloire à Dieu."
   },
   "experience": {
     "job1_title": "Ingénieur logiciel full-stack et mobile",
     "job1_subtitle": "Myriade Groupe",
     "job1_period": "2024 — Présent",
-    "job1_description": "Conception, développement et mise en production de solutions web et mobiles sur mesure, de l’analyse des besoins et des cahiers des charges jusqu’au déploiement, à la maintenance et à l’évolution des applications.",
+    "job1_description": "Je conçois, développe et mets en production des applications web et mobiles. Je pars du besoin, construis les différentes briques du produit, puis assure le déploiement et les évolutions.",
     "job1_location": "Lomé, Togo",
     "job2_title": "Responsable informatique",
     "job2_subtitle": "La Régale",
     "job2_period": "2023 — 2024",
-    "job2_description": "Gestion du parc informatique, maintenance des équipements et support technique aux utilisateurs, pour garder les outils de travail en condition opérationnelle.",
+    "job2_description": "J’assurais le fonctionnement quotidien du matériel et des outils informatiques : maintenance, configuration, dépannage et assistance aux utilisateurs.",
     "job2_location": "Lomé, Togo",
     "edu1_title": "MBA Big Data et Intelligence Artificielle",
     "edu1_subtitle": "STUDI France",
     "edu1_period": "2026 — En cours",
-    "edu1_description": "Spécialisation en architectures de données massives, machine learning et intégration de l’IA dans les processus métier.",
+    "edu1_description": "Formation axée sur les architectures de données, le machine learning et les applications de l’intelligence artificielle aux besoins des entreprises.",
     "edu1_location": "En ligne",
     "edu2_title": "Licence en Systèmes Informatiques et Logiciels",
     "edu2_subtitle": "IAEC Togo",
     "edu2_period": "2020 — 2023",
-    "edu2_description": "Création et développement de sites web et d’applications mobiles, avec bases de données et outils de gestion.",
+    "edu2_description": "Formation en développement logiciel, bases de données et conception d’applications web et mobiles.",
     "edu2_location": "Lomé, Togo",
     "job1_points": [
-      "Analyse des besoins clients et des cahiers des charges, traduits en solutions fonctionnelles et techniques.",
-      "Conception d’architectures applicatives, de modèles de données, d’API REST et de flux métier adaptés à chaque projet.",
-      "Développement et intégration de backends, d’API, d’interfaces web, d’applications mobiles et de services tiers.",
-      "Bonnes pratiques d’ingénierie : qualité et modularité du code, sécurité, validation des données, gestion des erreurs.",
-      "Tests, débogage, optimisation et stabilisation avant la mise en production.",
-      "Déploiement, maintenance corrective et évolutive, amélioration continue selon les retours clients.",
-      "Veille technologique pour améliorer la performance, la fiabilité et l’évolutivité des applications."
+      "Analyser les besoins et les cahiers des charges pour définir ce que l’application doit réellement faire.",
+      "Concevoir l’architecture, les modèles de données, les API REST et les principaux flux métier.",
+      "Développer les backends, les interfaces web, les applications mobiles et les intégrations avec des services externes.",
+      "Gérer les points importants avant la livraison : validation des données, sécurité, gestion des erreurs et qualité du code.",
+      "Tester, corriger et stabiliser les fonctionnalités avant leur mise en production.",
+      "Déployer et maintenir les applications, puis les faire évoluer selon les besoins et les retours.",
+      "Suivre les outils et pratiques utiles pour améliorer la fiabilité et la maintenabilité des applications."
     ],
     "job2_points": [
-      "Gestion et suivi du parc informatique : ordinateurs, périphériques et équipements.",
-      "Maintenance préventive et corrective des postes et périphériques.",
-      "Diagnostic et résolution des incidents matériels et logiciels.",
-      "Installation, configuration et mise à jour des postes, logiciels et équipements.",
-      "Support technique et accompagnement des utilisateurs.",
-      "Suivi des besoins en maintenance, remplacement et renouvellement du matériel."
+      "Gérer le parc informatique : ordinateurs, périphériques et autres équipements.",
+      "Effectuer la maintenance préventive et corrective.",
+      "Diagnostiquer et résoudre les incidents matériels et logiciels.",
+      "Installer, configurer et mettre à jour les postes et les logiciels.",
+      "Assister les utilisateurs et résoudre leurs problèmes au quotidien.",
+      "Suivre les besoins de maintenance, de remplacement et de renouvellement du matériel."
     ]
   },
   "testimonials": {
@@ -358,77 +358,77 @@
   },
   "projects_data": {
     "atelier": {
-      "short": "Plateforme e-commerce full-stack de vente et de livraison de produits biologiques, avec wallet interne et paiements Mobile Money et carte bancaire.",
-      "full": "API REST, back-office d’administration, espace client, wallet interne, paiements multicanal, traitements asynchrones et infrastructure Docker orientée production.",
+      "short": "E-commerce pour vendre et livrer des produits bio, avec comptes clients, wallet interne et paiements Mobile Money et carte bancaire.",
+      "full": "Une boutique en ligne avec API, espace d’administration, espace client, commandes, paiements et traitements en arrière-plan, déployée avec Docker.",
       "domain": "E-commerce & paiements",
       "points": [
-        "Backend Django / Django REST Framework : API REST couvrant utilisateurs, catalogue, commandes, paiements, transactions et wallet.",
-        "Frontend Next.js / TypeScript : catalogue, panier, commandes, compte client et suivi des opérations.",
-        "Back-office d’administration : utilisateurs, produits, catégories, commandes, stocks, paiements et transactions.",
-        "Espace client : profil, adresses, commandes, paiements, wallet et historique des transactions.",
-        "Paiements Mobile Money avec PayDunya et carte bancaire avec Stripe, webhooks et synchronisation sécurisée des statuts de paiement et de commande.",
-        "Cycle de vie complet d’une commande : création, paiement, traitement et livraison.",
-        "Rôles et droits d’accès séparant administration et clients ; soft delete, traçabilité et horodatage des données métier.",
-        "Tâches asynchrones et automatisées avec Celery et Redis.",
-        "Production sous Docker et Linux : PostgreSQL, Django, Next.js, Redis, Celery et reverse proxy Traefik, avec gestion des médias.",
-        "Sauvegarde et restauration de la base de données et des médias ; bases de monitoring et d’administration des services Docker."
+        "API Django / Django REST Framework pour les utilisateurs, le catalogue, les commandes, les paiements, les transactions et le wallet.",
+        "Interface Next.js / TypeScript pour parcourir le catalogue, gérer le panier, suivre les commandes et consulter son compte.",
+        "Back-office pour gérer les utilisateurs, produits, catégories, stocks, commandes, paiements et transactions.",
+        "Espace client pour gérer le profil, les adresses, les commandes, les paiements, le wallet et l’historique des transactions.",
+        "Paiements Mobile Money avec PayDunya et paiements par carte avec Stripe, avec webhooks pour mettre à jour les statuts.",
+        "Gestion du cycle complet d’une commande : création, paiement, traitement puis livraison.",
+        "Gestion des rôles et des droits d’accès entre administration et clients, avec suppression logique, traçabilité et horodatage.",
+        "Tâches en arrière-plan avec Celery et Redis pour automatiser certains traitements.",
+        "Déploiement sous Docker et Linux avec PostgreSQL, Django, Next.js, Redis, Celery et Traefik.",
+        "Sauvegarde et restauration de la base de données et des médias."
       ]
     },
     "shemm": {
-      "short": "Plateforme mobile Android et iOS de gestion d’événements et de billetterie digitale : découverte, achat de billets, paiement Mobile Money et contrôle à l’entrée.",
-      "full": "Application Flutter pour les participants, back-office pour les organisateurs, API Django REST, billets numériques sécurisés, scanner de validation et statistiques de ventes et de fréquentation.",
+      "short": "Plateforme de billetterie pour découvrir des événements, acheter des billets, payer par Mobile Money et contrôler les entrées.",
+      "full": "Application Flutter pour les participants, back-office pour les organisateurs et API Django pour gérer les événements, les billets, les paiements et le contrôle à l’entrée.",
       "domain": "Event Tech & mobile",
       "points": [
-        "Application Android et iOS en Flutter / Dart : découverte des événements, réservation et gestion des billets.",
-        "Backend Django / Django REST Framework et API REST dédiées à l’application mobile.",
-        "Billetterie complète : catégories de billets, tarifs, quotas, disponibilités, commandes, participants et émission des billets.",
-        "Paiements Mobile Money avec PayDunya et suivi du cycle de vie des transactions.",
-        "Back-office de création, de configuration et de gestion des événements et de leur billetterie.",
-        "Billets numériques sécurisés, de l’achat à l’utilisation : création, paiement, émission, validation.",
-        "Scanner optimisé pour une validation rapide aux entrées à forte affluence, qui détecte les billets invalides ou déjà utilisés.",
-        "Suivi en temps réel des entrées ; tableaux de bord des ventes, revenus, billets émis et utilisés, disponibilités et taux de remplissage.",
-        "API séparant utilisateurs, événements, billetterie, paiements, validation et statistiques ; contrôle d’accès et traçabilité des transactions."
+        "Application Android et iOS en Flutter / Dart pour découvrir les événements, réserver et gérer ses billets.",
+        "Backend Django / Django REST Framework et API REST dédiés à l’application mobile.",
+        "Gestion des billets : catégories, tarifs, quotas, disponibilités, commandes, participants et émission des billets.",
+        "Paiements Mobile Money avec PayDunya et suivi des transactions.",
+        "Back-office pour créer, configurer et administrer les événements et leur billetterie.",
+        "Billets numériques gérés de bout en bout : création, paiement, émission puis validation.",
+        "Scanner conçu pour vérifier rapidement les billets à l’entrée et signaler les billets invalides ou déjà utilisés.",
+        "Suivi des entrées et tableaux de bord sur les ventes, revenus, billets émis et utilisés, disponibilités et taux de remplissage.",
+        "API séparant utilisateurs, événements, billetterie, paiements, validation et statistiques, avec contrôle d’accès et traçabilité."
       ]
     },
     "challenger": {
-      "short": "Logiciel Windows de calcul du temps de travail des employés.",
+      "short": "Logiciel Windows pour enregistrer le pointage et calculer le temps de travail des employés.",
       "full": "Logiciel Windows de pointage et de calcul du temps de travail des employés."
     },
     "mboashop": {
-      "short": "E-commerce complet avec panier dynamique, paiement intégré et dashboard admin.",
-      "full": "Plateforme e-commerce full-stack avec catalogue riche, panier dynamique, paiement multi-canal et dashboard analytics."
+      "short": "Boutique en ligne avec panier, paiement intégré et espace d’administration.",
+      "full": "Application e-commerce avec catalogue, panier dynamique, paiements multicanal et tableau de bord d’administration."
     },
     "myriade": {
-      "short": "Site vitrine corporate premium pour un groupe de services B2B & B2C multi-secteurs.",
-      "full": "Plateforme institutionnelle moderne avec architecture SSG, animations cinématiques, spatial et optimisation SEO."
+      "short": "Site corporate pour un groupe de services présent sur plusieurs secteurs, destiné aux clients B2B et B2C.",
+      "full": "Site institutionnel avec pages pré-rendues, animations, présentation des activités et travail spécifique sur le référencement."
     },
     "stock": {
-      "short": "Gestion de stock en temps réel avec alertes automatiques et reporting avancé.",
-      "full": "SaaS de gestion d’inventaire avec suivi temps réel, alertes de réapprovisionnement et codes-barres."
+      "short": "Application de gestion de stock avec suivi des quantités, alertes et reporting.",
+      "full": "Outil de gestion d’inventaire avec suivi des stocks, alertes de réapprovisionnement et lecture de codes-barres."
     },
     "green": {
-      "short": "SaaS web et mobile multi-tenant de gestion des exploitations agricoles, des équipes et des opérations terrain, avec une application mobile offline-first.",
-      "full": "Chaque entreprise dispose d’un espace isolé. Les techniciens exécutent leurs opérations sur mobile, même sans réseau, puis les synchronisent avec la plateforme dès que la connexion revient.",
+      "short": "SaaS web et mobile pour gérer des exploitations agricoles, les équipes et les opérations de terrain, même sans connexion.",
+      "full": "Chaque entreprise dispose de son propre espace. Les techniciens travaillent sur mobile hors ligne puis synchronisent leurs données avec la plateforme lorsque la connexion revient.",
       "domain": "SaaS & offline-first",
       "points": [
-        "Architecture SaaS multi-tenant : isolation des données et gestion indépendante de plusieurs entreprises.",
-        "Gestion des entreprises, exploitations, fermes, parcelles, équipes et utilisateurs, avec des rôles pour gestionnaires, ingénieurs agronomes, techniciens et ouvriers.",
-        "Workflow des opérations agricoles : création, planification, assignation, exécution, suivi et clôture.",
-        "Application mobile Flutter / Dart pour les techniciens, conçue offline-first avec une base locale Isar.",
-        "Synchronisation entre l’appareil et le cloud, limitée aux données nécessaires pour rester fluide sur des connexions à faible débit.",
-        "Cohérence entre état local et état distant malgré une connectivité intermittente.",
-        "Backend Django / Django REST Framework et API REST consommées par la plateforme web Next.js / TypeScript et l’application mobile.",
+        "Architecture SaaS multi-tenant permettant de séparer les données et la gestion de plusieurs entreprises.",
+        "Gestion des entreprises, exploitations, fermes, parcelles, équipes et utilisateurs, avec des rôles adaptés à chaque profil.",
+        "Cycle des opérations agricoles : création, planification, attribution, exécution, suivi et clôture.",
+        "Application mobile Flutter / Dart pensée pour fonctionner hors ligne avec une base locale Isar.",
+        "Synchronisation entre le mobile et le serveur en limitant les données échangées pour rester utilisable avec une connexion faible.",
+        "Gestion de la cohérence des données locales et distantes malgré les coupures de réseau.",
+        "Backend Django / Django REST Framework utilisé par la plateforme web Next.js / TypeScript et l’application mobile.",
         "Abonnements et paiements de la plateforme avec Stripe.",
-        "Traçabilité des opérations métier ; architecture orientée scalabilité, résilience et séparation des données entre tenants."
+        "Traçabilité des opérations métier et séparation des données entre entreprises."
       ]
     },
     "locamanager": {
-      "short": "Application mobile Android et iOS de gestion complète de biens immobiliers mis en location.",
-      "full": "Application mobile Android et iOS de gestion de biens immobiliers mis en location, avec pipeline de données, API RESTful et visualisations interactives."
+      "short": "Application mobile pour gérer des biens immobiliers mis en location.",
+      "full": "Application Android et iOS de gestion de biens locatifs, avec API REST, traitement de données et visualisations."
     },
     "lotus": {
-      "short": "Plateforme multi-tenant de gestion complète de magasins et de boutiques.",
-      "full": "Plateforme multi-tenant de gestion des promotions en magasin, avec pipeline de données, API RESTful et visualisations interactives."
+      "short": "Plateforme de gestion de magasins et de boutiques, avec séparation des données entre entreprises.",
+      "full": "Plateforme multi-tenant pour gérer des magasins et des promotions en point de vente, avec API REST et visualisations de données."
     }
   },
   "a11y": {
@@ -443,63 +443,63 @@
   },
   "home": {
     "overline": "Ingénieur logiciel · full-stack, backend et mobile",
-    "title": "Je code les logiciels qui font tourner des entreprises réelles.",
-    "lead": "Boutique bio avec wallet et paiements Mobile Money, billetterie avec scan à l’entrée, SaaS agricole qui fonctionne hors connexion. De l’analyse du besoin à la mise en production, depuis Lomé.",
+    "title": "Je conçois et mets en production des logiciels qui font tourner les entreprises.",
+    "lead": "Je construis des applications web et mobiles pour des besoins métier concrets : vendre des produits, gérer des commandes, vendre des billets, suivre des opérations agricoles ou centraliser des données. Je développe le frontend, le backend et les API, puis je prends aussi en charge le déploiement et l’environnement de production.",
     "ctaProjects": "Voir les projets",
-    "ctaCv": "Télécharger le CV (PDF)",
+    "ctaCv": "Télécharger mon CV (PDF)",
     "receipt": {
-      "label": "Récapitulatif du profil",
+      "label": "En bref",
       "role": "Ingénieur logiciel full-stack et mobile",
       "location": "Lomé, Togo",
       "localTime": "Heure locale",
-      "status": "Statut",
+      "status": "Disponibilité",
       "statusValue": "Disponible",
-      "missions": "Missions",
-      "missionsValue": "Remote",
-      "position": "Poste",
+      "missions": "Mode de travail",
+      "missionsValue": "À distance",
+      "position": "Poste actuel",
       "positionValue": "Ingénieur · Myriade Groupe",
-      "education": "Formation",
+      "education": "Formation actuelle",
       "educationValue": "MBA Big Data & IA",
-      "total": "Total livré",
-      "stack": "Stack",
+      "total": "Projets présentés",
+      "stack": "Technologies principales",
       "stamp": "Disponible",
-      "thanks": "Merci de votre visite"
+      "thanks": "Merci pour votre visite"
     },
     "projects": {
       "overline": "Projets livrés",
-      "title": "Chaque projet, avec son architecture.",
-      "description": "Ce qui a été livré, pour quel usage, et comment c’est construit.",
-      "others": "Les autres projets",
-      "othersHint": "Déplier une ligne pour voir le billet et son architecture.",
-      "viewAll": "Tous les projets"
+      "title": "Voici ce que j’ai réellement construit.",
+      "description": "Pour chaque projet : son objectif, les fonctionnalités développées et les technologies utilisées.",
+      "others": "Autres projets",
+      "othersHint": "Ouvrez une ligne pour voir les détails et l’architecture.",
+      "viewAll": "Voir tous les projets"
     },
     "stack": {
-      "overline": "Relevé de compétences",
-      "title": "Les outils, par usage.",
-      "description": "Chaque technologie indique le nombre de projets présentés ici qui l’utilisent.",
+      "overline": "Technologies",
+      "title": "Les outils derrière les projets.",
+      "description": "Je présente les technologies par rôle : interface, backend, données et déploiement.",
       "usage": "{count, plural, =0 {autres travaux} one {# projet} other {# projets}}",
       "categories": {
         "frontend": "Interfaces web et mobiles",
-        "backend": "Serveurs, API et paiements",
+        "backend": "Backend, API et paiements",
         "database": "Données",
         "devops": "Déploiement et outils"
       }
     },
     "career": {
       "overline": "Parcours",
-      "title": "Expérience et formation.",
-      "experience": "Expérience",
+      "title": "Mon expérience et ma formation.",
+      "experience": "Expérience professionnelle",
       "education": "Formation",
-      "cta": "Parcours complet"
+      "cta": "Voir le parcours complet"
     }
   },
   "architecture": {
     "caption": "Architecture",
     "summary": "Architecture de {title}",
     "components": "Composants",
-    "connections": "Liaisons",
+    "connections": "Connexions",
     "link": "{from} vers {to}",
-    "external": "Externe",
+    "external": "Service externe",
     "nodes": {
       "employees": "Employés",
       "timeClock": "Pointage",

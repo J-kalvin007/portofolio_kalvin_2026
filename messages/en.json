@@ -2,24 +2,24 @@
   "seo": {
     "site": {
       "title": "Kalvin Takoudjou — Full-stack & mobile software engineer",
-      "description": "Portfolio of Kalvin Takoudjou, full-stack, backend and mobile software engineer in Lomé: web platforms, mobile apps and SaaS, from requirements to production.",
+      "description": "Portfolio of Kalvin Takoudjou, a software engineer in Lomé building web, mobile and SaaS products for concrete business needs, from development to production.",
       "imageAlt": "Kalvin Takoudjou — Software Engineer"
     },
     "home": {
       "title": "Kalvin Takoudjou — Full-stack & mobile software engineer",
-      "description": "Web and mobile platforms in production: e-commerce with a wallet and Mobile Money payments, digital ticketing, an offline-first farming SaaS. Every project comes with its architecture."
+      "description": "Web and mobile products built for real use cases: e-commerce, event ticketing and an offline-first farming SaaS. See what was built and how each system works."
     },
     "projects": {
-      "title": "Projects",
-      "description": "Kalvin Takoudjou's projects, one by one: screenshots, stack and architecture diagram of each web and mobile application."
+      "title": "Projects — Kalvin Takoudjou",
+      "description": "Explore the applications built by Kalvin Takoudjou: features, screens, technologies and architecture."
     },
     "about": {
-      "title": "About",
-      "description": "Background of Kalvin Takoudjou, software engineer in Lomé: experience, education, way of working and recommendations."
+      "title": "About — Kalvin Takoudjou",
+      "description": "Kalvin Takoudjou’s background: software engineering experience, education, working approach and delivered projects."
     },
     "contact": {
-      "title": "Contact",
-      "description": "Write to Kalvin Takoudjou about a project, a position or a question. Reply within 24 hours."
+      "title": "Contact — Kalvin Takoudjou",
+      "description": "Contact Kalvin Takoudjou about a project, an opportunity or a question."
     }
   },
   "nav": {
@@ -31,7 +31,7 @@
     "mainNavigation": "Main navigation",
     "openMenu": "Open menu",
     "closeMenu": "Close menu",
-    "switchLanguage": "Passer en français"
+    "switchLanguage": "Switch to French"
   },
   "project": {
     "categories": {
@@ -41,88 +41,88 @@
       "saas": "SaaS",
       "platform": "Mobile + Web + API"
     },
-    "ticket": "Ticket no.",
-    "stack": "Stack",
+    "ticket": "Sheet no.",
+    "stack": "Technologies",
     "technologies": "Technologies",
     "liveSite": "Visit the site",
-    "sourceCode": "Source code",
-    "details": "Project details",
+    "sourceCode": "View the code",
+    "details": "View project details",
     "newTab": "(opens in a new tab)",
     "inProduction": "In production",
     "highlights": "What I built"
   },
   "projects_page": {
     "overline": "Shipped projects",
-    "title": "The projects, one by one.",
-    "lead": "{count} projects. For each one: what it does, what it looks like and how it is built.",
-    "filtersLabel": "Filter by category",
+    "title": "Software built for real use cases.",
+    "lead": "{count} projects. For each one: what it is for, what I built and how the system works.",
+    "filtersLabel": "Filter projects",
     "filterAll": "All",
     "shown": "{count, plural, =0 {No project shown} one {# project shown} other {# projects shown}}",
-    "index": "Contents",
-    "indexLabel": "Project contents",
+    "index": "Projects",
+    "indexLabel": "Project list",
     "sheetNumber": "Project {number}/{total}",
-    "closeDetails": "Close the project sheet",
+    "closeDetails": "Close project details",
     "descriptionColumn": "Description",
     "pauseHint": "Hover to pause",
-    "readDossier": "Read the full sheet",
-    "dossierTitle": "Full sheet",
+    "readDossier": "View the full sheet",
+    "dossierTitle": "Project sheet",
     "previousProject": "Previous project",
     "nextProject": "Next project"
   },
   "about_page": {
     "overline": "About",
-    "title": "Software engineer in Lomé, from business need to production.",
-    "lead": "I'm Kalvin Takoudjou. I design and build complete solutions — web platforms, mobile apps and SaaS systems — from requirements to production: REST APIs, backend architectures, cross-platform apps, payments, multi-tenancy and offline-first.",
-    "ctaCv": "Download the CV (PDF)",
-    "ctaContact": "Get in touch",
+    "title": "Software engineer in Lomé. I build for real use cases.",
+    "lead": "I’m Kalvin Takoudjou. I build web and mobile applications for concrete needs: selling, managing, tracking, checking or automating a business activity. I like to understand how a project works in practice before I write the code, then take the product through deployment and production.",
+    "ctaCv": "Download my CV (PDF)",
+    "ctaContact": "Contact me",
     "card": {
-      "label": "Kalvin Takoudjou profile card",
+      "label": "Kalvin Takoudjou profile",
       "portraitAlt": "Portrait of Kalvin Takoudjou",
       "role": "Full-stack & mobile software engineer",
-      "position": "Position",
+      "position": "Current role",
       "positionValue": "Engineer · Myriade Groupe",
       "education": "Education",
       "educationValue": "MBA Big Data & AI, ongoing",
       "based": "Based in",
       "basedValue": "Lomé, Togo · UTC+0",
-      "missions": "Engagements",
+      "missions": "Work format",
       "missionsValue": "Remote",
       "stamp": "Available",
       "languages": "Languages",
-      "languagesValue": "French (C2) · English",
+      "languagesValue": "French (TFC C2) · English",
       "zoom": "View the portrait full screen",
       "close": "Close the portrait"
     },
     "career": {
       "overline": "Background",
-      "title": "Experience and education.",
-      "experience": "Experience",
+      "title": "Experience and education, in a few steps.",
+      "experience": "Professional experience",
       "education": "Education",
-      "tasks": "Responsibilities"
+      "tasks": "Main responsibilities"
     },
     "method": {
-      "overline": "Method",
-      "title": "How I work.",
+      "overline": "How I work",
+      "title": "From business need to software in production.",
       "business": {
-        "title": "Start from the business",
-        "text": "Employee time tracking, ticket sales, inventory, rentals: every project starts from the real process it has to serve, before any choice of tools."
+        "title": "I start with how the work actually happens",
+        "text": "Inventory, ticketing, attendance, orders or payments: before choosing a technology, I first understand what users really need to do."
       },
       "system": {
-        "title": "One system, several screens",
-        "text": "A mobile app in the field, a dashboard on the web, an API at the centre: the same data serves every screen."
+        "title": "I connect the parts of the product",
+        "text": "Mobile app, web interface, API and database have to work together. I build the system so data moves correctly between these interfaces."
       },
       "delivery": {
-        "title": "Ship, not just build",
-        "text": "Docker, reverse proxy, backup and restore, service monitoring: software is finished when it runs, and stays operable, for the people who use it."
+        "title": "I take the product to production",
+        "text": "Development, Docker, Linux servers, reverse proxy, backups and monitoring: the work does not stop when the code works on my computer."
       },
       "architecture": {
-        "title": "Make the architecture readable",
-        "text": "Every project in this portfolio comes with its diagram — components, exchanges, stack — so that a client and a developer alike can see what was built."
+        "title": "I document what was built",
+        "text": "I explain the components, data flows and technical choices so the system stays understandable to both technical teams and people running the project."
       }
     },
     "recommendations": {
       "overline": "Recommendations",
-      "title": "What people who worked with me say."
+      "title": "What people I’ve worked with say about my work."
     },
     "profile": {
       "overline": "Profile",
@@ -131,47 +131,47 @@
       "languages": [
         {
           "name": "French",
-          "level": "Native language",
-          "note": "Excellent spoken and written command. TFC certificate, C2 level."
+          "level": "Native",
+          "note": "Strong spoken and written French. TCF certificate, C2 level."
         },
         {
           "name": "English",
           "level": "Intermediate",
-          "note": "Reads and writes technical documentation; spoken English still being strengthened."
+          "note": "I can read and write technical documentation; my spoken English is still improving."
         }
       ],
       "strengthsTitle": "Strengths",
       "strengths": [
         {
-          "title": "Engineering rigour",
-          "text": "A structured approach to design, development and problem solving."
+          "title": "Rigour",
+          "text": "I structure the work, isolate problems and look for a clear solution before adding complexity."
         },
         {
-          "title": "Autonomy",
-          "text": "Taking ownership of a topic, from analysis to delivery."
+          "title": "Ownership",
+          "text": "I can take a topic from analysis to delivery, while knowing when to ask for input."
         },
         {
           "title": "Problem solving",
-          "text": "Methodical analysis, diagnosis and the search for robust solutions."
+          "text": "I start from the facts, look for the root cause and fix the problem rather than hiding its symptoms."
         },
         {
           "title": "Open-source culture",
-          "text": "Open technologies, documentation, knowledge sharing and good practices."
+          "text": "I use open tools, read their documentation and prefer practices that a team can understand and maintain."
         }
       ],
       "interestsTitle": "Interests",
       "interests": [
         {
           "title": "Basketball",
-          "text": "NBA, EuroLeague, sports analysis and news."
+          "text": "NBA, EuroLeague and sports analysis."
         },
         {
           "title": "Nature and discovery",
-          "text": "Hiking, walks and discovering new places."
+          "text": "Hiking, walks and discovering new environments."
         },
         {
           "title": "AI and automation",
-          "text": "Technology watch and new applications of artificial intelligence."
+          "text": "Following practical AI use cases and ways to automate useful tasks."
         }
       ]
     },
@@ -182,8 +182,8 @@
   },
   "contact_page": {
     "overline": "Contact",
-    "title": "Let’s book a meeting.",
-    "lead": "Reserve a slot in my calendar, or write to me directly. Reply within 24 hours.",
+    "title": "Let’s talk about your need.",
+    "lead": "Book a time or send me a message directly. I’ll get back to you as soon as possible.",
     "labels": {
       "email": "Email",
       "phone": "Phone",
@@ -192,46 +192,46 @@
     "details": {
       "title": "Contact details",
       "localTime": "Local time",
-      "status": "Status",
+      "status": "Availability",
       "statusValue": "Available · remote",
-      "cv": "Download the CV (PDF)"
+      "cv": "Download my CV (PDF)"
     },
     "form": {
-      "title": "Send a message",
+      "title": "Tell me what you need",
       "note": "All fields are required.",
       "name": "Full name",
       "namePlaceholder": "Your name",
       "email": "Email",
       "emailPlaceholder": "you@example.com",
       "subject": "Subject",
-      "subjectPlaceholder": "Project, position, question…",
+      "subjectPlaceholder": "Project, position, collaboration…",
       "message": "Message",
-      "messagePlaceholder": "Your need, your timeline, your context…",
+      "messagePlaceholder": "Briefly describe your need, your context and your timeline…",
       "counter": "{count} / {max} characters",
-      "submit": "Send the message",
+      "submit": "Send",
       "submitting": "Sending…"
     },
     "validation": {
-      "nameMin": "Name must be at least 2 characters",
-      "nameMax": "Name must be at most {max} characters",
-      "emailInvalid": "Invalid email address",
-      "subjectMin": "Subject must be at least 3 characters",
-      "subjectMax": "Subject must be at most {max} characters",
-      "messageMin": "Message must be at least 10 characters",
-      "messageMax": "Message too long"
+      "nameMin": "Name must contain at least 2 characters.",
+      "nameMax": "Name must not exceed {max} characters.",
+      "emailInvalid": "This email address is not valid.",
+      "subjectMin": "Subject must contain at least 3 characters.",
+      "subjectMax": "Subject must not exceed {max} characters.",
+      "messageMin": "Message must contain at least 10 characters.",
+      "messageMax": "Message is too long."
     },
     "notification": {
       "success": "Message sent",
       "error": "Could not send",
-      "successMessage": "Message sent successfully!",
-      "errorMessage": "Error sending message.",
-      "networkError": "Network error. Please try again.",
+      "successMessage": "Your message has been sent.",
+      "errorMessage": "The message could not be sent.",
+      "networkError": "Connection problem. Check your network and try again.",
       "dismiss": "Dismiss notification"
     },
     "booking": {
       "overline": "Book a meeting",
-      "title": "Pick a time slot.",
-      "lead": "Choose a date, a time and how we talk. The slots shown are the ones still free in my calendar.",
+      "title": "Choose a time.",
+      "lead": "Choose a date, a time and how you want to talk. Only available slots are shown.",
       "steps": {
         "date": "Pick a date",
         "time": "Pick a time",
@@ -245,24 +245,24 @@
       "duration": "{minutes} minutes",
       "timeZoneNote": "Lomé time (UTC+0)",
       "yourTime": "≈ {time} your time",
-      "loading": "Loading availability…",
-      "loadError": "Availability could not be loaded.",
+      "loading": "Loading time slots…",
+      "loadError": "Available times could not be loaded.",
       "retry": "Try again",
-      "recap": "Selected slot",
-      "recapEmpty": "No slot selected",
-      "submit": "Request this slot",
+      "recap": "Selected time",
+      "recapEmpty": "No time selected",
+      "submit": "Request this time",
       "submitting": "Sending…",
       "sendError": "The request could not be sent.",
-      "networkError": "Network error. Please try again.",
+      "networkError": "Connection problem. Please try again.",
       "fields": {
         "name": "Full name",
         "email": "Email",
         "phone": "Phone",
-        "subject": "Meeting subject",
+        "subject": "Meeting topic",
         "message": "Context",
-        "messagePlaceholder": "Your need, your timeline, your context…",
+        "messagePlaceholder": "Briefly describe your need, your context and your timeline…",
         "optional": "(optional)",
-        "channel": "How we talk",
+        "channel": "How we’ll talk",
         "phoneTooLong": "Number too long",
         "messageTooLong": "Text too long"
       },
@@ -270,76 +270,76 @@
         "video": "Video call",
         "phone": "Phone",
         "whatsapp": "WhatsApp",
-        "onsite": "On site in Lomé"
+        "onsite": "In person in Lomé"
       },
       "confirmed": {
         "title": "Request sent",
-        "text": "I confirm this slot by email within 24 hours. Until then, it is no longer offered to anyone else.",
+        "text": "I’ll confirm the time by email within 24 hours. Until then, it is reserved for this request.",
         "ics": "Add to my calendar",
-        "again": "Request another slot"
+        "again": "Choose another time"
       }
     },
-    "messageSummary": "Would you rather write a message?"
+    "messageSummary": "Prefer to write directly?"
   },
   "contact_cta": {
     "overline": "Contact",
-    "title": "A project, a position, a question?",
-    "description": "Answered within 24 hours.",
+    "title": "A project, a position or a question?",
+    "description": "Send me a message or book a time.",
     "email": "Send an email",
-    "form": "Use the contact form",
-    "cv": "Download the CV"
+    "form": "Open the contact form",
+    "cv": "Download my CV"
   },
   "notfound": {
     "code": "404",
-    "title": "Page not found",
-    "description": "This address does not match any page in the portfolio.",
+    "title": "This page does not exist",
+    "description": "The address you requested does not match any page in this portfolio.",
     "cta": "Back to home"
   },
   "footer": {
-    "description": "Full-stack and mobile software engineer. Web and mobile applications shipped to production, from Lomé.",
+    "description": "Full-stack and mobile software engineer. I build and deploy web and mobile applications from Lomé.",
     "navigation": "Navigation",
     "contact": "Contact",
     "elsewhere": "Elsewhere",
     "copyright": "All rights reserved.",
-    "madeIn": "Designed and built in Lomé."
+    "madeIn": "All glory to God."
   },
   "experience": {
     "job1_title": "Full-stack & mobile software engineer",
     "job1_subtitle": "Myriade Groupe",
     "job1_period": "2024 — Present",
-    "job1_description": "Design, development and delivery of custom web and mobile solutions, from requirements and specifications to deployment, maintenance and evolution.",
+    "job1_description": "I design, build and ship web and mobile applications. I start from the business need, build the different parts of the product, then handle deployment and ongoing improvements.",
     "job1_location": "Lomé, Togo",
     "job2_title": "IT manager",
     "job2_subtitle": "La Régale",
     "job2_period": "2023 — 2024",
-    "job2_description": "IT asset management, equipment maintenance and user support, keeping the work tools operational.",
+    "job2_description": "I kept the company’s day-to-day IT environment running: maintenance, configuration, troubleshooting and user support.",
     "job2_location": "Lomé, Togo",
     "edu1_title": "MBA in Big Data and Artificial Intelligence",
     "edu1_subtitle": "STUDI France",
     "edu1_period": "2026 — Ongoing",
-    "edu1_description": "Specialisation in large-scale data architectures, machine learning and the integration of AI into business processes.",
+    "edu1_description": "Training focused on data architectures, machine learning and practical applications of AI to business needs.",
     "edu1_location": "Online",
     "edu2_title": "Bachelor's degree in Computer Systems and Software",
     "edu2_subtitle": "IAEC Togo",
     "edu2_period": "2020 — 2023",
-    "edu2_description": "Design and development of websites and mobile applications, with databases and management tools.",
+    "edu2_description": "Training in software development, databases and web and mobile application design.",
     "edu2_location": "Lomé, Togo",
     "job1_points": [
-      "Analysis of client needs and specifications, turned into functional and technical solutions.",
-      "Design of application architectures, data models, REST APIs and business flows suited to each project.",
-      "Development and integration of backends, APIs, web interfaces, mobile apps and third-party services.",
-      "Engineering practices: code quality and modularity, security, data validation, error handling.",
-      "Testing, debugging, optimisation and stabilisation before release.",
-      "Deployment, corrective and evolutive maintenance, continuous improvement from client feedback.",
-      "Technology watch to improve application performance, reliability and scalability."
+      "Analyse business needs and specifications to define what the application actually needs to do.",
+      "Design application architecture, data models, REST APIs and key business flows.",
+      "Build backends, web interfaces, mobile apps and integrations with external services.",
+      "Handle the essentials before release: data validation, security, error handling and code quality.",
+      "Test, debug and stabilise features before production.",
+      "Deploy and maintain applications, then evolve them as needs and feedback change.",
+      "Keep up with useful tools and practices that improve application reliability and maintainability."
     ],
     "job2_points": [
-      "Management and tracking of IT assets: computers, peripherals and equipment.",
-      "Preventive and corrective maintenance of workstations and peripherals.",
-      "Diagnosis and resolution of hardware and software incidents.",
-      "Installation, configuration and updates of workstations, software and equipment.",
-      "Technical support and guidance for users.",
-      "Tracking of maintenance, replacement and renewal needs."
+      "Manage IT assets: computers, peripherals and other equipment.",
+      "Perform preventive and corrective maintenance.",
+      "Diagnose and resolve hardware and software incidents.",
+      "Install, configure and update workstations and software.",
+      "Support users and solve day-to-day technical issues.",
+      "Track maintenance, replacement and equipment renewal needs."
     ]
   },
   "testimonials": {
@@ -358,77 +358,77 @@
   },
   "projects_data": {
     "atelier": {
-      "short": "Full-stack e-commerce platform for selling and delivering organic products, with an internal wallet and Mobile Money and card payments.",
-      "full": "REST API, admin back office, customer area, internal wallet, multi-channel payments, background jobs and production-grade Docker infrastructure.",
+      "short": "E-commerce platform for selling and delivering organic products, with customer accounts, an internal wallet, Mobile Money and card payments.",
+      "full": "Online store with API, admin area, customer area, orders, payments and background processing, deployed with Docker.",
       "domain": "E-commerce & payments",
       "points": [
-        "Django / Django REST Framework backend: REST API covering users, catalogue, orders, payments, transactions and wallet.",
-        "Next.js / TypeScript frontend: catalogue, cart, orders, customer account and order tracking.",
-        "Admin back office: users, products, categories, orders, stock, payments and transactions.",
-        "Customer area: profile, addresses, orders, payments, wallet and transaction history.",
-        "Mobile Money payments with PayDunya and card payments with Stripe, with webhooks and secure synchronisation of payment and order statuses.",
-        "Full order lifecycle: creation, payment, processing and delivery.",
-        "Roles and access rights separating administration from customers; soft delete, audit trail and timestamps on business data.",
-        "Background and scheduled jobs with Celery and Redis.",
-        "Production on Docker and Linux: PostgreSQL, Django, Next.js, Redis, Celery and a Traefik reverse proxy, with media management.",
-        "Database and media backup and restore; groundwork for monitoring and administration of the Docker services."
+        "Django / Django REST Framework API for users, catalogue, orders, payments, transactions and wallet operations.",
+        "Next.js / TypeScript interface for browsing products, managing the cart, tracking orders and viewing the customer account.",
+        "Admin area for users, products, categories, stock, orders, payments and transactions.",
+        "Customer area for profile, addresses, orders, payments, wallet and transaction history.",
+        "Mobile Money payments through PayDunya and card payments through Stripe, with webhooks to update statuses.",
+        "Full order flow: creation, payment, processing and delivery.",
+        "Role-based access between administration and customers, with soft deletion, audit trail and timestamps.",
+        "Background jobs with Celery and Redis for automated processing.",
+        "Docker and Linux deployment with PostgreSQL, Django, Next.js, Redis, Celery and Traefik.",
+        "Database and media backup and restore."
       ]
     },
     "shemm": {
-      "short": "Android and iOS platform for event management and digital ticketing: discovery, ticket purchase, Mobile Money payment and entry control.",
-      "full": "Flutter app for attendees, back office for organisers, Django REST API, secure digital tickets, validation scanner and sales and attendance statistics.",
+      "short": "Ticketing platform for discovering events, buying tickets, paying by Mobile Money and checking tickets at the entrance.",
+      "full": "Flutter app for attendees, organiser back office and Django API for events, tickets, payments and entry control.",
       "domain": "Event tech & mobile",
       "points": [
-        "Android and iOS app in Flutter / Dart: event discovery, booking and ticket management.",
+        "Android and iOS app in Flutter / Dart for event discovery, booking and ticket management.",
         "Django / Django REST Framework backend and REST APIs dedicated to the mobile app.",
-        "Complete ticketing: ticket categories, prices, quotas, availability, orders, attendees and ticket issuing.",
-        "Mobile Money payments with PayDunya and tracking of the transaction lifecycle.",
-        "Back office to create, configure and manage events and their ticketing.",
-        "Secure digital tickets, from purchase to use: creation, payment, issuing, validation.",
-        "Scanner optimised for fast validation at busy entrances, detecting invalid or already-used tickets.",
-        "Real-time entry tracking; dashboards for sales, revenue, tickets issued and used, availability and fill rate.",
-        "API separating users, events, ticketing, payments, validation and statistics; access control and transaction audit trail."
+        "Ticket management: categories, prices, quotas, availability, orders, attendees and ticket issuing.",
+        "Mobile Money payments with PayDunya and transaction tracking.",
+        "Back office for creating, configuring and managing events and ticketing.",
+        "Digital tickets handled end to end: creation, payment, issuing and validation.",
+        "Scanner built for fast entry checks and for detecting invalid or already-used tickets.",
+        "Entry tracking and dashboards covering sales, revenue, tickets issued and used, availability and fill rate.",
+        "API separated by users, events, ticketing, payments, validation and statistics, with access control and traceability."
       ]
     },
     "challenger": {
-      "short": "Windows software for calculating employee working hours.",
-      "full": "Windows timekeeping and employee working hours calculation software."
+      "short": "Windows software for employee timekeeping and working-hours calculation.",
+      "full": "Windows software for recording attendance and calculating employee working hours."
     },
     "mboashop": {
-      "short": "Full e-commerce platform with dynamic cart, integrated payment and admin dashboard.",
-      "full": "Full-stack e-commerce platform with rich catalog, dynamic cart, multi-channel payment and analytics dashboard."
+      "short": "Online store with cart, integrated payment and admin area.",
+      "full": "Full-stack e-commerce application with catalogue, dynamic cart, multi-channel payments and admin dashboard."
     },
     "myriade": {
-      "short": "Premium corporate showcase site for a multi-sector B2B & B2C services group.",
-      "full": "Modern institutional platform with SSG architecture, cinematic animations, and SEO optimization."
+      "short": "Corporate website for a multi-sector services group serving B2B and B2C audiences.",
+      "full": "Institutional website with pre-rendered pages, animations, service presentation and focused SEO work."
     },
     "stock": {
-      "short": "Real-time stock management with automatic alerts and advanced reporting.",
-      "full": "Inventory management SaaS with real-time tracking, restocking alerts and barcodes."
+      "short": "Stock management tool with quantity tracking, alerts and reporting.",
+      "full": "Inventory management tool with stock tracking, restocking alerts and barcode scanning."
     },
     "green": {
-      "short": "Multi-tenant web and mobile SaaS for managing farms, teams and field operations, with an offline-first mobile app.",
-      "full": "Each company gets an isolated workspace. Technicians carry out their operations on mobile, even without a network, and synchronise them with the platform as soon as the connection is back.",
+      "short": "Web and mobile SaaS for managing farms, teams and field operations, even without a network connection.",
+      "full": "Each company gets its own workspace. Technicians work from mobile devices offline, then sync their data with the platform when the connection returns.",
       "domain": "SaaS & offline-first",
       "points": [
-        "Multi-tenant SaaS architecture: data isolation and independent management of several companies.",
-        "Management of companies, farms, plots, teams and users, with roles for managers, agronomists, technicians and workers.",
-        "Farming operations workflow: creation, planning, assignment, execution, tracking and closing.",
-        "Flutter / Dart mobile app for technicians, built offline-first with an Isar local database.",
-        "Device-to-cloud synchronisation limited to the data needed, so it stays smooth on low-bandwidth connections.",
-        "Consistency between local and remote state despite intermittent connectivity.",
-        "Django / Django REST Framework backend and REST APIs used by the Next.js / TypeScript web platform and the mobile app.",
+        "Multi-tenant SaaS architecture that separates data and management across companies.",
+        "Management of companies, farms, plots, teams and users, with roles adapted to each profile.",
+        "Farming workflow covering creation, planning, assignment, execution, tracking and closing.",
+        "Flutter / Dart mobile app designed to work offline with a local Isar database.",
+        "Device-to-server synchronisation designed to keep the app usable on weak connections.",
+        "Handling of local and remote data consistency despite network interruptions.",
+        "Django / Django REST Framework backend used by the Next.js / TypeScript web platform and the mobile app.",
         "Platform subscriptions and payments with Stripe.",
-        "Audit trail of business operations; architecture designed for scalability, resilience and data separation between tenants."
+        "Audit trail for business operations and separation of data between companies."
       ]
     },
     "locamanager": {
-      "short": "Android and iOS mobile app for managing rental properties end to end.",
-      "full": "Android and iOS mobile app for managing rental properties, with a data pipeline, RESTful API and interactive visualizations."
+      "short": "Mobile app for managing rental properties.",
+      "full": "Android and iOS app for rental-property management, with REST API, data processing and visualisations."
     },
     "lotus": {
-      "short": "Multi-tenant platform for end-to-end store and shop management.",
-      "full": "Multi-tenant platform for in-store promotion management, with a data pipeline, RESTful API and interactive visualizations."
+      "short": "Store and shop management platform with company-level data separation.",
+      "full": "Multi-tenant platform for managing stores and in-store promotions, with REST API and data visualisations."
     }
   },
   "a11y": {
@@ -443,54 +443,54 @@
   },
   "home": {
     "overline": "Software engineer · full-stack, backend & mobile",
-    "title": "I build the software that real businesses run on.",
-    "lead": "An organic food store with a wallet and Mobile Money payments, event ticketing with scanning at the door, a farming SaaS that works offline. From requirements to production, from Lomé.",
+    "title": "I design and ship software that businesses actually use..",
+    "lead": "I build web and mobile applications for concrete business needs: selling products, managing orders, selling tickets, tracking field operations or bringing business data into one place. I work across the frontend, backend and APIs, and I also handle deployment and the production environment.",
     "ctaProjects": "See the projects",
-    "ctaCv": "Download the CV (PDF)",
+    "ctaCv": "Download my CV (PDF)",
     "receipt": {
-      "label": "Profile summary",
+      "label": "At a glance",
       "role": "Full-stack & mobile software engineer",
       "location": "Lomé, Togo",
       "localTime": "Local time",
-      "status": "Status",
+      "status": "Availability",
       "statusValue": "Available",
-      "missions": "Engagements",
+      "missions": "Work format",
       "missionsValue": "Remote",
-      "position": "Position",
+      "position": "Current role",
       "positionValue": "Engineer · Myriade Groupe",
-      "education": "Education",
+      "education": "Current education",
       "educationValue": "MBA Big Data & AI",
-      "total": "Total shipped",
-      "stack": "Stack",
+      "total": "Projects shown",
+      "stack": "Main technologies",
       "stamp": "Available",
-      "thanks": "Thank you for visiting"
+      "thanks": "Thanks for visiting"
     },
     "projects": {
       "overline": "Shipped projects",
-      "title": "Every project, with its architecture.",
-      "description": "What was shipped, what it is for, and how it is built.",
+      "title": "Software built for real use cases.",
+      "description": "For each project: the goal, the features I built and the technologies behind it.",
       "others": "Other projects",
-      "othersHint": "Expand a line to see the ticket and its architecture.",
-      "viewAll": "All projects"
+      "othersHint": "Open a row to see the details and architecture.",
+      "viewAll": "See all projects"
     },
     "stack": {
-      "overline": "Skills statement",
-      "title": "Tools, by purpose.",
-      "description": "Each technology shows how many of the projects presented here use it.",
+      "overline": "Technologies",
+      "title": "The tools behind the projects.",
+      "description": "Technologies are grouped by role: interface, backend, data and deployment.",
       "usage": "{count, plural, =0 {other work} one {# project} other {# projects}}",
       "categories": {
         "frontend": "Web and mobile interfaces",
-        "backend": "Servers, APIs and payments",
+        "backend": "Backend, APIs and payments",
         "database": "Data",
         "devops": "Deployment and tooling"
       }
     },
     "career": {
-      "overline": "Career",
-      "title": "Experience and education.",
-      "experience": "Experience",
+      "overline": "Background",
+      "title": "My experience and education.",
+      "experience": "Professional experience",
       "education": "Education",
-      "cta": "Full career"
+      "cta": "See the full background"
     }
   },
   "architecture": {
@@ -499,7 +499,7 @@
     "components": "Components",
     "connections": "Connections",
     "link": "{from} to {to}",
-    "external": "External",
+    "external": "External service",
     "nodes": {
       "employees": "Employees",
       "timeClock": "Time clock",
@@ -577,7 +577,7 @@
     "goTo": "Go to image {position}",
     "imagesLabel": "Project images",
     "screenshotAlt": "{title} — screenshot {position}",
-    "keyboardHint": "Left and right arrow keys to navigate, Esc to close",
+    "keyboardHint": "Use the left and right arrows to navigate, Esc to close",
     "count": "{count, plural, one {# screenshot} other {# screenshots}}",
     "openAt": "Enlarge screenshot {position} of {title}"
   }
