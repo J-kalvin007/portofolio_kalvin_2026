@@ -48,8 +48,14 @@ export default function ProfileReceipt() {
           {t('location')} · UTC+0
         </p>
 
+        {/* `rc-lines--wrap` : une valeur trop longue pour tenir à côté de son
+            libellé passe à la ligne suivante, alignée à droite. Sans cette
+            variante, le libellé — insécable — était comprimé et venait
+            s'imprimer **par-dessus** la valeur : sur un téléphone de 360 px,
+            « FORMATION ACTUELLE » recouvrait « MBA Big Data & IA ». Là où la
+            ligne tient (ordinateur), rien ne change. */}
         <hr className="rc-rule" />
-        <dl className="rc-lines">
+        <dl className="rc-lines rc-lines--wrap">
           <ReceiptLine label={t('localTime')}>
             <LocalTime locale={locale} timeZone={CONTACT.timeZone} />
           </ReceiptLine>
@@ -60,7 +66,7 @@ export default function ProfileReceipt() {
         </dl>
 
         <hr className="rc-rule" />
-        <dl className="rc-lines">
+        <dl className="rc-lines rc-lines--wrap">
           {PROJECT_COUNT_BY_CATEGORY.map(({ category, count }) => (
             <ReceiptLine key={category} label={tCategories(category)}>{padNumber(count)}</ReceiptLine>
           ))}

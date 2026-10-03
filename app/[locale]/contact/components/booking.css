@@ -301,6 +301,22 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+/* Panneaux empilés (téléphone) : celui des heures occupe toute la largeur, et
+   deux colonnes y tiennent aussi. La liste s'affiche alors **en entier**, sans
+   hauteur plafonnée ni défilement propre.
+
+   Une zone qui défile dans une page qui défile est un piège au doigt : arrivé
+   au bout de la liste, le geste ne fait plus rien — `overscroll-behavior:
+   contain` retient justement le défilement de la page — et le visiteur croit
+   l'écran bloqué. `overflow-y: visible` retire la zone de défilement
+   elle-même, et pas seulement son plafond. */
+@container booking (width < 34rem) {
+  .bk-slots {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-height: none;
+    overflow-y: visible;
+  }
+}
 
 .bk-slot {
   display: grid;

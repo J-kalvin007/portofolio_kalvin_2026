@@ -78,7 +78,7 @@ const C2 = 620;
  */
 export const ARCHITECTURES: Record<ProjectI18nKey, Architecture> = {
   /*
-   * E-commerce de produits biologiques — d'après la description de Kalvin :
+   * E-commerce de produits bio — d'après la description de Kalvin :
    * interface Next.js / TypeScript, back-office, API Django / DRF, PostgreSQL,
    * wallet interne, Celery et Redis, paiements Stripe et PayDunya (webhooks),
    * reverse proxy Traefik, médias et sauvegardes, le tout sous Docker.

@@ -281,12 +281,25 @@
 
 /* Le cadre reprend le rapport exact du fichier (720 × 1080) : la photo n'est
    ni recadrée ni déformée, et le mouvement d'agrandissement reste une pure
-   mise à l'échelle. */
+   mise à l'échelle.
+
+   Le cadre est dimensionné par sa **largeur**, la hauteur découlant du
+   rapport. La largeur est la plus petite de deux limites :
+     - la place disponible (`100 %`) — c'est elle qui joue sur un téléphone
+       tenu droit ;
+     - la largeur qu'aurait un cadre haut de 88 % de l'écran, plafonné à
+       52 rem, soit cette hauteur × 2 / 3 — c'est elle qui joue sur un
+       ordinateur ou un téléphone couché.
+
+   L'écriture précédente fixait la hauteur (`height: min(88svh, 52rem)`) et
+   bornait la largeur (`max-width: 100%`). Or une borne ne recalcule pas une
+   hauteur déjà fixée : sur un téléphone de 360 × 780, le cadre faisait
+   328 × 686 au lieu de 328 × 492, le rapport était perdu, et `object-fit:
+   cover` rognait les deux côtés du portrait. */
 .pv-frame {
   position: relative;
-  height: min(88svh, 52rem);
+  width: min(100%, calc(min(88svh, 52rem) * 2 / 3));
   aspect-ratio: 2 / 3;
-  max-width: 100%;
   margin: 0;
   overflow: hidden;
   border-radius: var(--radius-card);

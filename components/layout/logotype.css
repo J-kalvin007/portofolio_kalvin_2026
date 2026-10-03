@@ -11,6 +11,11 @@
   gap: 0.55rem;
   /* Le logotype ne se coupe jamais en deux, même dans une barre étroite. */
   flex: none;
+  /* Le prénom reste calé contre la perforation, où que le logotype soit posé.
+     `text-align` s'hérite : dans un parent centré — le pied de page sur
+     téléphone — « Kalvin » se serait recentré au-dessus de « Takoudjou »,
+     et le logotype n'aurait plus été le même d'un endroit à l'autre. */
+  text-align: start;
 }
 
 /* ── Bord perforé ──────────────────────────────────────────────────────────

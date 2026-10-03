@@ -587,6 +587,23 @@
   .pj-stage-stamp {
     display: none;
   }
+
+  /* Téléphone : le numéro passe au-dessus du titre au lieu de le précéder.
+     Sur une seule ligne, « PROJET 01/09 » et les trois boutons ne laissaient
+     au titre qu'environ 70 px à 360 px de large : « Atelier du Terroir »
+     s'affichait « Atelier d… ». Empilé, le titre dispose de toute la largeur
+     du bloc. La barre garde sa hauteur : les deux lignes tiennent dans
+     `--pj-bar-h`.
+
+     `align-items: stretch` est indispensable. La règle de base aligne sur la
+     ligne d'écriture, ce qui, en colonne, revient à réduire chaque élément à
+     son contenu : le titre, insécable, sortirait alors de la barre au lieu de
+     se terminer par des points de suspension. */
+  .pj-stage-id {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.1rem;
+  }
 }
 
 .pj-stage-tools {
@@ -696,7 +713,13 @@
 }
 
 .pj-stage-more {
-  display: inline-flex;
+  /* `flex` + `width: fit-content`, et non `inline-flex` : des marges
+     automatiques ne centrent qu'une boîte de niveau bloc. Sur une boîte en
+     ligne, elles valent zéro — sous 64 rem, là où elle n'est pas posée en
+     absolu, l'invitation restait donc collée au bord gauche de l'écran.
+     `fit-content` garde à la pastille la largeur de son libellé. */
+  display: flex;
+  width: fit-content;
   align-items: center;
   gap: 0.45rem;
   margin: 0.5rem auto 0;

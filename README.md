@@ -1,11 +1,12 @@
 # Portfolio de Kalvin Takoudjou
 
-Site personnel d'un ingénieur logiciel full-stack, backend et mobile basé à Lomé (Togo).
+Site personnel d'un ingénieur logiciel full-stack Kalvin Takoudjou, backend et mobile basé à Lomé (Togo).
 Il présente neuf projets livrés — avec, sous chacun, son **schéma d'architecture animé** —,
 un parcours, une méthode de travail et une **prise de rendez-vous** branchée sur un agenda réel.
 Bilingue français / anglais.
 
 Production : <https://portofolio-kalvin-2.vercel.app>
+Production : <https://kalvin.dealndconsulting.com>
 
 ---
 

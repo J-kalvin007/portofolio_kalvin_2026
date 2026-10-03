@@ -18,6 +18,20 @@
  * glyphes sont insérés dans le HTML et peints avec `currentColor` : le pied de
  * page reste un composant serveur, sans requête d'image ni logo noir invisible
  * en thème sombre.
+ *
+ * @responsive **L'alignement suit le nombre de colonnes.**
+ *  - Téléphone (moins de 640 px) : une seule colonne, **entièrement centrée sur
+ *    l'axe de l'écran** — logotype, texte, intitulés, liens, coordonnées et
+ *    mentions. Une colonne unique calée à gauche laissait la moitié droite de
+ *    l'écran vide : le pied de page paraissait inachevé.
+ *  - À partir de `sm` (deux colonnes, puis quatre à `lg`) : alignement à gauche.
+ *    Des colonnes côte à côte se lisent par leur bord commun, pas par leur axe.
+ *
+ * Le centrage tient en peu de règles, parce que `text-align` **s'hérite** :
+ * posé une fois sur la grille, il centre tout ce qui est du texte. Seuls trois
+ * endroits demandent une règle de plus, car une grille ou un `flex` place ses
+ * éléments avec `justify-*` et ignore `text-align` : le bloc d'identité, le
+ * libellé d'une coordonnée et sa valeur. Chacun est commenté sur place.
  */
 
 import { useTranslations } from 'next-intl';
@@ -78,11 +92,20 @@ export default function Footer() {
       <div className="ft-edge" aria-hidden="true" />
 
       <div className="mx-auto w-full max-w-content px-4 pb-10 pt-16 sm:px-6 lg:px-8">
-        <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)_minmax(0,1.3fr)_minmax(0,0.8fr)] lg:gap-10">
-          {/* Identité */}
-          <div className="grid content-start gap-3">
+        {/* `text-center` puis `sm:text-left` : la règle d'alignement de tout le
+            pied de page, héritée par les quatre blocs (voir `@responsive`). */}
+        <div className="grid gap-12 text-center sm:grid-cols-2 sm:text-left lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)_minmax(0,1.3fr)_minmax(0,0.8fr)] lg:gap-10">
+          {/* Identité.
+              `justify-items-center` : le logotype et le texte sont les éléments
+              d'une grille, qui les étire sur toute la largeur — `text-align`
+              ne déplace donc pas leur boîte. Centrés, ils se réduisent à leur
+              contenu et se posent sur l'axe.
+              `max-sm:text-balance` : centré, un dernier mot seul sur sa ligne
+              se voit aussitôt ; les lignes sont donc équilibrées, et seulement
+              là où le texte est centré. */}
+          <div className="grid content-start justify-items-center gap-3 sm:justify-items-start">
             <Logotype size="footer" />
-            <p className="max-w-[34ch] text-caption text-ink-soft">{t('description')}</p>
+            <p className="max-w-[34ch] text-caption text-ink-soft max-sm:text-balance">{t('description')}</p>
           </div>
 
           {/* Navigation */}
@@ -103,13 +126,17 @@ export default function Footer() {
             <dl className="mt-4 grid gap-3">
               {contact.map(({ icon, label, values }) => (
                 <div key={label} className="ft-datum">
-                  <dt className="flex items-center gap-2 text-overline font-semibold uppercase text-ink-muted">
+                  {/* `justify-center` : le libellé est un `flex` (pictogramme +
+                      texte). C'est le couple entier qui est centré, pas le
+                      texte seul — le pictogramme reste collé à son libellé. */}
+                  <dt className="flex items-center justify-center gap-2 text-overline font-semibold uppercase text-ink-muted sm:justify-start">
                     <ContactIcon name={icon} className="ft-glyph" />
                     {label}
                   </dt>
-                  {/* `justify-items: start` : la zone cliquable épouse le texte
-                      au lieu de couvrir toute la largeur de la colonne. */}
-                  <dd className="mt-0.5 grid justify-items-start gap-0.5 text-[0.9375rem]">
+                  {/* `justify-items` (au centre, puis `start`) et non l'étirement
+                      par défaut : la zone cliquable épouse le texte au lieu de
+                      couvrir toute la largeur de la colonne. */}
+                  <dd className="mt-0.5 grid justify-items-center gap-0.5 text-[0.9375rem] sm:justify-items-start">
                     {values.map(({ value, href }) =>
                       href ? (
                         <a key={value} href={href} className={`${FOOTER_LINK} wrap-anywhere`}>{value}</a>
@@ -139,8 +166,11 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Bas de reçu */}
-        <div className="mt-14 flex flex-col gap-2 border-t border-dashed border-line-strong pt-6 text-caption text-ink-muted sm:flex-row sm:justify-between">
+        {/* Bas de reçu.
+            Téléphone : les deux mentions sont empilées et centrées, comme le
+            reste. À partir de `sm`, elles se partagent la ligne — la première à
+            gauche, la seconde à droite (`justify-between`). */}
+        <div className="mt-14 flex flex-col gap-2 border-t border-dashed border-line-strong pt-6 text-center text-caption text-ink-muted max-sm:text-balance sm:flex-row sm:justify-between sm:text-left">
           <p>
             © {COPYRIGHT_YEAR} Kalvin Takoudjou. {t('copyright')}
           </p>
