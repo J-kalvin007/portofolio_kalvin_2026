@@ -8,6 +8,8 @@ import type { ReactNode } from 'react';
  * @description Enveloppe racine minimale. Elle ne rend volontairement ni `<html>`
  * ni `<body>` : ces balises sont produites par `app/[locale]/layout.tsx`, qui
  * seul connaît la langue de la requête et peut donc poser `lang` correctement.
+ * La régie (`app/regie/layout.tsx`), page d'administration hors langues, produit
+ * les siennes de la même façon.
  *
  * @architecture
  * C'est le motif documenté par `next-intl` pour une application entièrement

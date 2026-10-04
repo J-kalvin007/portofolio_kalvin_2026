@@ -1,0 +1,321 @@
+/**
+ * @file visual.css
+ * @description Lumières du fond et éclairage des boutons (voir
+ * `LightField.tsx`, `lib/visual/css.ts`).
+ *
+ * @architecture
+ * Feuille **hors couche Tailwind**, importée par `LightField.tsx`. Elle ne
+ * contient aucune valeur de réglage : tout vient des variables `--vx-*` et des
+ * attributs `data-vx-*` posés par `lib/visual/css.ts`. Sans ces attributs —
+ * c'est-à-dire avec les lumières éteintes — **aucune règle ci-dessous ne
+ * s'applique** : le site est rendu comme si ce fichier n'existait pas.
+ *
+ * Les attributs peuvent être portés par `<html>` (le site) ou par la zone
+ * d'aperçu de la régie : les sélecteurs sont des sélecteurs de descendance, et
+ * conviennent aux deux.
+ *
+ * @remarks **Rien n'est animé image par image.** Les lumières sont des
+ * éléments déplacés par `transform` et fondus par `opacity`, deux propriétés
+ * que le navigateur compose sur la carte graphique sans recalculer la mise en
+ * page. L'ambiance est une animation CSS : zéro JavaScript.
+ */
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ▌ COUCHE DES LUMIÈRES
+   ───────────────────────────────────────────────────────────────────────────
+   Un calque posé sous le contenu de son hôte (`z-index: -1`) et au-dessus du
+   fond de la page : exactement la place du motif d'origine. Une section opaque
+   le recouvre, comme elle recouvre le motif éteint.
+
+   L'hôte doit être positionné (`position: relative`) : `<main>` sur le site,
+   la zone d'aperçu dans la régie.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.vx-field {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* ── Halo ───────────────────────────────────────────────────────────────────
+   Un carré qui porte la tuile **allumée**, percé d'un masque rond : seuls les
+   motifs proches de son centre apparaissent, de plus en plus pâles vers le
+   bord. `LightField` le déplace (`transform`) et recale sa tuile
+   (`background-position`) pour qu'elle reste superposée au motif éteint. Sa
+   taille est posée par `LightField`, qui en a besoin pour le centrer. */
+.vx-spot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-image: var(--vx-lit);
+  background-size: var(--vx-tile-w) var(--vx-tile-h);
+  -webkit-mask-image: var(--vx-spot-mask);
+  mask-image: var(--vx-spot-mask);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  opacity: 0;
+  transition: opacity 420ms ease;
+  will-change: transform, opacity;
+}
+
+.vx-field[data-active] .vx-spot--core {
+  opacity: var(--vx-cursor-level, 0.9);
+}
+/* La traîne s'éteint deux fois plus lentement que le halo : c'est elle qui
+   donne l'extinction progressive derrière le curseur. */
+.vx-spot--trail {
+  transition-duration: 900ms;
+}
+.vx-field[data-active] .vx-spot--trail {
+  opacity: var(--vx-trail-level, 0.3);
+}
+
+/* Lueur d'un bouton survolé : une ellipse, aux dimensions du bouton. */
+.vx-spot--target {
+  -webkit-mask-image: radial-gradient(ellipse closest-side, #000 30%, transparent 100%);
+  mask-image: radial-gradient(ellipse closest-side, #000 30%, transparent 100%);
+  transition-duration: var(--vx-btn-duration, 320ms);
+}
+.vx-spot--target[data-on] {
+  opacity: var(--vx-btn-level, 0.6);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ▌ AMBIANCE
+   ───────────────────────────────────────────────────────────────────────────
+   La tuile allumée, étendue à tout l'hôte, à faible opacité. Trois modes :
+     - `steady`  — niveau fixe ;
+     - `breathe` — le niveau monte et redescend lentement ;
+     - `twinkle` — deux exemplaires de la tuile, chacun vu à travers un masque
+                   de cases inégales, s'animent à contretemps : les motifs
+                   scintillent par groupes, sans qu'aucun ne soit animé seul.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.vx-ambient {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+}
+
+[data-vx-ambient='steady'] .vx-ambient,
+[data-vx-ambient='breathe'] .vx-ambient {
+  background-image: var(--vx-lit);
+  background-size: var(--vx-tile-w) var(--vx-tile-h);
+  opacity: var(--vx-ambient-level, 0.25);
+}
+[data-vx-ambient='breathe'] .vx-ambient {
+  animation: vx-breathe var(--vx-ambient-duration, 7s) ease-in-out infinite;
+}
+@keyframes vx-breathe {
+  0%,
+  100% {
+    opacity: calc(var(--vx-ambient-level, 0.25) * 0.3);
+  }
+  50% {
+    opacity: var(--vx-ambient-level, 0.25);
+  }
+}
+
+[data-vx-ambient='twinkle'] .vx-ambient {
+  opacity: var(--vx-ambient-level, 0.25);
+}
+[data-vx-ambient='twinkle'] .vx-ambient::before,
+[data-vx-ambient='twinkle'] .vx-ambient::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: var(--vx-lit);
+  background-size: var(--vx-tile-w) var(--vx-tile-h);
+  -webkit-mask-size: var(--vx-twinkle-w) var(--vx-twinkle-h);
+  mask-size: var(--vx-twinkle-w) var(--vx-twinkle-h);
+  animation: vx-twinkle var(--vx-ambient-duration, 7s) ease-in-out infinite;
+}
+[data-vx-ambient='twinkle'] .vx-ambient::before {
+  -webkit-mask-image: var(--vx-twinkle-a);
+  mask-image: var(--vx-twinkle-a);
+}
+[data-vx-ambient='twinkle'] .vx-ambient::after {
+  -webkit-mask-image: var(--vx-twinkle-b);
+  mask-image: var(--vx-twinkle-b);
+  /* Délai négatif d'un demi-cycle : la seconde couche est déjà à mi-course
+     quand la première démarre. */
+  animation-delay: calc(var(--vx-ambient-duration, 7s) / -2);
+}
+@keyframes vx-twinkle {
+  0%,
+  100% {
+    opacity: 0.12;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Téléphone : l'ambiance reste fixe, sauf réglage contraire (`data-vx-calm`
+   absent). Une animation continue sur toute la page coûte de la batterie pour
+   un effet qu'un petit écran montre à peine. */
+@media (max-width: 47.99rem) {
+  [data-vx-calm] .vx-ambient,
+  [data-vx-calm] .vx-ambient::before,
+  [data-vx-calm] .vx-ambient::after {
+    animation: none;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ▌ BOUTONS
+   ───────────────────────────────────────────────────────────────────────────
+   Les boutons du site portent la classe `vx-glow` (`components/ui/styles.ts`).
+   Elle ne fait rien tant qu'aucun ancêtre ne porte `data-vx-buttons`.
+
+   L'effet est peint par un pseudo-élément, sous le texte du bouton et
+   au-dessus de son fond (`isolation` crée le contexte d'empilement qui le
+   permet). Le bouton lui-même n'est pas modifié : ni son ombre, ni son
+   déplacement au survol, ni son anneau de focus.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Angle de la lumière qui parcourt la bordure. Déclaré comme propriété typée :
+   c'est ce qui autorise le navigateur à l'animer. */
+@property --vx-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+[data-vx-buttons] .vx-glow {
+  position: relative;
+  isolation: isolate;
+}
+[data-vx-buttons] .vx-glow::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--vx-btn-duration, 320ms) var(--ease-emphasized);
+}
+
+/* Le survol n'existe qu'avec un pointeur : sur écran tactile, `:hover` reste
+   collé au dernier bouton touché. Le focus clavier, lui, vaut partout. */
+@media (hover: hover) {
+  [data-vx-buttons] .vx-glow:hover::after {
+    opacity: var(--vx-btn-level, 0.6);
+  }
+}
+[data-vx-buttons] .vx-glow:focus-visible::after {
+  opacity: var(--vx-btn-level, 0.6);
+}
+
+/* ── Halo : une lueur diffuse autour du bouton ───────────────────────────── */
+[data-vx-buttons='halo'] .vx-glow::after {
+  box-shadow:
+    0 0 var(--vx-btn-spread, 18px) color-mix(in srgb, var(--vx-light) 72%, transparent),
+    0 0 calc(var(--vx-btn-spread, 18px) * 2.4) color-mix(in srgb, var(--vx-light) 34%, transparent);
+}
+
+/* ── Bordure : un point de lumière fait le tour du bouton ────────────────────
+   Un dégradé conique dont on ne garde que l'anneau extérieur : le masque
+   retire tout l'intérieur (zone de contenu) et laisse la marge de 1,5 px. */
+[data-vx-buttons='border'] .vx-glow::after {
+  inset: -1.5px;
+  padding: 1.5px;
+  background: conic-gradient(
+    from var(--vx-angle),
+    transparent 0 52%,
+    var(--vx-light) 76%,
+    color-mix(in srgb, #fff 60%, var(--vx-light)) 86%,
+    var(--vx-light) 92%,
+    transparent 100%
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box exclude,
+    linear-gradient(#000 0 0);
+  filter: drop-shadow(0 0 calc(var(--vx-btn-spread, 18px) * 0.35) var(--vx-light));
+}
+@media (hover: hover) {
+  [data-vx-buttons='border'] .vx-glow:hover::after {
+    animation: vx-orbit calc(var(--vx-btn-duration, 320ms) * 5) linear infinite;
+  }
+}
+[data-vx-buttons='border'] .vx-glow:focus-visible::after {
+  animation: vx-orbit calc(var(--vx-btn-duration, 320ms) * 5) linear infinite;
+}
+@keyframes vx-orbit {
+  to {
+    --vx-angle: 360deg;
+  }
+}
+
+/* ── Reflet : une bande claire traverse le bouton ────────────────────────────
+   Le dégradé est plus large que le bouton ; c'est sa position qui glisse. */
+[data-vx-buttons='sheen'] .vx-glow::after {
+  background: linear-gradient(105deg, transparent 38%, color-mix(in srgb, #fff 80%, var(--vx-light)) 50%, transparent 62%) no-repeat;
+  background-size: 260% 100%;
+  background-position: 130% 0;
+  transition:
+    opacity var(--vx-btn-duration, 320ms) var(--ease-emphasized),
+    background-position calc(var(--vx-btn-duration, 320ms) * 2.4) var(--ease-emphasized);
+}
+@media (hover: hover) {
+  [data-vx-buttons='sheen'] .vx-glow:hover::after {
+    background-position: -30% 0;
+  }
+}
+[data-vx-buttons='sheen'] .vx-glow:focus-visible::after {
+  background-position: -30% 0;
+}
+
+/* ── Suivi : la lumière est sous le curseur, dans le bouton ──────────────────
+   `--vx-mx` et `--vx-my` sont posées par `LightField` ; sans elles (focus
+   clavier), la lumière se place au centre. */
+[data-vx-buttons='follow'] .vx-glow::after {
+  background: radial-gradient(
+    circle calc(var(--vx-btn-spread, 18px) * 4) at var(--vx-mx, 50%) var(--vx-my, 50%),
+    color-mix(in srgb, #fff 72%, var(--vx-light)),
+    transparent 72%
+  );
+  box-shadow: 0 0 var(--vx-btn-spread, 18px) color-mix(in srgb, var(--vx-light) 45%, transparent);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ▌ MOUVEMENT RÉDUIT, CONTRASTES FORCÉS, IMPRESSION
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Moins de mouvement : aucune animation continue. Les lumières restent — un
+   éclairage fixe n'est pas un mouvement — mais s'allument et s'éteignent net. */
+@media (prefers-reduced-motion: reduce) {
+  .vx-ambient,
+  .vx-ambient::before,
+  .vx-ambient::after,
+  [data-vx-buttons] .vx-glow::after {
+    animation: none !important;
+  }
+  .vx-spot,
+  [data-vx-buttons] .vx-glow::after {
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Contrastes forcés : le système impose ses couleurs, une lueur n'y a pas de
+   sens et brouillerait les contours. */
+@media (forced-colors: active) {
+  .vx-field,
+  [data-vx-buttons] .vx-glow::after {
+    display: none;
+  }
+}
+
+/* Une page imprimée n'a pas de lumières. */
+@media print {
+  .vx-field {
+    display: none;
+  }
+}

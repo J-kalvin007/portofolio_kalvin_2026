@@ -156,7 +156,14 @@ export default function PageErreur({ code, title, message, reset }: PageErreurPr
         onFocusCapture={pauseCountdown}
       >
         <div className="err-paper">
-          <div className="flex items-start justify-between gap-4">
+          {/* `flex-wrap` : sur un écran de 320 px, le code et le tampon —
+              insécable — ne tiennent pas côte à côte. Sans retour à la ligne,
+              ils imposaient leur largeur au billet, qui dépassait l'écran de
+              14 px : toute la page défilait de travers. Le tampon passe alors
+              sous le code, toujours calé à droite (`margin-left: auto`, dans
+              `globals.css`). Dès que la largeur le permet, les deux tiennent
+              sur une seule ligne, comme avant. */}
+          <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2">
             {code && <p className="err-code" aria-hidden="true">{code}</p>}
             <p className="err-stamp err-rise" style={rise(0.35)}>
               {code ? strings.stampNotFound : strings.stampError}

@@ -590,10 +590,10 @@
 
   /* Téléphone : le numéro passe au-dessus du titre au lieu de le précéder.
      Sur une seule ligne, « PROJET 01/09 » et les trois boutons ne laissaient
-     au titre qu'environ 70 px à 360 px de large : « Atelier du Terroir »
-     s'affichait « Atelier d… ». Empilé, le titre dispose de toute la largeur
-     du bloc. La barre garde sa hauteur : les deux lignes tiennent dans
-     `--pj-bar-h`.
+     au titre qu'environ 90 px à 360 px de large, et 50 px à 320 px, quand
+     « Atelier du Terroir » en demande près de 130 : il s'affichait tronqué.
+     Empilé, le titre dispose de toute la largeur du bloc. La barre garde sa
+     hauteur (68 px) : les deux lignes tiennent dans `--pj-bar-h`.
 
      `align-items: stretch` est indispensable. La règle de base aligne sur la
      ligne d'écriture, ce qui, en colonne, revient à réduire chaque élément à

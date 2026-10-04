@@ -185,6 +185,12 @@ const nextConfig: NextConfig = {
   // Ne révèle pas la technologie du serveur (`X-Powered-By: Next.js`).
   poweredByHeader: false,
 
+  /* Dès qu'il détecte un assistant de programmation pendant `npm run dev`,
+     Next.js écrit d'office deux fichiers d'instructions à la racine du projet.
+     Ils n'appartiennent pas à ce dépôt, et un `git add` les y ferait entrer
+     sans qu'on l'ait voulu : leur génération est désactivée. */
+  agentRules: false,
+
   /* Double exécution des composants en développement, pour révéler les effets
      qui ne supportent pas d'être rejoués : abonnement non désinscrit, minuteur
      non annulé, écouteur laissé en place. Sans aucun effet en production. */

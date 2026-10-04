@@ -3,9 +3,11 @@
  * @description Pied de page du site — direction « Reçu ».
  *
  * @architecture
- * Composant **serveur** : aucun JavaScript envoyé au navigateur. L'ancienne
+ * Composant **serveur** : le pied de page est rendu en HTML. L'ancienne
  * version était un composant client (framer-motion, reflets au survol,
- * enveloppes magnétiques, bouton « retour en haut »).
+ * enveloppes magnétiques, bouton « retour en haut »). Un seul îlot client
+ * subsiste, de quelques lignes : `SecretTrigger`, autour du logotype, qui
+ * compte les clics ouvrant la régie.
  *
  * Contenu, et seulement ce qui est vrai :
  *  - les coordonnées viennent de `lib/site.ts` (source unique) ;
@@ -40,6 +42,7 @@ import { CONTACT, SOCIAL_LINKS } from '@/lib/site';
 import type { ContactIconName } from '@/components/ui/contact-icons';
 import Arrow from '@/components/ui/Arrow';
 import ContactIcon from '@/components/ui/ContactIcon';
+import SecretTrigger from '@/components/visual/SecretTrigger';
 import Logotype from './Logotype';
 import '@/components/ui/contact-icons.css';
 import './footer.css';
@@ -104,7 +107,12 @@ export default function Footer() {
               se voit aussitôt ; les lignes sont donc équilibrées, et seulement
               là où le texte est centré. */}
           <div className="grid content-start justify-items-center gap-3 sm:justify-items-start">
-            <Logotype size="footer" />
+            {/* Dix clics d'affilée sur le logotype ouvrent la régie. L'enveloppe
+                est le seul îlot client du pied de page ; elle n'ajoute ni rôle,
+                ni arrêt de tabulation, ni curseur (voir `SecretTrigger.tsx`). */}
+            <SecretTrigger>
+              <Logotype size="footer" />
+            </SecretTrigger>
             <p className="max-w-[34ch] text-caption text-ink-soft max-sm:text-balance">{t('description')}</p>
           </div>
 

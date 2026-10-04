@@ -98,7 +98,7 @@ import { routing } from './i18n/routing';
 export default createMiddleware(routing);
 
 export const config = {
-  matcher: ['/((?!api|_next|.*\\..*).*)']
+  matcher: ['/((?!api|_next|regie|.*\\..*).*)']
 };
 ```
 
@@ -111,8 +111,22 @@ export const config = {
 | `/projets` (sans langue) | Ajoute la langue → redirige vers `/fr/projets` |
 | `/en/contact` | `en` est une langue valide → laisse passer |
 | `/es/contact` | `es` n'est pas une langue : le chemin est traité comme une page sans préfixe → redirige vers `/fr/es/contact`, qui répond **404** (page « introuvable » en français) |
+| `/regie` | Le proxy ne la voit pas : elle est exclue par le `matcher`. La page s'affiche telle quelle, sans redirection ni préfixe de langue |
 
-Le `matcher` dit au proxy : « Intercepte tout SAUF les routes `/api`, les fichiers internes (`_next`) et les chemins contenant un point (`.jpg`, `robots.txt`, `sitemap.xml`…) ».
+Le `matcher` dit au proxy : « Intercepte tout SAUF les routes `/api`, les fichiers internes (`_next`), la régie (`/regie`) et les chemins contenant un point (`.jpg`, `robots.txt`, `sitemap.xml`…) ».
+
+> [!NOTE]
+> **La régie est le seul écran du site hors du système de langues.** C'est la
+> page d'administration du fond et des lumières : elle vit dans `app/regie`, à
+> côté de `app/[locale]` et non dedans, avec son propre document (`<html>`).
+> Sans `regie` dans le `matcher`, le proxy la traiterait comme une page sans
+> préfixe et la redirigerait vers `/fr/regie` — qui n'existe pas.
+>
+> Conséquence : ses textes sont écrits en français directement dans ses
+> composants, et non dans `messages/fr.json`. C'est un outil réservé au
+> propriétaire du site, pas une page que les visiteurs lisent. Elle n'utilise
+> donc ni `useTranslations`, ni le `Link` de `i18n/navigation.ts` (qui
+> ajouterait un préfixe de langue à ses adresses).
 
 > [!WARNING]
 > Le **double antislash** de `.*\\..*` est indispensable. Dans la chaîne

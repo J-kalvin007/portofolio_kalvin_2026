@@ -36,6 +36,10 @@ yarn-error.log*
 # ne sait pas quelles variables le projet attend.
 !.env.example
 
+# régie lumière : configuration enregistrée en local quand aucun stockage
+# distant n'est configuré (voir lib/visual/store.ts). Propre à chaque machine.
+/.data/
+
 # vercel
 .vercel
 

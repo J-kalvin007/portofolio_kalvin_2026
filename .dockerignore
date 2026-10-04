@@ -9,3 +9,7 @@ README.md
 # aurait inscrits dans une couche de l'image (seul .env.local était exclu).
 .env*
 !.env.example
+# Configuration de la régie enregistrée sur cette machine (lib/visual/store.ts) :
+# elle ne doit pas servir à pré-rendre les pages de l'image, qui partirait avec
+# des réglages que le serveur de production ne connaît pas.
+.data

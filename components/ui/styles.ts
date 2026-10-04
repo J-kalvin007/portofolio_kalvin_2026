@@ -15,16 +15,22 @@ export const CONTAINER = 'mx-auto w-full max-w-content px-4 sm:px-6 lg:px-8';
 /** Anneau de focus clavier (le contour global de `globals.css` sert de filet). */
 export const FOCUS_RING = 'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus';
 
-/** Bouton principal : le bleu du tampon, réservé aux actions. */
+/**
+ * Bouton principal : le bleu du tampon, réservé aux actions.
+ *
+ * `vx-glow` désigne le bouton au moteur visuel (`components/visual/visual.css`) :
+ * la classe n'a aucun effet tant que l'éclairage des boutons n'est pas activé
+ * depuis la régie.
+ */
 export const BUTTON_PRIMARY =
-  'inline-flex items-center justify-center gap-2 rounded-control bg-brand px-5 py-3.5 text-[0.9375rem] font-semibold text-brand-ink shadow-e1 cursor-pointer ' +
+  'vx-glow inline-flex items-center justify-center gap-2 rounded-control bg-brand px-5 py-3.5 text-[0.9375rem] font-semibold text-brand-ink shadow-e1 cursor-pointer ' +
   'transition-[transform,box-shadow] duration-(--motion-fast) ease-emphasized hover:-translate-y-0.5 hover:shadow-e2 motion-reduce:transform-none ' +
   'disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0 disabled:hover:shadow-e1 ' +
   FOCUS_RING;
 
-/** Bouton secondaire : contour, même gabarit que le bouton principal. */
+/** Bouton secondaire : contour, même gabarit que le bouton principal (`vx-glow` : voir ci-dessus). */
 export const BUTTON_SECONDARY =
-  'inline-flex items-center justify-center gap-2 rounded-control border border-line-strong px-5 py-3.5 text-[0.9375rem] font-semibold text-ink cursor-pointer ' +
+  'vx-glow inline-flex items-center justify-center gap-2 rounded-control border border-line-strong px-5 py-3.5 text-[0.9375rem] font-semibold text-ink cursor-pointer ' +
   'transition-colors duration-(--motion-fast) hover:border-ink hover:bg-surface-sunken ' +
   FOCUS_RING;
 

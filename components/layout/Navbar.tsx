@@ -276,7 +276,7 @@ export default function Navbar() {
 
             <Link
               href="/contact"
-              className={`ml-2 hidden h-9 items-center rounded-control bg-brand px-3.5 text-[0.8125rem] font-semibold text-brand-ink shadow-e1
+              className={`vx-glow ml-2 hidden h-9 items-center rounded-control bg-brand px-3.5 text-[0.8125rem] font-semibold text-brand-ink shadow-e1
                           transition-[transform,box-shadow] duration-(--motion-fast) ease-emphasized hover:-translate-y-px hover:shadow-e2
                           motion-reduce:transform-none md:inline-flex ${FOCUS_RING}`}
             >
@@ -346,7 +346,7 @@ export default function Navbar() {
         <Link
           href="/contact"
           onClick={closeMenu}
-          className={`mt-8 inline-flex items-center justify-center rounded-control bg-brand px-5 py-3.5 font-semibold text-brand-ink shadow-e1 ${FOCUS_RING}`}
+          className={`vx-glow mt-8 inline-flex items-center justify-center rounded-control bg-brand px-5 py-3.5 font-semibold text-brand-ink shadow-e1 ${FOCUS_RING}`}
         >
           {t('contactBtn')}
         </Link>

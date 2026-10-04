@@ -52,8 +52,10 @@ export default function ProfileReceipt() {
             libellé passe à la ligne suivante, alignée à droite. Sans cette
             variante, le libellé — insécable — était comprimé et venait
             s'imprimer **par-dessus** la valeur : sur un téléphone de 360 px,
-            « FORMATION ACTUELLE » recouvrait « MBA Big Data & IA ». Là où la
-            ligne tient (ordinateur), rien ne change. */}
+            « POSTE ACTUEL » mordait d'environ 25 px sur « Ingénieur · Myriade
+            Groupe », et de 65 px à 320 px ; « FORMATION ACTUELLE » faisait de
+            même. Là où la ligne tient — sur ordinateur et sur les plus grands
+            téléphones — rien ne change, au pixel près. */}
         <hr className="rc-rule" />
         <dl className="rc-lines rc-lines--wrap">
           <ReceiptLine label={t('localTime')}>

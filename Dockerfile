@@ -79,6 +79,15 @@ RUN adduser --system --uid 1001 nextjs
 RUN mkdir .next
 RUN chown nextjs:nodejs .next
 
+# Dossier de la configuration publiée depuis la régie (/regie), utilisé quand
+# aucun stockage Upstash n'est configuré (voir lib/visual/store.ts). Il est créé
+# ici parce que l'utilisateur `nextjs` n'a pas le droit de créer un dossier dans
+# /app : sans lui, « Publier » échouerait. Le disque d'un conteneur étant effacé
+# à chaque redéploiement, montez un volume sur /app/.data pour conserver la
+# configuration — ou utilisez Upstash, qui n'en a pas besoin.
+RUN mkdir .data
+RUN chown nextjs:nodejs .data
+
 # ==============================================================================
 # 📦 COPIE OPTIMISÉE (Mode Standalone)
 # ==============================================================================

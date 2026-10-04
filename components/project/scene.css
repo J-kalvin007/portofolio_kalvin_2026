@@ -292,6 +292,23 @@
     aspect-ratio: 16 / 10;
   }
 }
+/* Téléphone couché : l'écran est large et bas. Calculé sur la largeur, un
+   cadre au format 4 / 3 mesure 595 px de haut sur un écran de 844 × 390 — bien
+   plus que la hauteur visible — et les flèches, posées à mi-hauteur, tombaient
+   hors de vue. Le cadre prend donc la hauteur réellement disponible : l'écran,
+   moins la barre d'identité (`--pj-bar-h`, déclarée sur `.pj-stage`), puis
+   7,5 rem pour les marges de la scène et la bande de vignettes. Cadre et
+   vignettes tiennent alors ensemble dans l'écran, sans défilement. La capture
+   reste entière (`object-fit: contain`), simplement bordée de marges
+   latérales. */
+@media (orientation: landscape) and (max-height: 32rem) and (width < 64rem) {
+  .pj-carousel-frame {
+    aspect-ratio: auto;
+    height: calc(100svh - var(--pj-bar-h, 4.25rem) - 7.5rem);
+    /* Garde-fou pour les écrans très bas : le cadre ne s'écrase jamais. */
+    min-height: 9rem;
+  }
+}
 
 .pj-carousel-viewport {
   display: flex;

@@ -165,14 +165,30 @@
   }
 }
 
-/* Trois faits, en pied d'en-tête, séparés par des filets verticaux. */
+/* Trois faits, en pied d'en-tête, séparés par des filets verticaux.
+
+   Le filet est dessiné **avant** chaque fait, au milieu de l'écart qui le
+   sépare du précédent, et la liste rogne ce qui dépasse à gauche
+   (`overflow: hidden`). Conséquence voulue : le filet du premier fait de
+   chaque ligne tombe hors de la liste et disparaît. Un filet ne sépare donc
+   que deux faits réellement voisins — quel que soit l'endroit où la ligne se
+   replie sur un téléphone.
+
+   L'écriture précédente posait le filet **après** chaque fait : sur un écran
+   étroit, la première ligne se terminait par un filet orphelin, sans rien à sa
+   droite. Sur une seule ligne, le rendu est identique : 1,25 rem, le filet,
+   1,25 rem. */
 .ab-facts {
+  --ab-fact-gap: 1.25rem;
+
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.4rem 1.25rem;
+  /* Écart horizontal : la place du filet (1 px) et de son air de chaque côté. */
+  gap: 0.4rem calc(2 * var(--ab-fact-gap) + 1px);
   margin: 1.75rem 0 0;
   padding: 1rem 0 0;
+  overflow: hidden;
   border-top: 1px dashed var(--ds-line);
   list-style: none;
   color: var(--ds-ink-muted);
@@ -182,23 +198,27 @@
   text-transform: uppercase;
 }
 .ab-facts li {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 1.25rem;
 }
-/* Le filet vertical sépare deux faits, jamais après le dernier. */
-.ab-facts li:not(:last-child)::after {
+.ab-facts li::before {
   content: '';
+  position: absolute;
+  top: 50%;
+  inset-inline-start: calc(-1 * var(--ab-fact-gap) - 1px);
   width: 1px;
   height: 0.85rem;
   background: var(--ds-line);
+  translate: 0 -50%;
 }
 /* Le tampon de disponibilité garde l'encre de marque du site. */
 .ab-facts li:nth-child(2) {
   color: var(--ds-brand-text);
 }
-/* Le fait qui porte un pictogramme le colle à son texte : le `gap` de 1,25rem
-   du `<li>` sert à espacer le filet séparateur, pas le glyphe de sa donnée. */
+/* Le fait qui porte un pictogramme le colle à son texte : l'écart entre deux
+   faits (`--ab-fact-gap`) sert à loger le filet séparateur, pas à écarter le
+   glyphe de sa donnée. */
 .ab-fact {
   display: inline-flex;
   align-items: center;

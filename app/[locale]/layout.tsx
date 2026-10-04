@@ -9,6 +9,9 @@
  * - Applique la police unique du site, Poppins (`lib/fonts.ts`), à tout le document.
  * - Encapsule l'application dans `NextIntlClientProvider` pour fournir les traductions aux composants enfants.
  * - Injecte un script "anti-FOUC" (Flash of Unstyled Content) pour le mode sombre.
+ * - Applique la configuration visuelle publiée depuis la régie (motif du fond, lumières) :
+ *   `VisualStyle` dans le `<head>`, `LightField` dans `<main>`. Avec les réglages par
+ *   défaut, ni l'un ni l'autre ne rend quoi que ce soit.
  */
 
 import type { Metadata, Viewport } from 'next';
@@ -24,6 +27,10 @@ import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import StructuredData from '@/components/layout/StructuredData';
 import ThemeInitializer from '@/components/layout/ThemeInitializer';
+import LightField from '@/components/visual/LightField';
+import VisualStyle from '@/components/visual/VisualStyle';
+import { lightFieldSettings, visualAttributes } from '@/lib/visual/css';
+import { readPublishedVisualConfig } from '@/lib/visual/store';
 
 /* ═══════════════════════════════════════════════
    COULEURS DE L'INTERFACE SYSTÈME
@@ -170,11 +177,22 @@ export default async function LocaleLayout({
   const tSeo = await getTranslations({ locale, namespace: 'seo.site' });
   const tReceipt = await getTranslations({ locale, namespace: 'home.receipt' });
 
+  /* Configuration visuelle publiée depuis la régie (motif du fond, lumières).
+     La lecture ne lève jamais d'erreur : sans stockage, ou s'il est illisible,
+     elle rend les réglages par défaut — le site d'origine. Elle est mise en
+     cache et la page reste pré-rendue ; la régie invalide ce cache quand elle
+     publie (voir `lib/visual/store.ts`). */
+  const visualConfig = await readPublishedVisualConfig();
+  /** `null` tant que les lumières sont éteintes : rien n'est alors ajouté à la page. */
+  const lightSettings = lightFieldSettings(visualConfig);
+
   return (
     <html
       lang={locale}
       suppressHydrationWarning // Nécessaire car le script thème (ci-dessous) modifie le HTML avant l'hydratation React
       className={fontVariables}
+      // Attributs `data-vx-*` : ils activent les règles de `visual.css`. Aucun avec les réglages par défaut.
+      {...visualAttributes(visualConfig)}
     >
       <head>
         {/*
@@ -222,6 +240,10 @@ export default async function LocaleLayout({
             `,
           }}
         />
+
+        {/* Variables CSS du moteur visuel : tuiles du fond, couleur des lumières.
+            Ne rend rien avec les réglages par défaut. */}
+        <VisualStyle config={visualConfig} />
       </head>
       <body className={`${poppins.className} antialiased`}>
         {/*
@@ -244,7 +266,13 @@ export default async function LocaleLayout({
         <NextIntlClientProvider locale={locale} messages={messages}>
           <ThemeInitializer />
           <Navbar />
-          <main id="main">{children}</main>
+          {/* `relative` seulement quand des lumières existent : leur calque se
+              positionne par rapport à <main>. Lumières éteintes, la balise est
+              rendue exactement comme avant. */}
+          <main id="main" className={lightSettings ? 'relative' : undefined}>
+            <LightField settings={lightSettings} />
+            {children}
+          </main>
           <Footer />
         </NextIntlClientProvider>
       </body>

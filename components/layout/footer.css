@@ -78,9 +78,10 @@
    largeur du glyphe (1,3 fois le corps du libellé) plus son écart.
 
    Le corps du libellé est lu dans le système de design (`--text-overline`,
-   le rôle typographique que porte le `<dt>`) au lieu d'être recopié : la
-   valeur écrite en dur, 0,6875 rem, datait d'avant le passage du surtitre à
-   0,75 rem, et la valeur commençait depuis 1,3 px à gauche de son libellé.
+   le rôle typographique que porte le `<dt>`) au lieu d'être recopié : le
+   nombre écrit en dur, 0,6875 rem, datait d'avant le passage du surtitre à
+   0,75 rem, et chaque valeur commençait 1,3 px à gauche du texte de son
+   libellé. Mesuré après correction : écart nul, à toutes les largeurs.
    Le repli (`0.75rem`) couvre le cas où la variable ne serait pas émise. */
 .ft-datum {
   --ft-gutter: calc(1.3 * var(--text-overline, 0.75rem) + 0.5rem);

@@ -74,5 +74,9 @@ export const config = {
   // contenu est construit à partir de `SITE_URL`, donc ils y annoncent déjà le
   // domaine canonique et son plan de site, ce qui est exactement le signal
   // attendu.
-  matcher: ['/((?!api|_next|.*\\..*).*)']
+  //
+  // `regie` : la page d'administration des lumières vit hors du segment
+  // `[locale]` (`app/regie`). Sans cette exclusion, le routage par langue la
+  // redirigerait vers `/fr/regie`, qui n'existe pas.
+  matcher: ['/((?!api|_next|regie|.*\\..*).*)']
 };
