@@ -22,6 +22,7 @@ interface LoginFormProps {
 }
 
 export default function LoginForm({ isConfigured }: LoginFormProps) {
+
   const [password, setPassword] = useState('');
   const [isSending, setIsSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -55,9 +56,9 @@ export default function LoginForm({ isConfigured }: LoginFormProps) {
     <main className="rg-login">
       <form className="rg-login-card" onSubmit={handleSubmit} noValidate>
         <div className="rg-login-clip" aria-hidden="true" />
-        <p className={OVERLINE}>Accès réservé</p>
-        <h1 className="rg-login-title">Régie lumière</h1>
-        <p className="rg-login-lead">Le fond, les lumières et les boutons du site se règlent ici.</p>
+        <p className={OVERLINE}>Accès réservé a kalvin</p>
+        <h1 className="rg-login-title">Rélages avancés du site</h1>
+        <p className="rg-login-lead">Le fond, les lumières, les boutons et le design du site se règlent ici.</p>
 
         {isConfigured ? (
           <>

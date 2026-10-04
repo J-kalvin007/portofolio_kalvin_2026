@@ -123,8 +123,20 @@ export const CONTACT = {
   timeZone: 'Africa/Lome',
 } as const;
 
-/** CV téléchargeable, servi depuis `public/cv/`. */
-export const CV_PATH = '/cv/cv_kalvin.pdf';
+/**
+ * CV téléchargeable, servi depuis `public/cv/`.
+ *
+ * Le nom du fichier est celui que le visiteur reçoit : les liens portent
+ * l'attribut `download` sans valeur, le navigateur enregistre donc le PDF sous
+ * son nom d'origine — d'où un nom complet et lisible, et non `cv.pdf`.
+ *
+ * @remarks Pour remplacer le CV, déposer le nouveau PDF dans `public/cv/` et
+ * reporter ici son nom **exact**, majuscules comprises : sur l'hébergeur, les
+ * adresses distinguent `CV_` de `cv_`. Un nouveau nom a un second avantage : les
+ * fichiers de `public/` sont gardés une journée par les navigateurs
+ * (`next.config.ts`), et une adresse neuve n'a aucun cache.
+ */
+export const CV_PATH = '/cv/CV_Calvin_Takoudjou.pdf';
 
 /**
  * Un profil public : son nom de marque, son adresse, son pictogramme et
