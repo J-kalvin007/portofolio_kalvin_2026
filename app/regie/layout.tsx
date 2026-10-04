@@ -25,7 +25,7 @@ import '../globals.css';
 import './regie.css';
 
 export const metadata: Metadata = {
-  title: 'Régie lumière',
+  title: 'Centre de contrôle avancé secret',
   // Le pictogramme d'onglet du site. Sans lui, le navigateur demande
   // `/favicon.ico`, qui n'existe pas dans ce projet : une erreur 404 à chaque visite.
   icons: { icon: '/logo/kal_logo_01.png' },
