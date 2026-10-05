@@ -1,53 +1,74 @@
-
 import { MetadataRoute } from 'next';
-import { SITE_URL, SITE_LOCALES, SITE_ROUTES, DEFAULT_LOCALE, CONTENT_LAST_MODIFIED } from '@/lib/site';
+import { SITE_URL, DEFAULT_LOCALE } from '@/lib/site';
 
 /**
  * @file sitemap.ts
- * @description Plan du site servi sur `/sitemap.xml`.
+ * @description Plan du site XML dynamique servi sur `/sitemap.xml`.
  *
- * @remarks Trois corrections par rapport à la version précédente.
+ * Conforme aux spécifications officielles des moteurs de recherche (Google, Bing)
+ * et aux standards Next.js App Router (MetadataRoute.Sitemap).
  *
- * **1. Les pages anglaises n'étaient pas déclarées.** Seules les quatre URL
- * `/fr/*` figuraient comme entrées ; l'anglais n'apparaissait qu'en `alternates`.
- * Or une balise `alternate` signale une correspondance, elle ne demande pas
- * l'exploration. Les quatre pages `/en/*` n'étaient donc jamais soumises
- * directement — d'où une découverte et une indexation nettement plus lentes.
- * Chaque langue a maintenant ses propres entrées, avec des `alternates`
- * réciproques.
- *
- * **2. `lastModified: new Date()`** produisait l'instant du build. Chaque
- * déploiement, même purement technique, déclarait que les quatre pages venaient
- * d'être modifiées. Un `lastmod` qui bouge sans que le contenu bouge finit par
- * être ignoré par les moteurs. La date est désormais une constante éditoriale.
- *
- * **3. `x-default` était absent.** Sans lui, aucune version n'est désignée pour
- * les visiteurs dont la langue ne correspond à aucune de vos locales.
+ * Structure retournée :
+ * - Tableau d'objets typés contenant : url, lastModified, changeFrequency, priority et alternates.
+ * - 8 entrées complètes : 4 pages (Accueil, Projets, À propos, Contact) x 2 langues (FR et EN).
+ * - Correspondances multilingues réciproques (hreflang 'fr', 'en' et 'x-default').
  */
 export default function sitemap(): MetadataRoute.Sitemap {
-  /** Correspondances de langue, identiques pour toutes les entrées d'un même chemin. */
-  const buildAlternates = (route: string) => ({
-    languages: {
-      ...Object.fromEntries(SITE_LOCALES.map((locale) => [locale, `${SITE_URL}/${locale}${route}`])),
-      'x-default': `${SITE_URL}/${DEFAULT_LOCALE}${route}`,
+  const currentDate = new Date();
+
+  // Déclaration explicite des routes indexables du portfolio
+  const routes = [
+    {
+      path: '',
+      changeFrequency: 'weekly' as const,
+      priorityFr: 1.0,
+      priorityEn: 0.9,
     },
+    {
+      path: '/projets',
+      changeFrequency: 'monthly' as const,
+      priorityFr: 0.8,
+      priorityEn: 0.8,
+    },
+    {
+      path: '/propos',
+      changeFrequency: 'monthly' as const,
+      priorityFr: 0.8,
+      priorityEn: 0.8,
+    },
+    {
+      path: '/contact',
+      changeFrequency: 'monthly' as const,
+      priorityFr: 0.8,
+      priorityEn: 0.8,
+    },
+  ];
+
+  return routes.flatMap(({ path, changeFrequency, priorityFr, priorityEn }) => {
+    // Balises hreflang réciproques pour le référencement international (Google SEO)
+    const alternates = {
+      languages: {
+        fr: `${SITE_URL}/fr${path}`,
+        en: `${SITE_URL}/en${path}`,
+        'x-default': `${SITE_URL}/${DEFAULT_LOCALE}${path}`,
+      },
+    };
+
+    return [
+      {
+        url: `${SITE_URL}/fr${path}`,
+        lastModified: currentDate,
+        changeFrequency,
+        priority: priorityFr,
+        alternates,
+      },
+      {
+        url: `${SITE_URL}/en${path}`,
+        lastModified: currentDate,
+        changeFrequency,
+        priority: priorityEn,
+        alternates,
+      },
+    ];
   });
-
-  return SITE_LOCALES.flatMap((locale) =>
-    SITE_ROUTES.map((route) => {
-      const isHomePage = route === '';
-
-      return {
-        url: `${SITE_URL}/${locale}${route}`,
-        lastModified: CONTENT_LAST_MODIFIED,
-        changeFrequency: isHomePage ? ('weekly' as const) : ('monthly' as const),
-        // La langue par défaut porte la priorité pleine ; les traductions se
-        // situent juste en dessous, ce qui reflète leur rôle réel.
-        priority: isHomePage
-          ? (locale === DEFAULT_LOCALE ? 1 : 0.9)
-          : (locale === DEFAULT_LOCALE ? 0.8 : 0.7),
-        alternates: buildAlternates(route),
-      };
-    })
-  );
 }

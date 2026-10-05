@@ -291,8 +291,12 @@ const nextConfig: NextConfig = {
      ═══════════════════════════════════════════════════════════════════════ */
   async headers() {
     return [
-      // Sécurité : toutes les réponses, pages comme fichiers.
-      { source: '/:path*', headers: securityHeaders },
+      // Sécurité : pages et ressources du site.
+      // On exclut expressément sitemap.xml et robots.txt pour ne pas bloquer
+      // le viewer d'arbre XML natif des navigateurs (Chrome/Edge bloque l'affichage de l'arbre
+      // XML quand une CSP est appliquée à sitemap.xml) et permettre aux robots d'exploration
+      // de lire le fichier sans contraintes.
+      { source: '/((?!sitemap\\.xml|robots\\.txt).*)', headers: securityHeaders },
       // Cache : seulement les dossiers de fichiers publics listés plus haut.
       ...CACHED_PUBLIC_DIRECTORIES.map((directory) => ({
         source: `${directory}/:file*`,
