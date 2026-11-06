@@ -99,11 +99,24 @@ export async function generateMetadata({ params }: LocaleParams): Promise<Metada
     // (lib/seo.ts). Déclarées ici, elles s'appliquaient à toutes les pages —
     // Projets, À propos, Contact et même la page 404 désignaient l'accueil
     // comme leur version canonique.
+    //
+    // Icônes — source unique : `app/icon.png` (Next.js la détecte automatiquement
+    // et la sert en favicon). Les entrées explicites ci-dessous garantissent la
+    // compatibilité exhaustive avec tous les types d'écrans (Desktop, Android PWA,
+    // iOS Safari / iPadOS avec l'Apple Touch Icon 180 × 180).
     icons: {
-      icon: '/logo/kal_logo_01.png',
-      shortcut: '/logo/kal_logo_01.png',
-      apple: '/logo/kal_logo_01.png',
+      icon: [
+        { url: '/favicon.ico', sizes: 'any' },
+        { url: '/icon.png', type: 'image/png' },
+        { url: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },
+        { url: '/icons/icon-512.png', sizes: '512x512', type: 'image/png' },
+      ],
+      shortcut: '/favicon.ico',
+      apple: [
+        { url: '/apple-icon.png', type: 'image/png', sizes: '180x180' },
+      ],
     },
+    manifest: '/manifest.webmanifest',
     // Aperçu de partage par défaut (LinkedIn, WhatsApp, Facebook…). Chaque page le
     // redéclare en entier (lib/seo.ts) : Next.js remplace cet objet, il ne le complète pas.
     openGraph: {

@@ -26,9 +26,19 @@ import './regie.css';
 
 export const metadata: Metadata = {
   title: 'Centre de contrôle avancé secret',
-  // Le pictogramme d'onglet du site. Sans lui, le navigateur demande
-  // `/favicon.ico`, qui n'existe pas dans ce projet : une erreur 404 à chaque visite.
-  icons: { icon: '/logo/kal_logo_01.png' },
+  // Pictogramme d'onglet de la régie — même icône officielle que le site public.
+  // Compatible Desktop, Android et Apple iOS.
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/icon.png', type: 'image/png' },
+    ],
+    shortcut: '/favicon.ico',
+    apple: [
+      { url: '/apple-icon.png', type: 'image/png', sizes: '180x180' },
+    ],
+  },
+  manifest: '/manifest.webmanifest',
   robots: { index: false, follow: false, nocache: true, googleBot: { index: false, follow: false } },
 };
 

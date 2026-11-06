@@ -45,10 +45,12 @@ export const IS_PREVIEW_DEPLOYMENT = process.env.VERCEL_ENV === 'preview';
 export const OPEN_GRAPH_LOCALES = { fr: 'fr_FR', en: 'en_US' } as const satisfies Record<Locale, string>;
 
 /**
- * Image de partage actuelle : le monogramme, **carré 1080 × 1080**, d'où la
- * carte X au format `summary`. Une carte 1200 × 630 pourra la remplacer.
+ * Image de partage officielle : l'icône principale unique du projet (`/icon.png`),
+ * carrée 512 × 512, déclinée de `app/icon.png` — source de vérité pour tous les
+ * contextes (onglet, PWA, Apple touch icon, OpenGraph, Twitter Card, Schema.org).
+ * La carte X au format `summary` correspond à ce format carré.
  */
-export const SHARE_IMAGE = { url: '/logo/kal_logo_01.png', width: 1080, height: 1080 } as const;
+export const SHARE_IMAGE = { url: '/icon.png', width: 512, height: 512 } as const;
 
 /** Modèle des titres de page : « Projets | Kalvin Takoudjou ». */
 export const TITLE_TEMPLATE = '%s | Kalvin Takoudjou';

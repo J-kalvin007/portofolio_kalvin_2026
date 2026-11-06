@@ -169,7 +169,7 @@ const securityHeaders = [
 const PUBLIC_ASSET_CACHE = 'public, max-age=86400, stale-while-revalidate=604800';
 
 /** Dossiers de `public/` servis tels quels, et mis en cache à ce titre. */
-const CACHED_PUBLIC_DIRECTORIES = ['/images_projets', '/images', '/logo', '/svg', '/cv'];
+const CACHED_PUBLIC_DIRECTORIES = ['/images_projets', '/images', '/logo', '/svg', '/cv', '/icons'];
 
 const nextConfig: NextConfig = {
   /* ─────────────────────────────────────────────────────────────────────────
