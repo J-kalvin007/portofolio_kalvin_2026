@@ -1,24 +1,24 @@
 {
   "seo": {
     "site": {
-      "title": "Kalvin Takoudjou — Ingénieur logiciel full-stack et mobile",
+      "title": "Kalvin Takoudjou <-> Ingénieur logiciel full-stack et mobile",
       "description": "Portfolio de Kalvin Takoudjou, ingénieur logiciel à Lomé. Applications web, mobiles et SaaS pour des besoins métier concrets, du développement au déploiement en production.",
-      "imageAlt": "Kalvin Takoudjou — Ingénieur logiciel"
+      "imageAlt": "Kalvin Takoudjou <-> Ingénieur logiciel"
     },
     "home": {
-      "title": "Kalvin Takoudjou — Ingénieur logiciel full-stack et mobile",
+      "title": "Kalvin Takoudjou <-> Ingénieur logiciel full-stack et mobile",
       "description": "Applications web et mobiles conçues pour des usages concrets : e-commerce, billetterie et gestion agricole hors ligne. Chaque projet montre ce qui a été construit et comment il fonctionne."
     },
     "projects": {
-      "title": "Projets — Kalvin Takoudjou",
+      "title": "Projets <-> Kalvin Takoudjou",
       "description": "Découvrez les applications construites par Kalvin Takoudjou : fonctionnalités, écrans, technologies et architecture."
     },
     "about": {
-      "title": "À propos — Kalvin Takoudjou",
+      "title": "À propos <-> Kalvin Takoudjou",
       "description": "Parcours de Kalvin Takoudjou : expérience en développement logiciel, formation, méthode de travail et projets réalisés."
     },
     "contact": {
-      "title": "Contact — Kalvin Takoudjou",
+      "title": "Contact <-> Kalvin Takoudjou",
       "description": "Contacter Kalvin Takoudjou pour un projet, une opportunité ou une question."
     }
   },
@@ -425,11 +425,8 @@
     "locamanager": {
       "short": "Application mobile pour gérer des biens immobiliers mis en location.",
       "full": "Application Android et iOS de gestion de biens locatifs, avec API REST, traitement de données et visualisations."
-    },
-    "lotus": {
-      "short": "Plateforme de gestion de magasins et de boutiques, avec séparation des données entre entreprises.",
-      "full": "Plateforme multi-tenant pour gérer des magasins et des promotions en point de vente, avec API REST et visualisations de données."
     }
+   
   },
   "a11y": {
     "skipToContent": "Aller au contenu principal"

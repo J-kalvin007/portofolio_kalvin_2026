@@ -1,24 +1,24 @@
 {
   "seo": {
     "site": {
-      "title": "Kalvin Takoudjou — Full-stack & mobile software engineer",
+      "title": "Kalvin Takoudjou <-> Full-stack & mobile software engineer",
       "description": "Portfolio of Kalvin Takoudjou, a software engineer in Lomé building web, mobile and SaaS products for concrete business needs, from development to production.",
-      "imageAlt": "Kalvin Takoudjou — Software Engineer"
+      "imageAlt": "Kalvin Takoudjou <-> Software Engineer"
     },
     "home": {
-      "title": "Kalvin Takoudjou — Full-stack & mobile software engineer",
+      "title": "Kalvin Takoudjou <-> Full-stack & mobile software engineer",
       "description": "Web and mobile products built for real use cases: e-commerce, event ticketing and an offline-first farming SaaS. See what was built and how each system works."
     },
     "projects": {
-      "title": "Projects — Kalvin Takoudjou",
+      "title": "Projects <-> Kalvin Takoudjou",
       "description": "Explore the applications built by Kalvin Takoudjou: features, screens, technologies and architecture."
     },
     "about": {
-      "title": "About — Kalvin Takoudjou",
+      "title": "About <-> Kalvin Takoudjou",
       "description": "Kalvin Takoudjou’s background: software engineering experience, education, working approach and delivered projects."
     },
     "contact": {
-      "title": "Contact — Kalvin Takoudjou",
+      "title": "Contact <-> Kalvin Takoudjou",
       "description": "Contact Kalvin Takoudjou about a project, an opportunity or a question."
     }
   },
@@ -425,10 +425,6 @@
     "locamanager": {
       "short": "Mobile app for managing rental properties.",
       "full": "Android and iOS app for rental-property management, with REST API, data processing and visualisations."
-    },
-    "lotus": {
-      "short": "Store and shop management platform with company-level data separation.",
-      "full": "Multi-tenant platform for managing stores and in-store promotions, with REST API and data visualisations."
     }
   },
   "a11y": {

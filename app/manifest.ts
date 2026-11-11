@@ -27,9 +27,9 @@ import { SITE_NAME, SITE_URL } from '@/lib/site';
  */
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'Kalvin Takoudjou — Portfolio',
+    name: 'Kalvin Takoudjou <-> Portfolio',
     short_name: 'Kalvin',
-    description: 'Portfolio de Kalvin Takoudjou — Ingénieur logiciel full-stack & mobile basé à Lomé, Togo.',
+    description: 'Portfolio de Kalvin Takoudjou <-> Ingénieur logiciel full-stack & mobile basé à Lomé, Togo.',
     start_url: `${SITE_URL}/fr`,
     scope: '/',
     display: 'standalone',

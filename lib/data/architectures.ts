@@ -247,20 +247,20 @@ export const ARCHITECTURES: Record<ProjectI18nKey, Architecture> = {
   },
 
   /* Plateforme multi-tenant de magasins — stack : Next.js, Prisma ORM, Docker, Chart.js, Tailwind CSS */
-  lotus: {
-    nodes: [
-      { id: 'stores', kind: 'actor', label: 'stores', x: C0, y: 36 },
-      { id: 'web', kind: 'client', label: 'webApp', tech: 'Next.js · Chart.js', x: C0, y: 164 },
-      { id: 'api', kind: 'service', label: 'restApi', x: C1, y: 164 },
-      { id: 'db', kind: 'data', label: 'database', x: C2, y: 36 },
-      { id: 'orm', kind: 'service', label: 'orm', tech: 'Prisma', x: C2, y: 164 },
-    ],
-    edges: [
-      { from: 'stores', to: 'web', label: 'promotions' },
-      { from: 'web', to: 'api', label: 'requests' },
-      { from: 'api', to: 'orm', label: 'data' },
-      { from: 'orm', to: 'db' },
-    ],
-    zones: [{ name: 'Docker', nodes: ['api', 'orm', 'db'] }],
-  },
+  // lotus: {
+  //   nodes: [
+  //     { id: 'stores', kind: 'actor', label: 'stores', x: C0, y: 36 },
+  //     { id: 'web', kind: 'client', label: 'webApp', tech: 'Next.js · Chart.js', x: C0, y: 164 },
+  //     { id: 'api', kind: 'service', label: 'restApi', x: C1, y: 164 },
+  //     { id: 'db', kind: 'data', label: 'database', x: C2, y: 36 },
+  //     { id: 'orm', kind: 'service', label: 'orm', tech: 'Prisma', x: C2, y: 164 },
+  //   ],
+  //   edges: [
+  //     { from: 'stores', to: 'web', label: 'promotions' },
+  //     { from: 'web', to: 'api', label: 'requests' },
+  //     { from: 'api', to: 'orm', label: 'data' },
+  //     { from: 'orm', to: 'db' },
+  //   ],
+  //   zones: [{ name: 'Docker', nodes: ['api', 'orm', 'db'] }],
+  // },
 };
